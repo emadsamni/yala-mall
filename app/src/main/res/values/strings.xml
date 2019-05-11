@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">yala-mall</string>
+    <string name="internet_error">Internet Error</string>
+    <string name="local">eng</string>
+    <string name="unexpected_api_error">unexpected error</string>
+    <string name="update">Update</string>
+    <string name="Home">Home</string>
+</resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:id="@+id/snack_bar_layout_id"
+    android:background="@color/colorPrimary"
+    android:layout_alignParentBottom="true"
+    android:weightSum="2"
+
+   >
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/internet_error"
+        android:textSize="7pt"
+        android:textColor="@color/colorAccent"
+        android:layout_gravity="center"
+        android:textAlignment="gravity"
+        android:layout_weight="0.7"
+        android:layout_marginStart="15dp"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="7pt"
+        android:textColor="@color/colorAccent"
+        android:layout_gravity="center"
+        android:textAlignment="gravity"
+        android:layout_weight="0.7"/>
+
+    <Button
+        android:id="@+id/snack_bar_action"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/update"
+        android:textColor="@color/colorAccent"
+        android:textSize="7pt"
+        android:layout_gravity="center"
+        android:textAlignment="gravity"
+        android:layout_weight="0.6"
+        style="?android:attr/borderlessButtonStyle"/>
+</LinearLayout>
