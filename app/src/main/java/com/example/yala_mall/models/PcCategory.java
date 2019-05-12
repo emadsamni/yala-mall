@@ -29,4 +29,9 @@ public class PcCategory implements Serializable {
     public int getScatogory_id() {
         return scatogory_id;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

@@ -10,7 +10,7 @@ import android.view.MenuItem;
 
 
 import com.example.yala_mall.helps.CustomerUtils;
-import com.facebook.login.LoginManager;
+//import com.facebook.login.LoginManager;
 
 
 public class OnNavigationItemSelected implements NavigationView.OnNavigationItemSelectedListener {

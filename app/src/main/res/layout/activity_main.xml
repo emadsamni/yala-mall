@@ -9,38 +9,51 @@
     android:id="@+id/drawer_layout"
     android:background="#ececee"
 
-
     >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
+
             <include layout="@layout/app_bar_layout"
-                android:id="@+id/app_bar_id"
-                />
-             <android.support.design.widget.TabLayout
-                 android:id="@+id/mainTabLayOut"
-                 android:layout_width="match_parent"
-                 android:layout_height="40dp"
-                 android:background="@color/colorPrimaryDark"
-                 app:tabTextColor="@color/colorAccent"
-                 app:tabMinWidth="100dp"
-                 app:tabSelectedTextColor="@color/colorAccent"
-                 app:tabMode="scrollable"
-                 >
-             </android.support.design.widget.TabLayout>
-            <android.support.v4.view.ViewPager
+                android:id="@+id/app_bar_id" />
+
+            <com.daimajia.slider.library.SliderLayout
+                android:id="@+id/slider_offers"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/mainViewpager">
-            </android.support.v4.view.ViewPager>
+                android:layout_height="200dp"/>
+
+            <com.daimajia.slider.library.Indicators.PagerIndicator
+                android:id="@+id/custom_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center" />
+
+             <!--<android.support.design.widget.TabLayout-->
+                 <!--android:id="@+id/mainTabLayOut"-->
+                 <!--android:layout_width="match_parent"-->
+                 <!--android:layout_height="40dp"-->
+                 <!--android:background="@color/colorPrimaryDark"-->
+                 <!--app:tabTextColor="@color/colorAccent"-->
+                 <!--app:tabMinWidth="100dp"-->
+                 <!--app:tabSelectedTextColor="@color/colorAccent"-->
+                 <!--app:tabMode="scrollable"-->
+                 <!--&gt;-->
+             <!--</android.support.design.widget.TabLayout>-->
+            <!--<android.support.v4.view.ViewPager-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:id="@+id/mainViewpager">-->
+            <!--</android.support.v4.view.ViewPager>-->
 
         </LinearLayout>
+
     </RelativeLayout>
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

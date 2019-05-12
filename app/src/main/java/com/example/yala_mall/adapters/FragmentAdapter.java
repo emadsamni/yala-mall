@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import com.example.yala_mall.fragments.CategoryFragment;
 import com.example.yala_mall.fragments.HomeFragment;
@@ -31,8 +32,7 @@ public class FragmentAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int i) {
         Fragment fragment = null;
 
-
-        switch (i){
+        switch (i) {
             case 0:
                 fragment = HomeFragment.getInstance();
                 break;
@@ -40,12 +40,12 @@ public class FragmentAdapter extends FragmentPagerAdapter {
             case 1:
                 fragment = MallsFragment.getInstance();
                 break;
-            case 2:
-                    fragment = CategoryFragment.getInstance(categoryList.get(i).getId());
-                    break;
-        }
-        return fragment;
 
+            default:
+                fragment = CategoryFragment.getInstance(categoryList.get(i).getId());
+        }
+
+        return fragment;
     }
 
     @Override
@@ -56,8 +56,6 @@ public class FragmentAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-
-
         return categoryList.get(position).getName();
 
     }

@@ -1,11 +1,13 @@
 package com.example.yala_mall.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import com.example.yala_mall.R;
 import com.example.yala_mall.activities.MainActivity;
 import com.example.yala_mall.adapters.SpinnerAdapter;
 import com.example.yala_mall.models.Category;
+import com.example.yala_mall.models.PcCategory;
 import com.example.yala_mall.viewModels.DataViewModel;
 
 import java.util.List;
@@ -52,7 +55,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemSele
         view = inflater.inflate(R.layout.fragment_category, container, false);
          assignUiReference(view);
         // assignAction();
-      //  getSpinnerData();
+        getSpinnerData();
          return view;
     }
 
@@ -82,12 +85,14 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemSele
 
     }
 
-    public void getSpinnerData()
+    private void getSpinnerData()
     {
-        dataViewModel.getPcCategoryBySCategory(getActivity(),catId).observe(getActivity(), new Observer<Category>() {
+
+        dataViewModel.getPcCategoryBySCategory(getActivity(),catId).observe(getActivity(), new Observer<List<Category>>() {
             @Override
-            public void onChanged(@Nullable Category category) {
-                assignSpinner(category.getP_category() ,subCatSpinner);
+            public void onChanged(@Nullable List<Category> categories) {
+
+                assignSpinner(categories.get(0).getP_category() ,subCatSpinner);
 
             }
         });
