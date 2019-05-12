@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
+    android:layoutDirection="rtl"
 
    >
 
@@ -11,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:layoutDirection="rtl"
      >
 
         <android.support.v7.widget.Toolbar
@@ -23,7 +25,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="60dp"
                 android:background="@color/colorPrimary"
                 android:orientation="horizontal">
                 <LinearLayout
@@ -38,8 +40,18 @@
                         android:layout_gravity="center_vertical"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/arrow"/>
+                        android:src="@drawable/nav"
+                        android:tint="@color/colorAccent"/>
+                    <TextView
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="YalaMall"
+                        android:layout_marginStart="5pt"
+                        android:textSize="10pt"
+                        android:textColor="@color/colorAccent"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -51,14 +63,38 @@
                         android:gravity="center"
                         android:clickable="true"
                         android:background="?android:attr/selectableItemBackground"
-                        android:id="@+id/linearLayoutOff"
+                        android:id="@+id/linearLayout_sign_up"
                         android:padding="10dp">
-
+                        <ImageView
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/sign_up"
+                            android:tint="@color/colorAccent"/>
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:id="@+id/linearLayout_cart"
+                        android:padding="10dp">
+                        <ImageView
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/cart"
+                            android:tint="@color/colorAccent"/>
+                    </LinearLayout>
+
                 </LinearLayout>
 
 
             </LinearLayout>
+
+
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 </android.support.design.widget.CoordinatorLayout>

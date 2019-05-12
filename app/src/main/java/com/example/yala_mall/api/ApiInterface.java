@@ -5,8 +5,10 @@ package com.example.yala_mall.api;
 
 import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.Customer;
+import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.PcCategory;
+import com.example.yala_mall.models.Product;
 
 import java.util.List;
 
@@ -35,6 +37,18 @@ public interface ApiInterface {
 
     @GET("getPcategoryByScategory")
     Call<ApiResponse<List<Category>>> getPcategoryByScategory(@Query("key") String key ,@Query("id") int id);
+
+    @GET("getMalls")
+    Call<ApiResponse<List<Mall>>> getMalls(@Query("key") String key);
+
+    @GET("getProductByCategory")
+    Call<ApiResponse<List<Product>>> getProductByCategory(@Query("key") String key ,@Query("id") int id);
+
+    @GET("getShopByMall")
+    Call<ApiResponse<List<Mall>>> getShopByMall(@Query("key") String key ,@Query("mall_id") int id);
+
+    @GET("getProductByMall")
+    Call<ApiResponse<List<Product>>> getProductByMall(@Query("key") String key ,@Query("mall_id") int id);
 
 
 }

@@ -22,16 +22,9 @@ public class Category implements Serializable {
 
     @SerializedName("p_category")
     private
-    List<PcCategory> p_category;
+    List<Category> p_category;
 
 
-    @SerializedName("image")
-    private
-    String image;
-
-    public String getImage() {
-        return image;
-    }
 
     public Integer getId() {
         return id;
@@ -41,7 +34,7 @@ public class Category implements Serializable {
         return name;
     }
 
-    public List<PcCategory> getP_category() {
+    public List<Category> getP_category() {
         return p_category;
     }
 }

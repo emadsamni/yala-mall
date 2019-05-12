@@ -7,12 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
     android:id="@+id/drawer_layout"
-    android:background="#ececee"
+    android:background="@color/colorAccent"
+
+
 
     >
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layoutDirection="rtl">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,10 +25,36 @@
             <include layout="@layout/app_bar_layout"
                 android:id="@+id/app_bar_id" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="25pt"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+               >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="20pt"
+                    android:layout_margin="2.5pt"
+                    android:background="@drawable/search_border"
+                    >
+                     <ImageView
+                         android:layout_width="12pt"
+                         android:layout_height="12pt"
+                         android:layout_marginRight="5pt"
+                         android:layout_gravity="center_vertical"
+                         android:src="@drawable/search"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5pt"
+                        android:layout_gravity="center_vertical"
+                        android:text="ابحث في المولات و المحلات"/>
+                </LinearLayout>
+            </LinearLayout>
             <com.daimajia.slider.library.SliderLayout
                 android:id="@+id/slider_offers"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"/>
+                android:layout_height="300dp"/>
 
             <com.daimajia.slider.library.Indicators.PagerIndicator
                 android:id="@+id/custom_indicator"
@@ -33,22 +62,16 @@
                 android:layout_height="wrap_content"
                 android:gravity="center" />
 
-             <!--<android.support.design.widget.TabLayout-->
-                 <!--android:id="@+id/mainTabLayOut"-->
-                 <!--android:layout_width="match_parent"-->
-                 <!--android:layout_height="40dp"-->
-                 <!--android:background="@color/colorPrimaryDark"-->
-                 <!--app:tabTextColor="@color/colorAccent"-->
-                 <!--app:tabMinWidth="100dp"-->
-                 <!--app:tabSelectedTextColor="@color/colorAccent"-->
-                 <!--app:tabMode="scrollable"-->
-                 <!--&gt;-->
-             <!--</android.support.design.widget.TabLayout>-->
-            <!--<android.support.v4.view.ViewPager-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:id="@+id/mainViewpager">-->
-            <!--</android.support.v4.view.ViewPager>-->
+             <android.support.v7.widget.RecyclerView
+                 android:id="@+id/recycler_view"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:background="#ececee"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/mall_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
@@ -58,7 +81,7 @@
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
+        android:layout_gravity="right"
         app:menu="@menu/navigation_menu"
         app:itemIconTint="@color/colorAccent"
         />

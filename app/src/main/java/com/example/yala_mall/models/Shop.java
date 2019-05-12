@@ -6,6 +6,11 @@ import java.io.Serializable;
 
 public class Shop implements Serializable {
 
+
+    @SerializedName("id")
+    private
+    int id;
+
     @SerializedName("name")
     private
     String name;
@@ -13,6 +18,42 @@ public class Shop implements Serializable {
     @SerializedName("logo")
     private
     String logo;
+
+    @SerializedName("flour")
+    private
+    int flour;
+
+    @SerializedName("open_time")
+    private
+    String open_time;
+
+    @SerializedName("close_time")
+    private
+    String close_time;
+
+    @SerializedName("shop_status_id")
+    private
+    int  shop_status_id;
+
+    public int getId() {
+        return id;
+    }
+
+    public int getFlour() {
+        return flour;
+    }
+
+    public String getOpen_time() {
+        return open_time;
+    }
+
+    public String getClose_time() {
+        return close_time;
+    }
+
+    public int getShop_status_id() {
+        return shop_status_id;
+    }
 
     public String getName() {
         return name;

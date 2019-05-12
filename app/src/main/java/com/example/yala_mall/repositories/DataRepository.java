@@ -13,19 +13,26 @@ import com.example.yala_mall.api.ApiInterface;
 import com.example.yala_mall.api.ApiResponse;
 import com.example.yala_mall.api.CallbackWithRetry;
 import com.example.yala_mall.models.Category;
+import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
+import com.example.yala_mall.models.Product;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.utils.ProgressDialog;
 
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DataRepository {
     private MutableLiveData<List<Category>>  categoryList;
-    private MutableLiveData<List<Category>>  pcCategoryBySCategory;
+    private MutableLiveData<Category>  pcCategoryBySCategory;
     private MutableLiveData<List<Offer>> offers;
+    private MutableLiveData<List<Mall>> malls;
+    private MutableLiveData<List<Product>> products;
+    private MutableLiveData<List<Mall>> mall;
+    private MutableLiveData<List<Product>> productsByMall;
 
     private Application application;
 
@@ -37,6 +44,25 @@ public class DataRepository {
         return new DataRepository(application);
     }
 
+
+    public LiveData<List<Product>> getProductsByMall(Context context ,int mall_id){
+        productsByMall = new MutableLiveData<>();
+        getProductsListByMall(context ,mall_id);
+        return productsByMall;
+    }
+    public LiveData<List<Mall>> getShopsByMall(Context context ,int mall_id){
+        mall = new MutableLiveData<>();
+        getShopsListByMall(context ,mall_id);
+        return mall;
+    }
+
+
+
+    public LiveData<List<Product>> getProductsByCategory(Context context ,int categoryId){
+        products = new MutableLiveData<>();
+        getProductListByCategory(context ,categoryId);
+        return products;
+    }
     public LiveData<List<Offer>> getOffers(Context context){
         offers = new MutableLiveData<>();
         getOffersApi(context);
@@ -49,10 +75,108 @@ public class DataRepository {
         return categoryList;
     }
 
-    public LiveData<List<Category>> getPcCategoryBySCategory(Context context , int sCategoryId){
+    public LiveData<Category> getPcCategoryBySCategory(Context context , int sCategoryId){
         pcCategoryBySCategory = new MutableLiveData<>();
         getSubCategoryById(context , sCategoryId);
         return pcCategoryBySCategory;
+    }
+
+    public LiveData<List<Mall>> getMalls(Context context ){
+        malls = new MutableLiveData<>();
+        getMallsList(context);
+        return malls;
+    }
+
+    private  void  getProductsListByMall (Context context ,int  mall_id ) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<List<Product>>> call = apiService.getProductByMall(Constants.API_KEY, mall_id);
+
+        call.enqueue(new Callback<ApiResponse<List<Product>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
+                if (!response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                }
+                ProgressDialog.getInstance().cancel();
+                if (response.body().getData() != null)
+                    productsByMall.postValue(response.body().getData());
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Product>>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void getShopsListByMall(Context context ,int  mall_id )
+    {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<List<Mall>>> call = apiService.getShopByMall(Constants.API_KEY ,mall_id);
+
+        call.enqueue(new Callback<ApiResponse<List<Mall>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Mall>>> call, Response<ApiResponse<List<Mall>>> response) {
+                if (!response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                }
+                ProgressDialog.getInstance().cancel();
+                if (response.body().getData() != null)
+                    mall.postValue(response.body().getData());
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Mall>>> call, Throwable t) {
+
+            }
+        });
+    }
+    private  void  getProductListByCategory(Context context ,int  categoryId )
+    {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<List<Product>>> call = apiService.getProductByCategory(Constants.API_KEY ,categoryId);
+
+        call.enqueue(new Callback<ApiResponse<List<Product>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
+                if (!response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                }
+                ProgressDialog.getInstance().cancel();
+                if (response.body().getData() != null)
+                    products.postValue(response.body().getData());
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Product>>> call, Throwable t) {
+
+            }
+        });
+    }
+    private void getMallsList(Context context) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<List<Mall>>> call = apiService.getMalls(Constants.API_KEY);
+
+        call.enqueue(new Callback<ApiResponse<List<Mall>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Mall>>> call, Response<ApiResponse<List<Mall>>> response) {
+                if (!response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                }
+                ProgressDialog.getInstance().cancel();
+                if (response.body().getData() != null)
+                    malls.postValue(response.body().getData());
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Mall>>> call, Throwable t) {
+                Log.d("TSTS",t.getMessage());
+            }
+        });
     }
 
     private void getOffersApi(Context context) {
@@ -91,7 +215,7 @@ public class DataRepository {
                 }
                 ProgressDialog.getInstance().cancel();
                 if (response.body().getData() != null)
-                    pcCategoryBySCategory.postValue(response.body().getData());
+                    pcCategoryBySCategory.postValue(response.body().getData().get(0));
             }
 
             @Override

@@ -2,36 +2,37 @@ package com.example.yala_mall.activities;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.yala_mall.R;
-import com.example.yala_mall.adapters.FragmentAdapter;
+import com.example.yala_mall.adapters.RecyclerCategoryAdapter;
+import com.example.yala_mall.adapters.RecyclerMallAdapter;
+import com.example.yala_mall.interfaces.OnItemRecyclerClicked;
 import com.example.yala_mall.models.Category;
+import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
-import com.example.yala_mall.models.PcCategory;
 import com.example.yala_mall.viewModels.DataViewModel;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener {
+public class MainActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, OnItemRecyclerClicked {
 
     DataViewModel dataViewModel;
-    TabLayout tabLayout;
-    ViewPager viewPager;
-    FragmentAdapter fragmentAdapter;
-    List<PcCategory> categoryList;
     SliderLayout mDemoSlider;
+    RecyclerView recyclerView;
+    RecyclerCategoryAdapter adapter;
+    RecyclerView mallsRecyclerView;
+    RecyclerMallAdapter mallsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +41,17 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
 
         assignUIReference();
         getOffers();
-        //getCategories();
+        getCategories();
+        getMalls();
 
     }
 
     private void assignUIReference(){
         dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
-//        tabLayout = findViewById(R.id.mainTabLayOut);
-//        viewPager = findViewById(R.id.mainViewpager);
-//        tabLayout.setupWithViewPager(viewPager);
-//        viewPager.setAdapter(fragmentAdapter);
+        recyclerView = findViewById(R.id.recycler_view);
+        mallsRecyclerView = findViewById(R.id.mall_recycler_view);
+
+
     }
 
     private void getOffers(){
@@ -96,14 +98,48 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
 
     }
 
-//    public void getCategories()
-//    {
-//       dataViewModel.getCategoryList(this).observe(this, new Observer<List<Category>>() {
-//           @Override
-//           public void onChanged(@Nullable List<Category> categories) {
-//               fragmentAdapter = new FragmentAdapter(getSupportFragmentManager() ,categories);
-//               viewPager.setAdapter(fragmentAdapter);
-//           }
-//       });
-//    }
+    public void getCategories()
+    {
+       dataViewModel.getCategoryList(this).observe(this, new Observer<List<Category>>() {
+           @Override
+           public void onChanged(@Nullable List<Category> categories) {
+               adapter = new RecyclerCategoryAdapter(categories ,MainActivity.this ,MainActivity.this );
+               recyclerView.setAdapter(adapter);
+               LinearLayoutManager layoutManager =new LinearLayoutManager( MainActivity.this);
+               layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+               recyclerView.setLayoutManager(layoutManager);
+
+           }
+       });
+    }
+
+
+    public void getMalls()
+    {
+        dataViewModel.getMalls(this).observe(this, new Observer<List<Mall>>() {
+            @Override
+            public void onChanged(@Nullable List<Mall> malls) {
+                mallsAdapter = new RecyclerMallAdapter(malls ,MainActivity.this ,MainActivity.this);
+                mallsRecyclerView.setAdapter(mallsAdapter);
+                LinearLayoutManager layoutManager =new LinearLayoutManager( MainActivity.this);
+                layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                mallsRecyclerView.setLayoutManager(layoutManager);
+            }
+        });
+
+    }
+
+    @Override
+    public void onClickedRecyclerItem(Category category) {
+        Intent intent = new Intent(MainActivity.this, ProductsActivity.class);
+        intent.putExtra("category" ,category.getId());
+       startActivity(intent);
+    }
+
+    @Override
+    public void onClickedRecyclerMallItem(Mall current) {
+        Intent intent = new Intent(MainActivity.this, MallActivity.class);
+        intent.putExtra("mall_id" ,current.getId());
+        startActivity(intent);
+    }
 }
