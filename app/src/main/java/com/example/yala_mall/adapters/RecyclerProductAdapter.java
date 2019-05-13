@@ -24,9 +24,7 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
     public RecyclerProductAdapter(List<Product> list, Context context ) {
         this.list = list;
         this.context = context;
-
     }
-
 
     @NonNull
     @Override
@@ -52,13 +50,10 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
         TextView textView;
         ImageView imageView;
 
-
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.pro_name);
             imageView = itemView.findViewById(R.id.pro_image);
-
-
 
         }
 

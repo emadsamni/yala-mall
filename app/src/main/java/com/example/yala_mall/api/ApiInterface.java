@@ -50,7 +50,11 @@ public interface ApiInterface {
     @GET("getProductByMall")
     Call<ApiResponse<List<Product>>> getProductByMall(@Query("key") String key ,@Query("mall_id") int id);
 
+    @GET("search")
+    Call<ApiResponse<List<Product>>> search(@Query("key") String key ,@Query("name") String name);
 
+    @GET("searchByMall")
+    Call<ApiResponse<List<Product>>> searchByMall(@Query("key") String key ,@Query("name") String name,@Query("mall_id") String mallId);
 }
 
 

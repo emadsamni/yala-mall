@@ -4,10 +4,17 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
@@ -20,8 +27,11 @@ import com.example.yala_mall.interfaces.OnItemRecyclerClicked;
 import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
+import com.example.yala_mall.models.Product;
+import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.viewModels.DataViewModel;
-
+import com.example.yala_mall.viewModels.SearchViewModel;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     RecyclerCategoryAdapter adapter;
     RecyclerView mallsRecyclerView;
     RecyclerMallAdapter mallsAdapter;
+    MaterialSearchView searchView;
+    Toolbar toolbarSearch;
+    LinearLayout linearSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         setContentView(R.layout.activity_main);
 
         assignUIReference();
+        assignAction();
         getOffers();
         getCategories();
         getMalls();
@@ -50,8 +64,46 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
         recyclerView = findViewById(R.id.recycler_view);
         mallsRecyclerView = findViewById(R.id.mall_recycler_view);
+        searchView = findViewById(R.id.search_view);
+        toolbarSearch = findViewById(R.id.toolbar_search);
+        toolbarSearch.setTitle("");
+        setSupportActionBar(toolbarSearch);
+        linearSearch = findViewById(R.id.linear_search);
+    }
 
+    private void assignAction(){
+        linearSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchView.showSearch(true);
+            }
+        });
 
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                startActivity(new Intent(MainActivity.this,SearchActivity.class).putExtra("name",query));
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //Do some magic
+                return false;
+            }
+        });
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                searchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                //Do some magic
+            }
+        });
     }
 
     private void getOffers(){
@@ -69,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
 
         HashMap<String,String> file_maps = new HashMap<>();
          for (Offer offer : offers)
-            file_maps.put("offer"+offer.getId(),"https://mall.yala-shop.com/images/"+offer.getImage());
+            file_maps.put("offer"+offer.getId(), Constants.IMG_URL +offer.getImage());
 
 
         for(String name : file_maps.keySet()){
@@ -98,8 +150,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
 
     }
 
-    public void getCategories()
-    {
+    public void getCategories() {
        dataViewModel.getCategoryList(this).observe(this, new Observer<List<Category>>() {
            @Override
            public void onChanged(@Nullable List<Category> categories) {
@@ -108,14 +159,12 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
                LinearLayoutManager layoutManager =new LinearLayoutManager( MainActivity.this);
                layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
                recyclerView.setLayoutManager(layoutManager);
-
            }
        });
     }
 
 
-    public void getMalls()
-    {
+    public void getMalls() {
         dataViewModel.getMalls(this).observe(this, new Observer<List<Mall>>() {
             @Override
             public void onChanged(@Nullable List<Mall> malls) {
@@ -126,7 +175,6 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
                 mallsRecyclerView.setLayoutManager(layoutManager);
             }
         });
-
     }
 
     @Override
@@ -141,5 +189,14 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         Intent intent = new Intent(MainActivity.this, MallActivity.class);
         intent.putExtra("mall_id" ,current.getId());
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (searchView.isSearchOpen()) {
+            searchView.closeSearch();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

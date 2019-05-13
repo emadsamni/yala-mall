@@ -5,4 +5,9 @@
     <string name="unexpected_api_error">unexpected error</string>
     <string name="update">Update</string>
     <string name="Home">Home</string>
+    <string name="searchMallsShops">ابحث في المولات و المحلات</string>
+
+    <string-array name="query_suggestions">
+        <item>-</item>
+    </string-array>
 </resources>

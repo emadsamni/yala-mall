@@ -9,6 +9,10 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.example.yala_mall.R;
 import com.example.yala_mall.adapters.RecyclerCategoryAdapter;
@@ -18,6 +22,7 @@ import com.example.yala_mall.adapters.RecyclerShopAdapter;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.viewModels.DataViewModel;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.List;
 
@@ -28,27 +33,52 @@ public class MallActivity extends AppCompatActivity {
     RecyclerShopAdapter adapter;
     RecyclerView productsRecyclerView;
     RecyclerProductAdapter productsAdapter;
+    LinearLayout searchLayout;
+    MaterialSearchView searchView;
+    int mallId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mall);
+
         assignUIReference();
+        assignAction();
         Intent intent = getIntent();
-        int mallId = intent.getExtras().getInt("mall_id");
+        mallId = intent.getExtras().getInt("mall_id");
         getShops(mallId);
         getProduct(mallId);
     }
-
-
-
 
     private void assignUIReference() {
         dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
         recyclerView = findViewById(R.id.mall_recycler_view);
         productsRecyclerView= findViewById(R.id.product_recycler_view);
-
+        searchView = findViewById(R.id.search_view);
+        searchLayout = findViewById(R.id.linearLayout_search);
     }
 
+    private void assignAction() {
+        searchLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             searchView.showSearch(true);
+            }
+        });
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                startActivity(new Intent(MallActivity.this,SearchActivity.class).putExtra("mallId",String.valueOf(mallId)).putExtra("name",query));
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+    }
 
     private void getShops(int mallId) {
 
@@ -75,5 +105,15 @@ public class MallActivity extends AppCompatActivity {
                 productsRecyclerView.setLayoutManager(layoutManager);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
+
+        return true;
     }
 }

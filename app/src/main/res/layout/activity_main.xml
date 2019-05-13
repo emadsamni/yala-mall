@@ -7,12 +7,10 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
     android:id="@+id/drawer_layout"
-    android:background="@color/colorAccent"
+    android:background="@color/colorAccent">
 
-
-
-    >
     <RelativeLayout
+        android:id="@+id/layout_id"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layoutDirection="rtl">
@@ -25,32 +23,6 @@
             <include layout="@layout/app_bar_layout"
                 android:id="@+id/app_bar_id" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="25pt"
-                android:background="@color/colorPrimary"
-                android:gravity="center"
-               >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="20pt"
-                    android:layout_margin="2.5pt"
-                    android:background="@drawable/search_border"
-                    >
-                     <ImageView
-                         android:layout_width="12pt"
-                         android:layout_height="12pt"
-                         android:layout_marginRight="5pt"
-                         android:layout_gravity="center_vertical"
-                         android:src="@drawable/search"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5pt"
-                        android:layout_gravity="center_vertical"
-                        android:text="ابحث في المولات و المحلات"/>
-                </LinearLayout>
-            </LinearLayout>
             <com.daimajia.slider.library.SliderLayout
                 android:id="@+id/slider_offers"
                 android:layout_width="match_parent"
@@ -74,6 +46,55 @@
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
+
+
+        <FrameLayout
+            android:id="@+id/toolbar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25pt"
+            android:layoutDirection="ltr">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_search"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary" >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="25pt"
+                    android:background="@color/colorPrimary"
+                    android:gravity="center"
+                    android:layoutDirection="rtl">
+                    <LinearLayout
+                        android:id="@+id/linear_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="20pt"
+                        android:layout_margin="2.5pt"
+                        android:background="@drawable/search_border"
+                        >
+                        <ImageView
+                            android:layout_width="12pt"
+                            android:layout_height="12pt"
+                            android:layout_marginRight="5pt"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/ic_search_black"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5pt"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/searchMallsShops"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.Toolbar>
+
+            <com.miguelcatalan.materialsearchview.MaterialSearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </FrameLayout>
 
     </RelativeLayout>
 

@@ -54,6 +54,7 @@ dependencies {
     implementation 'com.github.GoodieBag:Pinview:v1.3'
     implementation 'com.jcminarro:RoundKornerLayouts:0.4.0'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 //    //for fonts
     implementation 'io.github.inflationx:calligraphy3:3.1.0'
     implementation 'io.github.inflationx:viewpump:1.0.0'
