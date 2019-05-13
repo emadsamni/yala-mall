@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
     android:id="@+id/drawer_layout"
-    android:background="@color/colorAccent">
+    android:background="@color/white">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,7 +22,13 @@
             <include layout="@layout/app_bar_search_layout"
                 android:id="@+id/app_bar_id" />
 
-
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/mall_recycler_view"
                 android:layout_width="match_parent"
@@ -33,7 +39,27 @@
                 android:id="@+id/product_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </ScrollView>
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorPrimary"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            >
+            <Button
+                android:id="@+id/filter_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Filter"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:textSize="10pt"/>
         </LinearLayout>
 
     </RelativeLayout>
@@ -44,6 +70,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="right"
         app:menu="@menu/navigation_menu"
-        app:itemIconTint="@color/colorAccent"
+        app:itemIconTint="@color/white"
         />
 </android.support.v4.widget.DrawerLayout>

@@ -44,7 +44,6 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerMallAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Mall current   = list.get(i);
-
         viewHolder.textView.setText(current.getName());
         Picasso.with(context).load(Constants.IMG_URL+current.getLogo()).into(viewHolder.imageView);
 

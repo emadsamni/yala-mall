@@ -6,6 +6,10 @@
     <string name="update">Update</string>
     <string name="Home">Home</string>
     <string name="searchMallsShops">ابحث في المولات و المحلات</string>
+    <string name="filter">الفلتر</string>
+    <string name="browse">استعراض</string>
+    <string name="all">غير محدد</string>
+    <string name="select_cat">اختر النوع</string>
 
     <string-array name="query_suggestions">
         <item>-</item>

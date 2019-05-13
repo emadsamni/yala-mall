@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
     android:id="@+id/drawer_layout"
-    android:background="@color/colorAccent">
+    android:background="@color/white">
 
     <RelativeLayout
         android:id="@+id/layout_id"
@@ -104,6 +104,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="right"
         app:menu="@menu/navigation_menu"
-        app:itemIconTint="@color/colorAccent"
+        app:itemIconTint="@color/white"
         />
 </android.support.v4.widget.DrawerLayout>

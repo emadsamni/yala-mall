@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.example.yala_mall.R;
@@ -19,14 +20,20 @@ import com.example.yala_mall.adapters.RecyclerCategoryAdapter;
 import com.example.yala_mall.adapters.RecyclerMallAdapter;
 import com.example.yala_mall.adapters.RecyclerProductAdapter;
 import com.example.yala_mall.adapters.RecyclerShopAdapter;
+import com.example.yala_mall.fragments.FilterDialog;
+import com.example.yala_mall.interfaces.OnClickFilterButton;
+import com.example.yala_mall.interfaces.OnItemRecyclerClicked;
+import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Product;
+import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.viewModels.DataViewModel;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.util.HashMap;
 import java.util.List;
 
-public class MallActivity extends AppCompatActivity {
+public class MallActivity extends AppCompatActivity implements OnItemRecyclerClicked, OnClickFilterButton {
 
     DataViewModel dataViewModel;
     RecyclerView recyclerView;
@@ -36,12 +43,12 @@ public class MallActivity extends AppCompatActivity {
     LinearLayout searchLayout;
     MaterialSearchView searchView;
     int mallId;
+    Button filterButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mall);
-
         assignUIReference();
         assignAction();
         Intent intent = getIntent();
@@ -56,6 +63,7 @@ public class MallActivity extends AppCompatActivity {
         productsRecyclerView= findViewById(R.id.product_recycler_view);
         searchView = findViewById(R.id.search_view);
         searchLayout = findViewById(R.id.linearLayout_search);
+        filterButton =   findViewById(R.id.filter_button);
     }
 
     private void assignAction() {
@@ -78,14 +86,22 @@ public class MallActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        filterButton.setOnClickListener(this::onClickFilterButton);
     }
+
+
+    private void onClickFilterButton(View view){
+            FilterDialog.getInstance(this,this).show();
+    }
+
 
     private void getShops(int mallId) {
 
         dataViewModel.getShopsByMall(this ,mallId).observe(this, new Observer<List<Mall>>() {
             @Override
             public void onChanged(@Nullable List<Mall> malls) {
-                adapter = new RecyclerShopAdapter(malls.get(0).getShop() ,MallActivity.this );
+                adapter = new RecyclerShopAdapter(malls.get(0).getShop() ,MallActivity.this ,MallActivity.this );
                 recyclerView.setAdapter(adapter);
                 LinearLayoutManager layoutManager =new LinearLayoutManager( MallActivity.this);
                 layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -115,5 +131,46 @@ public class MallActivity extends AppCompatActivity {
         searchView.setMenuItem(item);
 
         return true;
+    }
+
+    @Override
+    public void onClickedRecyclerItem(Category category) {
+
+    }
+
+    @Override
+    public void onClickedRecyclerMallItem(Mall current) {
+
+    }
+
+    @Override
+    public void onClickedRecyclerShopItem(Shop current) {
+        Intent intent = new Intent(MallActivity.this, ShopActivity.class);
+        intent.putExtra("shop_id" ,current.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (searchView.isSearchOpen()) {
+            searchView.closeSearch();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onFilterButtonClicked(HashMap<String, Integer> spinnerMap) {
+        spinnerMap.put("mall_id" ,mallId);
+        dataViewModel.getFilter(this ,spinnerMap).observe(this, new Observer<List<Product>>() {
+            @Override
+            public void onChanged(@Nullable List<Product> products) {
+                productsAdapter = new RecyclerProductAdapter(products ,MallActivity.this );
+                productsRecyclerView.setAdapter(productsAdapter);
+                LinearLayoutManager layoutManager =new LinearLayoutManager( MallActivity.this);
+                layoutManager =new GridLayoutManager(MallActivity.this,2);
+                productsRecyclerView.setLayoutManager(layoutManager);
+            }
+        });
     }
 }

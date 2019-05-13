@@ -9,6 +9,7 @@ import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.PcCategory;
 import com.example.yala_mall.models.Product;
+import com.example.yala_mall.models.Size;
 
 import java.util.List;
 
@@ -50,11 +51,22 @@ public interface ApiInterface {
     @GET("getProductByMall")
     Call<ApiResponse<List<Product>>> getProductByMall(@Query("key") String key ,@Query("mall_id") int id);
 
+    @GET("getProductByshop")
+    Call<ApiResponse<List<Product>>> getProductByShop(@Query("key") String key ,@Query("id") int id);
+
     @GET("search")
     Call<ApiResponse<List<Product>>> search(@Query("key") String key ,@Query("name") String name);
 
     @GET("searchByMall")
     Call<ApiResponse<List<Product>>> searchByMall(@Query("key") String key ,@Query("name") String name,@Query("mall_id") String mallId);
+
+
+    @GET("getSizeByPcategory")
+    Call<ApiResponse<List<Size>>> getSizeByPCategory(@Query("key") String key , @Query("id") int id);
+
+
+    @GET("getFilter")
+    Call<ApiResponse<List<Product>>> getFilter(@Query("key") String key , @Query("scategory_id") Integer  sCategory ,@Query("pcategory_id") Integer  pCategory ,@Query("size") Integer  size  ,@Query("mall_id") Integer  mallId  ,@Query("shop_id") Integer  Shop_id);
 }
 
 

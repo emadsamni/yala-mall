@@ -7,13 +7,13 @@ import java.io.Serializable;
 public class Shop implements Serializable {
 
 
-    @SerializedName("id")
-    private
-    int id;
+        @SerializedName("id")
+        private
+        int id;
 
-    @SerializedName("name")
-    private
-    String name;
+        @SerializedName("name")
+        private
+        String name;
 
     @SerializedName("logo")
     private

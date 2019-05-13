@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.yala_mall.R;
+import com.example.yala_mall.interfaces.OnItemRecyclerClicked;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.utils.Constants;
@@ -21,11 +22,13 @@ public class RecyclerShopAdapter  extends RecyclerView.Adapter<RecyclerShopAdapt
 
     private List<Shop> list;
     private Context context;
+    private OnItemRecyclerClicked onItemRecyclerClicked;
 
 
-    public RecyclerShopAdapter(List<Shop> list, Context context ) {
+    public RecyclerShopAdapter(List<Shop> list, Context context ,OnItemRecyclerClicked onItemRecyclerClicked ) {
         this.list = list;
         this.context = context;
+        this.onItemRecyclerClicked = onItemRecyclerClicked;
 
     }
 
@@ -39,9 +42,14 @@ public class RecyclerShopAdapter  extends RecyclerView.Adapter<RecyclerShopAdapt
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Shop current   = list.get(i);
-
         viewHolder.textView.setText(current.getName());
         Picasso.with(context).load(Constants.IMG_URL+current.getLogo()).into(viewHolder.imageView);
+        viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemRecyclerClicked.onClickedRecyclerShopItem(current);
+            }
+        });
     }
 
     @Override

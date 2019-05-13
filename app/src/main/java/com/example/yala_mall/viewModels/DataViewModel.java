@@ -11,9 +11,11 @@ import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
+import com.example.yala_mall.models.Size;
 import com.example.yala_mall.repositories.DataRepository;
 import com.example.yala_mall.utils.ProgressDialog;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class DataViewModel extends AndroidViewModel {
@@ -24,12 +26,16 @@ public class DataViewModel extends AndroidViewModel {
     private LiveData<List<Mall>> malls;
     private LiveData<List<Product>> products;
     private LiveData<List<Product>> productsByMall;
+    private LiveData<List<Product>> productsByShop;
     private LiveData<List<Mall>> mall;
+    private LiveData<List<Size>> sizes;
 
     public DataViewModel(@NonNull Application application) {
         super(application);
         repository = DataRepository.getInstance(application);
     }
+
+
 
     public LiveData<List<Mall>> getMalls(Context context){
         if (malls==null) {
@@ -56,11 +62,19 @@ public class DataViewModel extends AndroidViewModel {
     }
 
     public LiveData<Category> getPcCategoryBySCategory(Context context , int sCategory ){
-        if (pcCategoryBySCategory==null) {
+
             ProgressDialog.getInstance().show(context);
             pcCategoryBySCategory = repository.getPcCategoryBySCategory(context ,sCategory);
-        }
+
         return pcCategoryBySCategory;
+    }
+
+    public LiveData<List<Size>> getSizeByPCategory(Context context , int id ){
+
+        ProgressDialog.getInstance().show(context);
+        sizes = repository.getSizeByPCategory(context ,id);
+
+        return sizes;
     }
 
     public LiveData<List<Product>> getProductListByCategory(Context context , int category ){
@@ -85,6 +99,22 @@ public class DataViewModel extends AndroidViewModel {
             productsByMall = repository.getProductsByMall(context ,mallId);
         }
         return productsByMall;
+    }
+
+    public LiveData<List<Product>> getProductsByShop(Context context , int shopId ){
+        if (productsByShop==null) {
+            ProgressDialog.getInstance().show(context);
+            productsByShop = repository.getProductsByShop(context ,shopId);
+        }
+        return productsByShop;
+    }
+
+    public LiveData<List<Product>> getFilter(Context context , HashMap<String, Integer> selectedMap){
+
+            ProgressDialog.getInstance().show(context);
+            products = repository.getFilter(context ,selectedMap);
+
+        return products;
     }
 
 }

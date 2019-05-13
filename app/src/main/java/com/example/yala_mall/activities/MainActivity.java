@@ -28,6 +28,7 @@ import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
+import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.viewModels.DataViewModel;
 import com.example.yala_mall.viewModels.SearchViewModel;
@@ -189,6 +190,11 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         Intent intent = new Intent(MainActivity.this, MallActivity.class);
         intent.putExtra("mall_id" ,current.getId());
         startActivity(intent);
+    }
+
+    @Override
+    public void onClickedRecyclerShopItem(Shop current) {
+
     }
 
     @Override

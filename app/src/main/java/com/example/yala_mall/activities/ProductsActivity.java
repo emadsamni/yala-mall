@@ -16,6 +16,7 @@ import com.example.yala_mall.interfaces.OnItemRecyclerClicked;
 import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Product;
+import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.viewModels.DataViewModel;
 
 import java.util.List;
@@ -69,6 +70,11 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
 
     @Override
     public void onClickedRecyclerMallItem(Mall current) {
+
+    }
+
+    @Override
+    public void onClickedRecyclerShopItem(Shop current) {
 
     }
 }
