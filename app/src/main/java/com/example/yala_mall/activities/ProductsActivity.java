@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.yala_mall.R;
 import com.example.yala_mall.adapters.RecyclerProductAdapter;
+import com.example.yala_mall.interfaces.OnItemProductClicked;
 import com.example.yala_mall.interfaces.OnItemRecyclerClicked;
 import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.Mall;
@@ -21,7 +22,7 @@ import com.example.yala_mall.viewModels.DataViewModel;
 
 import java.util.List;
 
-public class ProductsActivity extends AppCompatActivity implements OnItemRecyclerClicked {
+public class ProductsActivity extends AppCompatActivity implements OnItemRecyclerClicked, OnItemProductClicked {
 
 
     DataViewModel dataViewModel;
@@ -53,7 +54,7 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         dataViewModel.getProductListByCategory(this  ,categoryId).observe(this, new Observer<List<Product>>() {
             @Override
             public void onChanged(@Nullable List<Product> products) {
-                adapter = new RecyclerProductAdapter(products , ProductsActivity.this );
+                adapter = new RecyclerProductAdapter(products , ProductsActivity.this,ProductsActivity.this );
                 recyclerView.setAdapter(adapter);
                 LinearLayoutManager layoutManager =new LinearLayoutManager( ProductsActivity.this);
                 layoutManager =new GridLayoutManager(ProductsActivity.this,2);
@@ -76,5 +77,10 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
     @Override
     public void onClickedRecyclerShopItem(Shop current) {
 
+    }
+
+    @Override
+    public void onProductClick(Product product) {
+      startActivity(new Intent(this,ProductDetailsActivity.class).putExtra("productId",String.valueOf(product.getId())));
     }
 }

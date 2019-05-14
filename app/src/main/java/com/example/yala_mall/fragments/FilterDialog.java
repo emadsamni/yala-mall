@@ -244,13 +244,6 @@ public class FilterDialog   {
                 adb.setTitle(context.getResources().getString(R.string.select_cat));
                 adb.show();
             }
-
         });
-
-
     }
-
-
-
-
 }

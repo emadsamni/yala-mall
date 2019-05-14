@@ -23,9 +23,9 @@ public class SearchViewModel extends AndroidViewModel {
         repository = SearchRepository.getInstance(application);
     }
 
-    public LiveData<List<Product>> getProducts(Context context , String name , String mallId){
+    public LiveData<List<Product>> getProducts(Context context , String name , String mallId , String shopId){
         ProgressDialog.getInstance().show(context);
-        products = repository.getProducts(name, context, mallId);
+        products = repository.getProducts(name, context, mallId, shopId);
 
         return products;
     }

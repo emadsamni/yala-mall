@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +33,12 @@ import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.viewModels.DataViewModel;
 import com.example.yala_mall.viewModels.SearchViewModel;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         getOffers();
         getCategories();
         getMalls();
-
     }
 
     private void assignUIReference(){

@@ -29,13 +29,12 @@ public class DataViewModel extends AndroidViewModel {
     private LiveData<List<Product>> productsByShop;
     private LiveData<List<Mall>> mall;
     private LiveData<List<Size>> sizes;
+    private LiveData<List<Product>> productDetails;
 
     public DataViewModel(@NonNull Application application) {
         super(application);
         repository = DataRepository.getInstance(application);
     }
-
-
 
     public LiveData<List<Mall>> getMalls(Context context){
         if (malls==null) {
@@ -115,6 +114,14 @@ public class DataViewModel extends AndroidViewModel {
             products = repository.getFilter(context ,selectedMap);
 
         return products;
+    }
+
+    public LiveData<List<Product>> getProductDetails(Context context , String productId ){
+        if (productDetails==null) {
+            ProgressDialog.getInstance().show(context);
+            productDetails = repository.getProductDetails(context ,productId);
+        }
+        return productDetails;
     }
 
 }

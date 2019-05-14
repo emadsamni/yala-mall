@@ -60,10 +60,14 @@ public interface ApiInterface {
     @GET("searchByMall")
     Call<ApiResponse<List<Product>>> searchByMall(@Query("key") String key ,@Query("name") String name,@Query("mall_id") String mallId);
 
+    @GET("searchByShop")
+    Call<ApiResponse<List<Product>>> searchByShop(@Query("key") String key ,@Query("name") String name,@Query("shop_id") String shopId);
 
     @GET("getSizeByPcategory")
     Call<ApiResponse<List<Size>>> getSizeByPCategory(@Query("key") String key , @Query("id") int id);
 
+    @GET("getProductDetails")
+    Call<ApiResponse<List<Product>>> getProductDetails(@Query("key") String key , @Query("id") String id);
 
     @GET("getFilter")
     Call<ApiResponse<List<Product>>> getFilter(@Query("key") String key , @Query("scategory_id") Integer  sCategory ,@Query("pcategory_id") Integer  pCategory ,@Query("size") Integer  size  ,@Query("mall_id") Integer  mallId  ,@Query("shop_id") Integer  Shop_id);

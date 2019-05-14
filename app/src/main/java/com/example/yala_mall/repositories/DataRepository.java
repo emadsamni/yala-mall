@@ -37,6 +37,7 @@ public class DataRepository {
     private MutableLiveData<List<Product>> productsByMall;
     private MutableLiveData<List<Product>> productsByShop;
     private MutableLiveData<List<com.example.yala_mall.models.Size>> sizes;
+    private MutableLiveData<List<Product>> productDetails;
 
 
     private Application application;
@@ -55,9 +56,6 @@ public class DataRepository {
         return products;
     }
 
-
-
-
     public LiveData<List<Size>> getSizeByPCategory(Context context ,int id){
         sizes = new MutableLiveData<>();
         getSizeListByPCategory(context ,id);
@@ -70,18 +68,18 @@ public class DataRepository {
         getProductsListByShop(context ,shop_id);
         return productsByShop;
     }
+
     public LiveData<List<Product>> getProductsByMall(Context context ,int mall_id){
         productsByMall = new MutableLiveData<>();
         getProductsListByMall(context ,mall_id);
         return productsByMall;
     }
+
     public LiveData<List<Mall>> getShopsByMall(Context context ,int mall_id){
         mall = new MutableLiveData<>();
         getShopsListByMall(context ,mall_id);
         return mall;
     }
-
-
 
     public LiveData<List<Product>> getProductsByCategory(Context context ,int categoryId){
         products = new MutableLiveData<>();
@@ -110,6 +108,12 @@ public class DataRepository {
         malls = new MutableLiveData<>();
         getMallsList(context);
         return malls;
+    }
+
+    public LiveData<List<Product>> getProductDetails(Context context ,String productId){
+        productDetails = new MutableLiveData<>();
+        getProductDetail(context ,productId);
+        return productDetails;
     }
 
     private void getFilterList(Context context, HashMap<String, Integer> selectedMap) {
@@ -337,6 +341,29 @@ public class DataRepository {
             @Override
             public void onFailure(Call<ApiResponse<List<Category>>> call, Throwable t) {
 
+            }
+        });
+    }
+
+    private void getProductDetail (Context context ,String  productId ) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<List<Product>>> call = apiService.getProductDetails(Constants.API_KEY, productId);
+
+        call.enqueue(new Callback<ApiResponse<List<Product>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
+                if (!response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                }
+                ProgressDialog.getInstance().cancel();
+                if (response.body().getData() != null)
+                    productDetails.postValue(response.body().getData());
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Product>>> call, Throwable t) {
+                Log.d("TSTS",t.getMessage());
             }
         });
     }

@@ -22,6 +22,7 @@ import com.example.yala_mall.adapters.RecyclerProductAdapter;
 import com.example.yala_mall.adapters.RecyclerShopAdapter;
 import com.example.yala_mall.fragments.FilterDialog;
 import com.example.yala_mall.interfaces.OnClickFilterButton;
+import com.example.yala_mall.interfaces.OnItemProductClicked;
 import com.example.yala_mall.interfaces.OnItemRecyclerClicked;
 import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.Mall;
@@ -33,7 +34,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.HashMap;
 import java.util.List;
 
-public class MallActivity extends AppCompatActivity implements OnItemRecyclerClicked, OnClickFilterButton {
+public class MallActivity extends AppCompatActivity implements OnItemRecyclerClicked, OnClickFilterButton, OnItemProductClicked {
 
     DataViewModel dataViewModel;
     RecyclerView recyclerView;
@@ -87,6 +88,18 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
             }
         });
 
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                searchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+
+            }
+        });
+
         filterButton.setOnClickListener(this::onClickFilterButton);
     }
 
@@ -114,7 +127,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         dataViewModel.getProductsByMall(this ,mallId).observe(this, new Observer<List<Product>>() {
             @Override
             public void onChanged(@Nullable List<Product> products) {
-                productsAdapter = new RecyclerProductAdapter(products ,MallActivity.this );
+                productsAdapter = new RecyclerProductAdapter(products ,MallActivity.this, MallActivity.this);
                 productsRecyclerView.setAdapter(productsAdapter);
                 LinearLayoutManager layoutManager =new LinearLayoutManager( MallActivity.this);
                 layoutManager =new GridLayoutManager(MallActivity.this,2);
@@ -165,12 +178,17 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         dataViewModel.getFilter(this ,spinnerMap).observe(this, new Observer<List<Product>>() {
             @Override
             public void onChanged(@Nullable List<Product> products) {
-                productsAdapter = new RecyclerProductAdapter(products ,MallActivity.this );
+                productsAdapter = new RecyclerProductAdapter(products ,MallActivity.this,MallActivity.this );
                 productsRecyclerView.setAdapter(productsAdapter);
                 LinearLayoutManager layoutManager =new LinearLayoutManager( MallActivity.this);
                 layoutManager =new GridLayoutManager(MallActivity.this,2);
                 productsRecyclerView.setLayoutManager(layoutManager);
             }
         });
+    }
+
+    @Override
+    public void onProductClick(Product product) {
+        startActivity(new Intent(this,ProductDetailsActivity.class).putExtra("productId",String.valueOf(product.getId())));
     }
 }

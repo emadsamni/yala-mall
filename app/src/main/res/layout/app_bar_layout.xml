@@ -73,21 +73,33 @@
                             android:tint="@color/white"/>
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="50dp"
+                    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="25pt"
                         android:layout_height="match_parent"
-                        android:gravity="center"
                         android:clickable="true"
                         android:background="?android:attr/selectableItemBackground"
-                        android:id="@+id/linearLayout_cart"
-                        android:padding="10dp">
+                        android:id="@+id/linearLayout_cart">
+
                         <ImageView
-                            android:layout_gravity="center_vertical"
+                            android:id="@+id/splash_imageview"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
+                            android:layout_centerInParent="true"
+                            android:scaleType="centerCrop"
                             android:src="@drawable/cart"
                             android:tint="@color/white"/>
-                    </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/cart_number"
+                            android:layout_width="30pt"
+                            android:layout_height="30pt"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_centerInParent="true"
+                            android:padding="7dip"
+                            android:textSize="8pt"
+                            android:textColor="#AA000000" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 

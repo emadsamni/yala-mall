@@ -4,11 +4,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.util.Log;
 
 import com.example.yala_mall.R;
+import com.example.yala_mall.models.Product;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.utils.LocaleHelper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -125,6 +131,20 @@ public class CustomerUtils {
         } else {
             return Character.toUpperCase(first) + s.substring(1);
         }
+    }
+
+    public void addList(String key, List<Product> products) {
+        Gson gson = new Gson();
+        String jsonCars = gson.toJson(products);
+        Log.d("TSTS","jsonCars = " + jsonCars);
+
+
+        // retrive list
+
+        Type type = new TypeToken<List<Product>>(){}.getType();
+        List<Product> carsList = gson.fromJson(jsonCars, type);
+        for (Product product : carsList)
+            Log.d("TSTS","product = " + product.getName());
     }
 
 }

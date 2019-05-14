@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.yala_mall.R;
+import com.example.yala_mall.interfaces.OnItemProductClicked;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.utils.Constants;
@@ -20,10 +22,12 @@ import java.util.List;
 public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProductAdapter.ViewHolder>  {
     private List<Product> list;
     private Context context;
+    private OnItemProductClicked listener;
 
-    public RecyclerProductAdapter(List<Product> list, Context context ) {
+    public RecyclerProductAdapter(List<Product> list, Context context ,OnItemProductClicked listener) {
         this.list = list;
         this.context = context;
+        this.listener=listener;
     }
 
     @NonNull
@@ -39,6 +43,12 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
 
         viewHolder.textView.setText(current.getName());
         Picasso.with(context).load(Constants.IMG_URL+current.getGallery().get(0).getImage()).into(viewHolder.imageView);
+        viewHolder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onProductClick(current);
+            }
+        });
     }
 
     @Override
@@ -49,11 +59,13 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
         ImageView imageView;
+        LinearLayout layout;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.pro_name);
             imageView = itemView.findViewById(R.id.pro_image);
+            layout = itemView.findViewById(R.id.layout_id);
 
         }
 
