@@ -55,7 +55,8 @@
         android:layout_gravity="center"
         app:finalNumber="5"
         android:layout_margin="5pt"
-        app:textSize="4pt"/>
+        app:textSize="4pt"
+        app:initialNumber="1"/>
 
     <Button
         android:id="@+id/add_cart_button"

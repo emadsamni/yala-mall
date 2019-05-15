@@ -1,5 +1,6 @@
 package com.example.yala_mall.activities;
 
+import android.app.Application;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
@@ -24,6 +26,7 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.yala_mall.R;
 import com.example.yala_mall.adapters.RecyclerCategoryAdapter;
 import com.example.yala_mall.adapters.RecyclerMallAdapter;
+import com.example.yala_mall.fragments.MessageDialog;
 import com.example.yala_mall.interfaces.OnItemRecyclerClicked;
 import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.Mall;
@@ -53,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     MaterialSearchView searchView;
     Toolbar toolbarSearch;
     LinearLayout linearSearch;
+    TextView orderCount;
+    Application master;
+    RelativeLayout cartImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,11 +79,18 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         searchView = findViewById(R.id.search_view);
         toolbarSearch = findViewById(R.id.toolbar_search);
         toolbarSearch.setTitle("");
+        orderCount = findViewById(R.id.cart_number);
+        cartImage = findViewById(R.id.linearLayout_cart);
         setSupportActionBar(toolbarSearch);
         linearSearch = findViewById(R.id.linear_search);
+
+        // set counter for cart
+        changeCartCount();
     }
 
     private void assignAction(){
+        cartImage.setOnClickListener(this::setOnClickCartImage);
+
         linearSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,10 +217,30 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
 
     @Override
     public void onBackPressed() {
+
         if (searchView.isSearchOpen()) {
             searchView.closeSearch();
-        } else {
-            super.onBackPressed();
+        }else {
+          if (!((MasterClass)getApplication()).getProductList().isEmpty())
+             MessageDialog.getInstance(this,getResources().getString(R.string.exit_app)).show();
+          else
+              super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        changeCartCount();
+    }
+
+    private void changeCartCount(){
+        master = (MasterClass) getApplication();
+        if (!((MasterClass) master).getProductList().isEmpty())
+            orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+    }
+
+    private void setOnClickCartImage(View view){
+        startActivity(new Intent(MainActivity.this,CartActivity.class));
     }
 }

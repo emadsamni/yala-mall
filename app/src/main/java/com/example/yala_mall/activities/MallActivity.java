@@ -1,5 +1,6 @@
 package com.example.yala_mall.activities;
 
+import android.app.Application;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -14,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.yala_mall.R;
 import com.example.yala_mall.adapters.RecyclerCategoryAdapter;
@@ -45,6 +48,9 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
     MaterialSearchView searchView;
     int mallId;
     Button filterButton;
+    TextView orderCount;
+    Application master;
+    RelativeLayout cartImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +71,14 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         searchView = findViewById(R.id.search_view);
         searchLayout = findViewById(R.id.linearLayout_search);
         filterButton =   findViewById(R.id.filter_button);
+        orderCount = findViewById(R.id.cart_number);
+        cartImage = findViewById(R.id.linearLayout_cart);
+        changeCartCount();
     }
 
     private void assignAction() {
+        cartImage.setOnClickListener(this::setOnClickCartImage);
+
         searchLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,6 +200,22 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
 
     @Override
     public void onProductClick(Product product) {
-        startActivity(new Intent(this,ProductDetailsActivity.class).putExtra("productId",String.valueOf(product.getId())));
+        startActivity(new Intent(this,ProductDetailsActivity.class).putExtra("productId",String.valueOf(product.getId())).putExtra("product",product));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        changeCartCount();
+    }
+
+    private void changeCartCount(){
+        master = (MasterClass) getApplication();
+        if (!((MasterClass) master).getProductList().isEmpty())
+            orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+    }
+
+    private void setOnClickCartImage(View view){
+        startActivity(new Intent(MallActivity.this,CartActivity.class));
     }
 }

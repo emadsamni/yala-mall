@@ -1,5 +1,6 @@
 package com.example.yala_mall.activities;
 
+import android.app.Application;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -13,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.yala_mall.R;
 import com.example.yala_mall.adapters.RecyclerProductAdapter;
@@ -31,6 +34,9 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     RecyclerProductAdapter productsAdapter;
     MaterialSearchView searchView;
     LinearLayout searchLayout;
+    TextView orderCount;
+    Application master;
+    RelativeLayout cartImage;
 
     int shopId;
     @Override
@@ -50,11 +56,14 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         productsRecyclerView= findViewById(R.id.product_recycler_view);
         searchView = findViewById(R.id.search_view);
         searchLayout = findViewById(R.id.linearLayout_search);
+        orderCount = findViewById(R.id.cart_number);
+        cartImage = findViewById(R.id.linearLayout_cart);
+        changeCartCount();
     }
 
-
-
     private void assignAction() {
+        cartImage.setOnClickListener(this::setOnClickCartImage);
+
         searchLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,7 +130,23 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        changeCartCount();
+    }
+
+    @Override
     public void onProductClick(Product product) {
-        startActivity(new Intent(this,ProductDetailsActivity.class).putExtra("productId",String.valueOf(product.getId())));
+        startActivity(new Intent(this,ProductDetailsActivity.class).putExtra("productId",String.valueOf(product.getId())).putExtra("product",product));
+    }
+
+    private void changeCartCount(){
+        master = (MasterClass) getApplication();
+        if (!((MasterClass) master).getProductList().isEmpty())
+            orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+    }
+
+    private void setOnClickCartImage(View view){
+        startActivity(new Intent(ShopActivity.this,CartActivity.class));
     }
 }

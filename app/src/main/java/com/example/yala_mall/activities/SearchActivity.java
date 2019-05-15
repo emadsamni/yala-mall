@@ -1,5 +1,6 @@
 package com.example.yala_mall.activities;
 
+import android.app.Application;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -12,6 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.yala_mall.R;
 import com.example.yala_mall.adapters.RecyclerProductAdapter;
@@ -29,6 +33,9 @@ public class SearchActivity extends AppCompatActivity implements OnItemProductCl
     String shopId;
     RecyclerView recyclerView;
     RecyclerProductAdapter recyclerAdapter;
+    TextView orderCount;
+    Application master;
+    RelativeLayout cartImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +43,7 @@ public class SearchActivity extends AppCompatActivity implements OnItemProductCl
         setContentView(R.layout.activity_search);
 
         assignUIReference();
+        assignAction();
         getProducts();
     }
 
@@ -45,6 +53,13 @@ public class SearchActivity extends AppCompatActivity implements OnItemProductCl
         mallId = getIntent().getStringExtra("mallId");
         shopId = getIntent().getStringExtra("shopId");
         recyclerView = findViewById(R.id.recycler_view);
+        orderCount = findViewById(R.id.cart_number);
+        cartImage = findViewById(R.id.linearLayout_cart);
+        changeCartCount();
+    }
+
+    private void assignAction(){
+        cartImage.setOnClickListener(this::setOnClickCartImage);
     }
 
     private void getProducts(){
@@ -63,6 +78,22 @@ public class SearchActivity extends AppCompatActivity implements OnItemProductCl
 
     @Override
     public void onProductClick(Product product) {
-        startActivity(new Intent(this,ProductDetailsActivity.class).putExtra("productId",String.valueOf(product.getId())));
+        startActivity(new Intent(this,ProductDetailsActivity.class).putExtra("productId",String.valueOf(product.getId())).putExtra("product",product));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        changeCartCount();
+    }
+
+    private void changeCartCount(){
+        master = (MasterClass) getApplication();
+        if (!((MasterClass) master).getProductList().isEmpty())
+            orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+    }
+
+    private void setOnClickCartImage(View view){
+        startActivity(new Intent(SearchActivity.this,CartActivity.class));
     }
 }

@@ -48,6 +48,8 @@ public class Product implements Serializable {
     private
     List<Gallery> gallery;
 
+    private String quantity;
+
     public Product(String name, String price) {
         this.name = name;
         this.price = price;
@@ -91,5 +93,13 @@ public class Product implements Serializable {
 
     public List<Gallery> getGallery() {
         return gallery;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
     }
 }

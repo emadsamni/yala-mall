@@ -10,7 +10,11 @@
     <string name="browse">استعراض</string>
     <string name="all">غير محدد</string>
     <string name="select_cat">اختر النوع</string>
-    <string name="addCart">شراء</string>
+    <string name="addCart">اضافة للسلة</string>
+    <string name="productAdded">تم اضافته للسلة</string>
+    <string name="checkout">شراء</string>
+    <string name="cart_permission">لا تستطيع الشراء من عدة مولات في طلب واحد</string>
+    <string name="exit_app">في حال خروجك سيتم حذف المنتجات التي قمت بطلبها</string>
 
     <string-array name="query_suggestions">
         <item>-</item>
