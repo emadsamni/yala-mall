@@ -22,7 +22,7 @@ public interface ApiInterface {
 
 
     @POST("register")
-    Call<ApiResponse<Customer>> register(@Query("key") String key , @Query("key") String phone);
+    Call<ApiResponse<Customer>> register(@Query("key") String key , @Query("phone") String phone);
 
     @POST("login")
     Call<ApiResponse<Customer>> login(@Query("key") String key , @Query("phone") String phone ,@Query("verification_code") String verification_code);

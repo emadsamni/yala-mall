@@ -118,7 +118,7 @@ public class DataRepository {
 
     private void getFilterList(Context context, HashMap<String, Integer> selectedMap) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<ApiResponse<List<Product>>> call = apiService.getFilter(Constants.API_KEY, selectedMap.get("Cat_id") ,selectedMap.get("sub_id"),selectedMap.get("size"),selectedMap.get("mall_id"),selectedMap.get("shop_id"));
+        Call<ApiResponse<List<Product>>> call = apiService.getFilter(Constants.API_KEY, selectedMap.get("Cat_id") ,selectedMap.get("sub_id"),selectedMap.get("size_id"),selectedMap.get("mall_id"),selectedMap.get("shop_id"));
         call.enqueue(new Callback<ApiResponse<List<Product>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {

@@ -6,4 +6,7 @@
     <color name="colorTransparent">#80000000</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
+    <color name="ms_white_tarns">#ececee</color>
+    <color name="indicator_unselected">#4D000000</color>
+    ms_white_tarns
 </resources>

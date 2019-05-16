@@ -25,6 +25,7 @@ public class DataViewModel extends AndroidViewModel {
     private LiveData<List<Offer>> offers;
     private LiveData<List<Mall>> malls;
     private LiveData<List<Product>> products;
+    private LiveData<List<Product>> productsByCategory;
     private LiveData<List<Product>> productsByMall;
     private LiveData<List<Product>> productsByShop;
     private LiveData<List<Mall>> mall;
@@ -77,11 +78,11 @@ public class DataViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Product>> getProductListByCategory(Context context , int category ){
-        if (products==null) {
+        if (productsByCategory==null) {
             ProgressDialog.getInstance().show(context);
-            products = repository.getProductsByCategory(context ,category);
+            productsByCategory = repository.getProductsByCategory(context ,category);
         }
-        return products;
+        return productsByCategory;
     }
 
     public LiveData<List<Mall>> getShopsByMall(Context context , int mallId ){

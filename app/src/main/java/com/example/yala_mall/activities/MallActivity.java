@@ -47,7 +47,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
     LinearLayout searchLayout;
     MaterialSearchView searchView;
     int mallId;
-    Button filterButton;
+    Button filterButton, filterCancelButton;
     TextView orderCount;
     Application master;
     RelativeLayout cartImage;
@@ -73,6 +73,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         filterButton =   findViewById(R.id.filter_button);
         orderCount = findViewById(R.id.cart_number);
         cartImage = findViewById(R.id.linearLayout_cart);
+        filterCancelButton = findViewById(R.id.filter_cancel_button);
         changeCartCount();
     }
 
@@ -112,6 +113,13 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         });
 
         filterButton.setOnClickListener(this::onClickFilterButton);
+        filterCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getProduct(mallId);
+                filterCancelButton.setVisibility(View.GONE);
+            }
+        });
     }
 
 
@@ -194,6 +202,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
                 LinearLayoutManager layoutManager =new LinearLayoutManager( MallActivity.this);
                 layoutManager =new GridLayoutManager(MallActivity.this,2);
                 productsRecyclerView.setLayoutManager(layoutManager);
+                filterCancelButton.setVisibility(View.VISIBLE);
             }
         });
     }

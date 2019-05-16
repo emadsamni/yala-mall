@@ -6,16 +6,11 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 
 import com.example.yala_mall.R;
 import com.example.yala_mall.activities.MallActivity;
@@ -26,16 +21,12 @@ import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.Size;
 import com.example.yala_mall.viewModels.DataViewModel;
 
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
 import java.util.List;
 
-
-
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
-public class FilterDialog   {
+public class FilterDialog2 {
     private Activity context;
     private AlertDialog dialog;
     private OnClickFilterButton listener;
@@ -44,6 +35,7 @@ public class FilterDialog   {
     private List<Category> categoryList;
     private List<Category> subCategoryList;
     private List<Size> sizeList;
+    int categoryId;
     int temp;
     private int screenSize;
     DataViewModel dataViewModel;
@@ -51,17 +43,16 @@ public class FilterDialog   {
     LinearLayout sizeButton , catButton ,subCatButton;
     TextView sizeText , catText ,subCatText;
 
-    private FilterDialog(Activity context, OnClickFilterButton listener) {
-
-
+    private FilterDialog2(Activity context, OnClickFilterButton listener ,int categoryId) {
         this.context = context;
         this.listener = listener;
         spinnerSelectedMap = new HashMap<>();
         screenSize = context.getResources().getDisplayMetrics().densityDpi;
+        this.categoryId =categoryId;
     }
 
-    public static FilterDialog getInstance(Activity context,OnClickFilterButton listener){
-        return new FilterDialog(context ,listener);
+    public static FilterDialog2 getInstance(Activity context, OnClickFilterButton listener , int categoryId){
+        return new FilterDialog2(context ,listener ,categoryId);
     }
 
     public void show(){
@@ -75,42 +66,28 @@ public class FilterDialog   {
     }
 
     private void getCategories() {
-        if ( context instanceof MallActivity ) {
-            dataViewModel.getCategoryList(context).observe((MallActivity) context, new Observer<List<Category>>() {
-                @Override
-                public void onChanged(@Nullable List<Category> categories) {
-                    categoryList = categories;
-                }
-            });
-        }
-        else
-        {
-            dataViewModel.getCategoryList(context).observe((ShopActivity) context, new Observer<List<Category>>() {
-                @Override
-                public void onChanged(@Nullable List<Category> categories) {
-                    categoryList = categories;
-                }
-            });
-        }
+
+        dataViewModel.getPcCategoryBySCategory(context ,categoryId).observe((ProductsActivity) context, new Observer<Category>() {
+            @Override
+            public void onChanged(@Nullable Category category) {
+                subCategoryList =category.getP_category();
+            }
+        });
     }
 
 
     private void assignUIReferenceDialog (AlertDialog.Builder builder) {
-        if ( context instanceof MallActivity ) {
-            dataViewModel = ViewModelProviders.of((MallActivity) context).get(DataViewModel.class);
-        }
-        else
-        {
-            dataViewModel = ViewModelProviders.of((ShopActivity) context).get(DataViewModel.class);
-        }
+
+            dataViewModel = ViewModelProviders.of((ProductsActivity) context).get(DataViewModel.class);
+
+
+
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
 
         View view = inflater.inflate(R.layout.layout_dialog_filter, null, false);
         builder.setPositiveButton("تطبيق", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (spinnerSelectedMap.containsKey("Cat_id"))
-                    spinnerSelectedMap.put("Cat_id" ,categoryList.get(spinnerSelectedMap.get("Cat_id")).getId());
                 if (spinnerSelectedMap.containsKey("sub_id"))
                 spinnerSelectedMap.put("sub_id" ,subCategoryList.get(spinnerSelectedMap.get("sub_id")).getId());
                 if (spinnerSelectedMap.containsKey("size_id"))
@@ -130,7 +107,7 @@ public class FilterDialog   {
         catLinearLayout =view.findViewById(R.id.cat_layout);
         subCatLinearLayout =view.findViewById(R.id.sub_cat_layout);
         sizeLinearLayout.setVisibility(View.GONE);
-        subCatLinearLayout.setVisibility(View.GONE);
+        catLinearLayout.setVisibility(View.GONE);
 
         catButton =view.findViewById(R.id.cat_cat_filter);
         sizeButton =view.findViewById(R.id.size_filter);
@@ -177,24 +154,13 @@ public class FilterDialog   {
                         spinnerSelectedMap.remove("sub_id");
                         spinnerSelectedMap.remove("size_id");
                         subCatText.setText("النوع الفرعي");
+                        dataViewModel.getPcCategoryBySCategory(context ,categoryList.get(spinnerSelectedMap.get("Cat_id")).getId()).observe((MallActivity) context, new Observer<Category>() {
+                            @Override
+                            public void onChanged(@Nullable Category category) {
+                                subCategoryList =category.getP_category();
+                            }
+                        });
 
-                        if ( context instanceof MallActivity ) {
-                            dataViewModel.getPcCategoryBySCategory(context, categoryList.get(spinnerSelectedMap.get("Cat_id")).getId()).observe((MallActivity) context, new Observer<Category>() {
-                                @Override
-                                public void onChanged(@Nullable Category category) {
-                                    subCategoryList = category.getP_category();
-                                }
-                            });
-                        }
-                        else
-                        {
-                            dataViewModel.getPcCategoryBySCategory(context, categoryList.get(spinnerSelectedMap.get("Cat_id")).getId()).observe((ShopActivity) context, new Observer<Category>() {
-                                @Override
-                                public void onChanged(@Nullable Category category) {
-                                    subCategoryList = category.getP_category();
-                                }
-                            });
-                        }
                     }});
                 adb.setTitle(context.getResources().getString(R.string.select_cat));
                 adb.show();
@@ -230,23 +196,13 @@ public class FilterDialog   {
                         sizeLinearLayout.setVisibility(View.VISIBLE);
                         spinnerSelectedMap.remove("size_id");
                         sizeText.setText("القياس");
-                        if ( context instanceof MallActivity ) {
-                            dataViewModel.getSizeByPCategory(context, subCategoryList.get(spinnerSelectedMap.get("sub_id")).getId()).observe((MallActivity) context, new Observer<List<Size>>() {
-                                @Override
-                                public void onChanged(@Nullable List<Size> sizes) {
-                                    sizeList = sizes;
-                                }
-                            });
-                        }
-                        else
-                        {
-                            dataViewModel.getSizeByPCategory(context, subCategoryList.get(spinnerSelectedMap.get("sub_id")).getId()).observe((ShopActivity) context, new Observer<List<Size>>() {
-                                @Override
-                                public void onChanged(@Nullable List<Size> sizes) {
-                                    sizeList = sizes;
-                                }
-                            });
-                        }
+                        dataViewModel.getSizeByPCategory(context ,subCategoryList.get(spinnerSelectedMap.get("sub_id")).getId()).observe((ProductsActivity) context, new Observer<List<Size>>() {
+                            @Override
+                            public void onChanged(@Nullable List<Size> sizes) {
+                                sizeList =sizes;
+                            }
+                        });
+
                     }});
                 adb.setTitle(context.getResources().getString(R.string.select_cat));
                 adb.show();

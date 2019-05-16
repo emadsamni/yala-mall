@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,14 +21,17 @@ import android.widget.TextView;
 import com.example.yala_mall.R;
 import com.example.yala_mall.adapters.RecyclerProductAdapter;
 import com.example.yala_mall.adapters.RecyclerShopAdapter;
+import com.example.yala_mall.fragments.FilterDialog;
+import com.example.yala_mall.interfaces.OnClickFilterButton;
 import com.example.yala_mall.interfaces.OnItemProductClicked;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.viewModels.DataViewModel;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.util.HashMap;
 import java.util.List;
 
-public class ShopActivity extends AppCompatActivity implements OnItemProductClicked {
+public class ShopActivity extends AppCompatActivity implements OnItemProductClicked, OnClickFilterButton {
 
     DataViewModel dataViewModel;
     RecyclerView productsRecyclerView;
@@ -37,6 +41,7 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     TextView orderCount;
     Application master;
     RelativeLayout cartImage;
+    Button filterButton, filterCancelButton;
 
     int shopId;
     @Override
@@ -57,7 +62,9 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         searchView = findViewById(R.id.search_view);
         searchLayout = findViewById(R.id.linearLayout_search);
         orderCount = findViewById(R.id.cart_number);
+        filterButton =   findViewById(R.id.filter_button);
         cartImage = findViewById(R.id.linearLayout_cart);
+        filterCancelButton = findViewById(R.id.filter_cancel_button);
         changeCartCount();
     }
 
@@ -95,6 +102,19 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
 
             }
         });
+
+        filterButton.setOnClickListener(this::onClickFilterButton);
+        filterCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getProduct(shopId);
+                filterCancelButton.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void onClickFilterButton(View view){
+        FilterDialog.getInstance(this,this).show();
     }
 
     private void getProduct(int shopId) {
@@ -148,5 +168,22 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
 
     private void setOnClickCartImage(View view){
         startActivity(new Intent(ShopActivity.this,CartActivity.class));
+    }
+
+    @Override
+    public void onFilterButtonClicked(HashMap<String, Integer> spinnerMap) {
+        spinnerMap.put("shop_id" ,shopId);
+        dataViewModel.getFilter(this ,spinnerMap).observe(this, new Observer<List<Product>>() {
+            @Override
+            public void onChanged(@Nullable List<Product> products) {
+                productsAdapter = new RecyclerProductAdapter(products ,ShopActivity.this,ShopActivity.this );
+                productsRecyclerView.setAdapter(productsAdapter);
+                LinearLayoutManager layoutManager =new LinearLayoutManager( ShopActivity.this);
+                layoutManager =new GridLayoutManager(ShopActivity.this,2);
+                productsRecyclerView.setLayoutManager(layoutManager);
+                filterCancelButton.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 }

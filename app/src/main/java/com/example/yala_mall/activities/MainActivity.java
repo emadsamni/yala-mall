@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ import com.example.yala_mall.R;
 import com.example.yala_mall.adapters.RecyclerCategoryAdapter;
 import com.example.yala_mall.adapters.RecyclerMallAdapter;
 import com.example.yala_mall.fragments.MessageDialog;
+import com.example.yala_mall.helps.CustomerUtils;
 import com.example.yala_mall.interfaces.OnItemRecyclerClicked;
 import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.Mall;
@@ -59,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     TextView orderCount;
     Application master;
     RelativeLayout cartImage;
+    NavigationView navigationView;
+    CustomerUtils customerUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         assignAction();
         getOffers();
         getCategories();
+        navigation_config();
         getMalls();
     }
 
@@ -83,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         cartImage = findViewById(R.id.linearLayout_cart);
         setSupportActionBar(toolbarSearch);
         linearSearch = findViewById(R.id.linear_search);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        customerUtils =CustomerUtils.getInstance(this);
 
         // set counter for cart
         changeCartCount();
@@ -242,5 +250,35 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
 
     private void setOnClickCartImage(View view){
         startActivity(new Intent(MainActivity.this,CartActivity.class));
+    }
+
+    void navigation_config()
+    {
+        View headerLayout = navigationView.getHeaderView(0);
+        Button signInButton= headerLayout.findViewById(R.id.sign_in);
+        if (!customerUtils.isFound(Constants.PREF_TOKEN)) {
+            signInButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+                    startActivity(intent);
+
+                }
+            });
+        }
+        else {
+            signInButton.setText("خروج ");
+            signInButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   customerUtils.clear();
+                   signInButton.setText("دخول");
+                   navigation_config();
+
+                }
+            });
+
+        }
+
     }
 }

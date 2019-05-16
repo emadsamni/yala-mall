@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.RegisterFragment"
+    android:layoutDirection="rtl"
+    >
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Enter your phone to complete your sign-in"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:textSize="8pt"
+                   android:gravity="center"/>
+                    <LinearLayout
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="20dp">
+                        <EditText
+
+                            android:id="@+id/phone"
+                            android:background="@drawable/border_textview"
+                            android:paddingStart="30dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="25dp"
+                            android:layout_marginEnd="30dp"
+                            android:hint="@string/phone_number"
+                            android:inputType="number"
+                            android:textSize="8pt"
+
+                         />
+                        <TextView
+                            android:id="@+id/phone_error"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/errorColor"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="40dp"
+                            />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+</FrameLayout>
