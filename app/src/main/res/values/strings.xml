@@ -21,6 +21,13 @@
     <string name="phoneEmpty">الرجاء ادخال رقم الهاتف</string>
     <string name="phoneInvalidMessage">رقم هاتف خاطئ</string>
     <string name="text_last_step">تم اتمام التسجيل</string>
+    <string name="address_added">تمت اضافة الموقع بنجاح</string>
+    <string name="cancel">الغاء</string>
+    <string name="Add">اضافة</string>
+    <string name="addressEmpty">الرجاء تعبئة حقل العنوان</string>
+    <string name="locationEmpty">يرجى اختيار الموقع</string>
+    <string name="cityEmpty">الرجاء اختيار المدينة</string>
+    <string name="address_not_selected">يرجى اختيار عنوان من قائمة العناوين</string>
 
     <string-array name="query_suggestions">
         <item>-</item>

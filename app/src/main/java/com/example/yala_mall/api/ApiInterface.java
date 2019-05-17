@@ -3,7 +3,9 @@ package com.example.yala_mall.api;
 
 
 
+import com.example.yala_mall.models.Address;
 import com.example.yala_mall.models.Category;
+import com.example.yala_mall.models.City;
 import com.example.yala_mall.models.Customer;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
@@ -29,6 +31,17 @@ public interface ApiInterface {
 
     @GET("getOffers")
     Call<ApiResponse<List<Offer>>> getOffers(@Query("key") String key);
+
+
+    @GET("getCities")
+    Call<ApiResponse<List<City>>> getCities(@Query("key") String key);
+
+    @POST("addCustomerLocation")
+    Call<ApiResponse<Address>> addCustomerLocation(@Query("key") String key , @Query("token") String token
+                                                        , @Query("location_id") int  location_id , @Query("address") String address);
+
+    @GET("getCustomer")
+    Call<ApiResponse<Customer>> getCustomer(@Query("key") String key , @Query("token") String token);
 
     @GET("getPcategory")
     Call<ApiResponse<List<PcCategory>>> getPcategory(@Query("key") String key);

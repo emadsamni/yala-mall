@@ -37,6 +37,7 @@ public class PaymentActivity extends AppCompatActivity {
     StepperListener listener;
     TextView titleTextView;
     CustomerUtils customerUtils;
+    int customerLocationId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +61,8 @@ public class PaymentActivity extends AppCompatActivity {
         titleTextView = (TextView)  findViewById(R.id.title);
         mCoordinator = (CoordinatorLayout) findViewById(R.id.main_content);
         indicators = new ImageView[]{zero, one, two};
-       // RegisterFragment fragment = new RegisterFragment();
-       // loadFragment(fragment);
+        DeliveryInfoFragment fragment = new DeliveryInfoFragment();
+        loadFragment(fragment);
         updateIndicators(page);
         titleTextView.setText("معلومات التوصيل");
 
@@ -169,5 +170,9 @@ public class PaymentActivity extends AppCompatActivity {
         DrawableCompat.setTint(drawable, color);
         DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
         return drawable;
+    }
+
+    public void setCustomerLocationId(int customer_location_id) {
+        this.customerLocationId= customer_location_id;
     }
 }

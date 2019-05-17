@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.yala_mall.models.Category;
+import com.example.yala_mall.models.City;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
@@ -31,10 +32,19 @@ public class DataViewModel extends AndroidViewModel {
     private LiveData<List<Mall>> mall;
     private LiveData<List<Size>> sizes;
     private LiveData<List<Product>> productDetails;
+    private LiveData<List<City>> cities;
 
     public DataViewModel(@NonNull Application application) {
         super(application);
         repository = DataRepository.getInstance(application);
+    }
+
+    public LiveData<List<City>> getCities(Context context){
+        if (cities==null) {
+            ProgressDialog.getInstance().show(context);
+            cities = repository.getCities(context);
+        }
+        return cities;
     }
 
     public LiveData<List<Mall>> getMalls(Context context){

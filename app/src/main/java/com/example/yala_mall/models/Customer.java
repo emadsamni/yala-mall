@@ -2,6 +2,8 @@ package com.example.yala_mall.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Customer {
 
 
@@ -29,6 +31,14 @@ public class Customer {
     private
     int blocked;
 
+    @SerializedName("addresses")
+    private
+    List<Address> addresses;
+
+    @SerializedName("orders")
+    private
+    List<Order> orders;
+
     public Integer getId() {
         return id;
     }
@@ -51,5 +61,13 @@ public class Customer {
 
     public int getBlocked() {
         return blocked;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
     }
 }

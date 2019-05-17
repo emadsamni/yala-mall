@@ -5,14 +5,8 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.List;
 
-public class City implements Serializable {
-
-    public City(Integer id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+public class Location implements Serializable {
 
     public Integer getId() {
         return id;
@@ -22,8 +16,13 @@ public class City implements Serializable {
         return name;
     }
 
-    public List<Location> getLocations() {
-        return locations;
+    public Location(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Integer getCity_id() {
+        return city_id;
     }
 
     @SerializedName("id")
@@ -34,9 +33,13 @@ public class City implements Serializable {
     private
     String name;
 
-    @SerializedName("locations")
+    @SerializedName("city_id")
     private
-    List<Location> locations;
+    Integer city_id;
+
+    @SerializedName("city")
+    private
+    City city;
 
     @NonNull
     @Override

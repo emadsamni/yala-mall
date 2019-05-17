@@ -13,6 +13,7 @@ import com.example.yala_mall.api.ApiInterface;
 import com.example.yala_mall.api.ApiResponse;
 import com.example.yala_mall.api.CallbackWithRetry;
 import com.example.yala_mall.models.Category;
+import com.example.yala_mall.models.City;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
@@ -38,6 +39,7 @@ public class DataRepository {
     private MutableLiveData<List<Product>> productsByShop;
     private MutableLiveData<List<com.example.yala_mall.models.Size>> sizes;
     private MutableLiveData<List<Product>> productDetails;
+    private MutableLiveData<List<City>> cities;
 
 
     private Application application;
@@ -55,6 +57,14 @@ public class DataRepository {
         getFilterList(context ,selectedMap);
         return products;
     }
+
+    public LiveData<List<City>> getCities(Context context){
+        cities = new MutableLiveData<>();
+        getCityList(context);
+        return cities;
+    }
+
+
 
     public LiveData<List<Size>> getSizeByPCategory(Context context ,int id){
         sizes = new MutableLiveData<>();
@@ -114,6 +124,28 @@ public class DataRepository {
         productDetails = new MutableLiveData<>();
         getProductDetail(context ,productId);
         return productDetails;
+    }
+
+    private void getCityList(Context context) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<List<City>>> call = apiService.getCities(Constants.API_KEY);
+        call.enqueue(new Callback<ApiResponse<List<City>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<City>>> call, Response<ApiResponse<List<City>>> response) {
+                if (!response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                }
+                ProgressDialog.getInstance().cancel();
+                if (response.body().getData() != null)
+                    cities.postValue(response.body().getData());
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<City>>> call, Throwable t) {
+
+            }
+        });
     }
 
     private void getFilterList(Context context, HashMap<String, Integer> selectedMap) {
