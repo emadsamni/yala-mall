@@ -2,9 +2,10 @@ package com.example.yala_mall.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Mall {
+public class Mall implements Serializable {
 
 
     @SerializedName("id")

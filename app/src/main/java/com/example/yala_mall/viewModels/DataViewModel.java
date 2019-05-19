@@ -12,10 +12,12 @@ import com.example.yala_mall.models.City;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
+import com.example.yala_mall.models.ProductP;
 import com.example.yala_mall.models.Size;
 import com.example.yala_mall.repositories.DataRepository;
 import com.example.yala_mall.utils.ProgressDialog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class DataViewModel extends AndroidViewModel {
     private LiveData<List<Category>> categoryList;
     private LiveData<Category> pcCategoryBySCategory;
     private LiveData<List<Offer>> offers;
+    private LiveData<List<Offer>> offersByShop;
     private LiveData<List<Mall>> malls;
     private LiveData<List<Product>> products;
     private LiveData<List<Product>> productsByCategory;
@@ -60,6 +63,14 @@ public class DataViewModel extends AndroidViewModel {
             ProgressDialog.getInstance().show(context);
             offers = repository.getOffers(context);
         }
+        return offers;
+    }
+
+
+    public LiveData<List<Offer>> getOffersByShop(Context context , int shopId){
+            ProgressDialog.getInstance().show(context);
+            offers = repository.getOffersByShop(context , shopId);
+
         return offers;
     }
 
@@ -133,6 +144,11 @@ public class DataViewModel extends AndroidViewModel {
             productDetails = repository.getProductDetails(context ,productId);
         }
         return productDetails;
+    }
+
+    public void addOrder(Context context , ArrayList<ProductP> products , int  customer_location_id , String  order_time , String  order_price){
+        ProgressDialog.getInstance().show(context);
+        repository.addOrder(context,products,customer_location_id ,order_time ,order_price);
     }
 
 }

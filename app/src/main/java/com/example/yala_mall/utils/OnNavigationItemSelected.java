@@ -9,6 +9,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 
 
+import com.example.yala_mall.R;
+import com.example.yala_mall.activities.AddressActivity;
+import com.example.yala_mall.activities.MainActivity;
+import com.example.yala_mall.activities.RegisterActivity;
 import com.example.yala_mall.helps.CustomerUtils;
 //import com.facebook.login.LoginManager;
 
@@ -37,8 +41,31 @@ public class OnNavigationItemSelected implements NavigationView.OnNavigationItem
         int id = menuItem.getItemId();
         Fragment fragment;
         switch (id){
+            case R.id.login_id:
+                if (context instanceof MainActivity)
+                    context.startActivity(new Intent(context, RegisterActivity.class));
+                else{
+                    context.startActivity(new Intent(context, RegisterActivity.class));
+                    context.finish();
+                }
+                drawerLayout.closeDrawers();
+                return true;
+            case R.id.my_address:
+                if (context instanceof MainActivity)
+                    context.startActivity(new Intent(context, AddressActivity.class));
+                else{
+                    context.startActivity(new Intent(context, AddressActivity.class));
+                    context.finish();
+                }
+                drawerLayout.closeDrawers();
+                return true;
+            case R.id.logout_id:
+                customerUtils = CustomerUtils.getInstance(context);
+                customerUtils.clear();
+                drawerLayout.closeDrawers();
+                ((MainActivity)context).navigation_config();
 
-
+                return true;
                 }
         return false;
 

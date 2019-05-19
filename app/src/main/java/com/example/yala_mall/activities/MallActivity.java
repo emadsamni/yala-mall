@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.yala_mall.R;
@@ -46,11 +47,13 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
     RecyclerProductAdapter productsAdapter;
     LinearLayout searchLayout;
     MaterialSearchView searchView;
-    int mallId;
+    Mall mall;
     Button filterButton, filterCancelButton;
     TextView orderCount;
     Application master;
     RelativeLayout cartImage;
+    TextView pageTitle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +62,11 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         assignUIReference();
         assignAction();
         Intent intent = getIntent();
-        mallId = intent.getExtras().getInt("mall_id");
-        getShops(mallId);
-        getProduct(mallId);
+        mall = (Mall)intent.getSerializableExtra("mall_id");
+        pageTitle.setText(mall.getName());
+        getShops(mall.getId());
+        getProduct(mall.getId());
+
     }
 
     private void assignUIReference() {
@@ -75,6 +80,8 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         cartImage = findViewById(R.id.linearLayout_cart);
         filterCancelButton = findViewById(R.id.filter_cancel_button);
         changeCartCount();
+        pageTitle = findViewById(R.id.page_title);
+
     }
 
     private void assignAction() {
@@ -90,7 +97,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                startActivity(new Intent(MallActivity.this,SearchActivity.class).putExtra("mallId",String.valueOf(mallId)).putExtra("name",query));
+                startActivity(new Intent(MallActivity.this,SearchActivity.class).putExtra("mallId",String.valueOf(mall.getId())).putExtra("name",query));
                 return false;
             }
 
@@ -116,7 +123,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         filterCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getProduct(mallId);
+                getProduct(mall.getId());
                 filterCancelButton.setVisibility(View.GONE);
             }
         });
@@ -178,7 +185,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
     @Override
     public void onClickedRecyclerShopItem(Shop current) {
         Intent intent = new Intent(MallActivity.this, ShopActivity.class);
-        intent.putExtra("shop_id" ,current.getId());
+        intent.putExtra("shop_id" ,current);
         startActivity(intent);
     }
 
@@ -193,18 +200,21 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
 
     @Override
     public void onFilterButtonClicked(HashMap<String, Integer> spinnerMap) {
-        spinnerMap.put("mall_id" ,mallId);
-        dataViewModel.getFilter(this ,spinnerMap).observe(this, new Observer<List<Product>>() {
-            @Override
-            public void onChanged(@Nullable List<Product> products) {
-                productsAdapter = new RecyclerProductAdapter(products ,MallActivity.this,MallActivity.this );
-                productsRecyclerView.setAdapter(productsAdapter);
-                LinearLayoutManager layoutManager =new LinearLayoutManager( MallActivity.this);
-                layoutManager =new GridLayoutManager(MallActivity.this,2);
-                productsRecyclerView.setLayoutManager(layoutManager);
-                filterCancelButton.setVisibility(View.VISIBLE);
-            }
-        });
+        if (spinnerMap.size()!=0) {
+
+            spinnerMap.put("mall_id", mall.getId());
+            dataViewModel.getFilter(this, spinnerMap).observe(this, new Observer<List<Product>>() {
+                @Override
+                public void onChanged(@Nullable List<Product> products) {
+                    productsAdapter = new RecyclerProductAdapter(products, MallActivity.this, MallActivity.this);
+                    productsRecyclerView.setAdapter(productsAdapter);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(MallActivity.this);
+                    layoutManager = new GridLayoutManager(MallActivity.this, 2);
+                    productsRecyclerView.setLayoutManager(layoutManager);
+                    filterCancelButton.setVisibility(View.VISIBLE);
+                }
+            });
+        }
     }
 
     @Override

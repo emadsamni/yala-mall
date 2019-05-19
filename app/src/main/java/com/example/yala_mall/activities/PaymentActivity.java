@@ -24,9 +24,11 @@ import com.example.yala_mall.fragments.FinishFragment;
 import com.example.yala_mall.fragments.RegisterFragment;
 import com.example.yala_mall.fragments.VerificationFragment;
 import com.example.yala_mall.helps.CustomerUtils;
+import com.example.yala_mall.interfaces.OnClickElegantButton;
+import com.example.yala_mall.models.Product;
 import com.example.yala_mall.utils.Constants;
 
-public class PaymentActivity extends AppCompatActivity {
+public class PaymentActivity extends AppCompatActivity  {
 
     ImageButton mNextBtn ,mSkipBtn;
     Button mFinishBtn;
@@ -95,7 +97,7 @@ public class PaymentActivity extends AppCompatActivity {
                         titleTextView.setText("التأكيد");
                         return;
                     case 2:
-                        FinishFragment fragment3 = new FinishFragment();
+                        FinishFragment fragment3 = new FinishFragment(0);
                         loadFragment(fragment3);
                         updateIndicators(page);
                         titleTextView.setText("Finish");
@@ -135,10 +137,10 @@ public class PaymentActivity extends AppCompatActivity {
                 titleTextView.setText("التأكيد");
                 return;
             case 2:
-                FinishFragment fragment3 = new FinishFragment();
+                FinishFragment fragment3 = new FinishFragment(0);
                 loadFragment(fragment3);
                 updateIndicators(page);
-                titleTextView.setText("Finish");
+                titleTextView.setText("إنهاء");
                 return;
 
         }
@@ -175,4 +177,10 @@ public class PaymentActivity extends AppCompatActivity {
     public void setCustomerLocationId(int customer_location_id) {
         this.customerLocationId= customer_location_id;
     }
+
+    public int getCustomerLocationId() {
+        return  this.customerLocationId;
+    }
+
+
 }

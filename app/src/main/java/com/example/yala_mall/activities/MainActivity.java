@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.utils.Constants;
+import com.example.yala_mall.utils.OnNavigationItemSelected;
 import com.example.yala_mall.viewModels.DataViewModel;
 import com.example.yala_mall.viewModels.SearchViewModel;
 import com.google.gson.Gson;
@@ -64,6 +66,10 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     RelativeLayout cartImage;
     NavigationView navigationView;
     CustomerUtils customerUtils;
+    DrawerLayout drawerLayout;
+    LinearLayout homeButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     }
 
     private void assignUIReference(){
+        homeButton = findViewById(R.id.linearLayoutHome);
+        drawerLayout = findViewById(R.id.drawer_layout);
         dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
         recyclerView = findViewById(R.id.recycler_view);
         mallsRecyclerView = findViewById(R.id.mall_recycler_view);
@@ -97,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     }
 
     private void assignAction(){
+
         cartImage.setOnClickListener(this::setOnClickCartImage);
 
         linearSearch.setOnClickListener(new View.OnClickListener() {
@@ -207,14 +216,14 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     @Override
     public void onClickedRecyclerItem(Category category) {
         Intent intent = new Intent(MainActivity.this, ProductsActivity.class);
-        intent.putExtra("category" ,category.getId());
+        intent.putExtra("category" ,category);
        startActivity(intent);
     }
 
     @Override
     public void onClickedRecyclerMallItem(Mall current) {
         Intent intent = new Intent(MainActivity.this, MallActivity.class);
-        intent.putExtra("mall_id" ,current.getId());
+        intent.putExtra("mall_id" ,current);
         startActivity(intent);
     }
 
@@ -252,33 +261,35 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         startActivity(new Intent(MainActivity.this,CartActivity.class));
     }
 
-    void navigation_config()
+    public  void navigation_config()
     {
-        View headerLayout = navigationView.getHeaderView(0);
-        Button signInButton= headerLayout.findViewById(R.id.sign_in);
-        if (!customerUtils.isFound(Constants.PREF_TOKEN)) {
-            signInButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-                    startActivity(intent);
-
-                }
-            });
-        }
-        else {
-            signInButton.setText("خروج ");
-            signInButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                   customerUtils.clear();
-                   signInButton.setText("دخول");
-                   navigation_config();
-
-                }
-            });
-
+        drawerLayout = findViewById(R.id.drawer_layout);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.RIGHT);
+            }
+        });
+        OnNavigationItemSelected.getInstance(MainActivity.this,drawerLayout,navigationView);
+        navigationView.getMenu().clear();
+        if (customerUtils.isFound(Constants.PREF_TOKEN)){
+            navigationView.inflateMenu(R.menu.user_navigation_menu);
+           }
+        else{
+            navigationView.inflateMenu(R.menu.navigation_menu);
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case android.R.id.home :
+                drawerLayout.openDrawer(Gravity.START);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

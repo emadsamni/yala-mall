@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">yala-mall</string>
+    <string name="app_name">Yala Mall</string>
     <string name="internet_error">Internet Error</string>
     <string name="local">eng</string>
     <string name="unexpected_api_error">unexpected error</string>
@@ -28,6 +28,13 @@
     <string name="locationEmpty">يرجى اختيار الموقع</string>
     <string name="cityEmpty">الرجاء اختيار المدينة</string>
     <string name="address_not_selected">يرجى اختيار عنوان من قائمة العناوين</string>
+    <string name="log">التسجيل</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="social">التواصل الاجتماعي</string>
+    <string name="facebook">فيس بوك</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="my_addresses">عناويني</string>
+    <string name="my_orders">طلباتي</string>
 
     <string-array name="query_suggestions">
         <item>-</item>

@@ -46,7 +46,7 @@ public class CartActivity extends AppCompatActivity implements OnClickElegantBut
 
 
 
-        totalPrice.setText(String.valueOf(getSum()));
+        totalPrice.setText("المجموع : "+String.valueOf(getSum()));
     }
 
     private void assignAction(){
@@ -62,7 +62,9 @@ public class CartActivity extends AppCompatActivity implements OnClickElegantBut
         {
             if (customerUtils.isFound(Constants.PREF_TOKEN))
             {
+
                 startActivity(new Intent(CartActivity.this ,PaymentActivity.class));
+                finish();
             }
             else
             {
@@ -87,7 +89,7 @@ public class CartActivity extends AppCompatActivity implements OnClickElegantBut
 
 
 
-        totalPrice.setText(String.valueOf(getSum()));
+        totalPrice.setText("المجموع : "+String.valueOf(getSum()));
 
     }
 

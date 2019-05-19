@@ -8,30 +8,43 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.yala_mall.R;
+import com.example.yala_mall.activities.MasterClass;
+import com.example.yala_mall.activities.PaymentActivity;
 import com.example.yala_mall.api.ApiClient;
 import com.example.yala_mall.api.ApiInterface;
 import com.example.yala_mall.api.ApiResponse;
 import com.example.yala_mall.api.CallbackWithRetry;
+import com.example.yala_mall.helps.CustomerUtils;
+import com.example.yala_mall.models.Address;
 import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.City;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
+import com.example.yala_mall.models.Order;
 import com.example.yala_mall.models.Product;
+import com.example.yala_mall.models.ProductP;
 import com.example.yala_mall.models.Size;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.utils.ProgressDialog;
+import com.google.android.gms.common.api.Api;
+import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DataRepository {
     private MutableLiveData<List<Category>>  categoryList;
     private MutableLiveData<Category>  pcCategoryBySCategory;
     private MutableLiveData<List<Offer>> offers;
+    private MutableLiveData<List<Offer>> offersByShop;
     private MutableLiveData<List<Mall>> malls;
     private MutableLiveData<List<Product>> products;
     private MutableLiveData<List<Mall>> mall;
@@ -40,12 +53,14 @@ public class DataRepository {
     private MutableLiveData<List<com.example.yala_mall.models.Size>> sizes;
     private MutableLiveData<List<Product>> productDetails;
     private MutableLiveData<List<City>> cities;
+    private CustomerUtils customerUtils;
 
 
     private Application application;
 
     private DataRepository(Application application){
         this.application = application;
+        this.customerUtils = CustomerUtils.getInstance(application);
     }
 
     public static DataRepository getInstance(Application application){
@@ -101,6 +116,14 @@ public class DataRepository {
         getOffersApi(context);
         return offers;
     }
+
+    public LiveData<List<Offer>> getOffersByShop(Context context , int shopId){
+        offersByShop = new MutableLiveData<>();
+        getOffersByShopApi(context , shopId);
+        return offersByShop;
+    }
+
+
 
     public LiveData<List<Category>> getCategoryList(Context context){
         categoryList = new MutableLiveData<>();
@@ -306,7 +329,28 @@ public class DataRepository {
             }
         });
     }
+    private void getOffersByShopApi(Context context, int shopId) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<List<Offer>>> call = apiService.getOffersByShop(Constants.API_KEY ,shopId);
 
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Offer>>>(call,context,3) {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Offer>>> call, Response<ApiResponse<List<Offer>>> response) {
+                if (!response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                }
+                ProgressDialog.getInstance().cancel();
+                if (response.body().getData() != null)
+                    offersByShop.postValue(response.body().getData());
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Offer>>> call, Throwable t) {
+                Log.d("TSTS",t.getMessage());
+            }
+        });
+    }
     private void getOffersApi(Context context) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ApiResponse<List<Offer>>> call = apiService.getOffers(Constants.API_KEY);
@@ -398,5 +442,32 @@ public class DataRepository {
                 Log.d("TSTS",t.getMessage());
             }
         });
+    }
+
+    public void addOrder(Context context , ArrayList<ProductP> products , int  customer_location_id , String  order_time , String  order_price){
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<Order>> call=apiService.addOrder(Constants.API_KEY ,products,customerUtils.getString(Constants.PREF_TOKEN) , customer_location_id ,order_time,order_price );
+        call.enqueue(new CallbackWithRetry<ApiResponse<Order>>(call,context,3) {
+            @Override
+            public void onResponse(Call<ApiResponse<Order>> call, Response<ApiResponse<Order>> response) {
+                if (! response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toasty.custom(application, R.string.internet_error, null,
+                            application.getResources().getColor(R.color.colorPrimary), Constants.TOAST_TIME, false, true).show();
+                    return ;
+                }
+                ProgressDialog.getInstance().cancel();
+                ((MasterClass)application).getProductList().clear();
+                ((PaymentActivity)context).next();
+                return;
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Order>> call, Throwable t) {
+                Toast.makeText(context, "cec", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 }

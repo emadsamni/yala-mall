@@ -25,6 +25,7 @@ import com.example.yala_mall.fragments.FilterDialog;
 import com.example.yala_mall.interfaces.OnClickFilterButton;
 import com.example.yala_mall.interfaces.OnItemProductClicked;
 import com.example.yala_mall.models.Product;
+import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.viewModels.DataViewModel;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -42,8 +43,10 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     Application master;
     RelativeLayout cartImage;
     Button filterButton, filterCancelButton;
-
+    TextView pageTitle;
     int shopId;
+    Shop shop;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +54,10 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         assignUIReference();
         assignAction();
         Intent intent = getIntent();
-        shopId = intent.getExtras().getInt("shop_id");
+        shop = (Shop)intent.getSerializableExtra("shop_id");
+        shopId = shop.getId();
         getProduct(shopId);
+        pageTitle.setText(shop.getName());
     }
 
 
@@ -66,6 +71,7 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         cartImage = findViewById(R.id.linearLayout_cart);
         filterCancelButton = findViewById(R.id.filter_cancel_button);
         changeCartCount();
+        pageTitle = findViewById(R.id.page_title);
     }
 
     private void assignAction() {
@@ -172,18 +178,20 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
 
     @Override
     public void onFilterButtonClicked(HashMap<String, Integer> spinnerMap) {
-        spinnerMap.put("shop_id" ,shopId);
-        dataViewModel.getFilter(this ,spinnerMap).observe(this, new Observer<List<Product>>() {
-            @Override
-            public void onChanged(@Nullable List<Product> products) {
-                productsAdapter = new RecyclerProductAdapter(products ,ShopActivity.this,ShopActivity.this );
-                productsRecyclerView.setAdapter(productsAdapter);
-                LinearLayoutManager layoutManager =new LinearLayoutManager( ShopActivity.this);
-                layoutManager =new GridLayoutManager(ShopActivity.this,2);
-                productsRecyclerView.setLayoutManager(layoutManager);
-                filterCancelButton.setVisibility(View.VISIBLE);
-            }
-        });
+        if (spinnerMap.size()!=0) {
+            spinnerMap.put("shop_id", shopId);
+            dataViewModel.getFilter(this, spinnerMap).observe(this, new Observer<List<Product>>() {
+                @Override
+                public void onChanged(@Nullable List<Product> products) {
+                    productsAdapter = new RecyclerProductAdapter(products, ShopActivity.this, ShopActivity.this);
+                    productsRecyclerView.setAdapter(productsAdapter);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(ShopActivity.this);
+                    layoutManager = new GridLayoutManager(ShopActivity.this, 2);
+                    productsRecyclerView.setLayoutManager(layoutManager);
+                    filterCancelButton.setVisibility(View.VISIBLE);
+                }
+            });
+        }
 
     }
 }

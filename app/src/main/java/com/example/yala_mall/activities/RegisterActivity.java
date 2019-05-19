@@ -105,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
                         titleTextView.setText("Verify");
                         return;
                     case 2:
-                        FinishFragment fragment3 = new FinishFragment();
+                        FinishFragment fragment3 = new FinishFragment(1);
                         loadFragment(fragment3);
                         updateIndicators(page);
                         titleTextView.setText("Finish");
@@ -136,19 +136,19 @@ public class RegisterActivity extends AppCompatActivity {
                 RegisterFragment fragment1 = new RegisterFragment();
                 loadFragment(fragment1);
                 updateIndicators(page);
-                titleTextView.setText("SignUp");
+                titleTextView.setText("تسجيل الدخول");
                 return;
             case 1:
                 VerificationFragment fragment2 = new VerificationFragment();
                 loadFragment(fragment2);
                 updateIndicators(page);
-                titleTextView.setText("Verify");
+                titleTextView.setText("التأكيد");
                 return;
             case 2:
-                FinishFragment fragment3 = new FinishFragment();
+                FinishFragment fragment3 = new FinishFragment(1);
                 loadFragment(fragment3);
                 updateIndicators(page);
-                titleTextView.setText("Finish");
+                titleTextView.setText("إنهاء");
                 return;
         }
     }

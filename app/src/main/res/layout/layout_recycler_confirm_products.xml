@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+
+   >
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="0.1" />
+<LinearLayout
+    android:layout_width="0dp"
+    android:layout_weight="0.8"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
+    <ImageView
+        android:id="@+id/product_image"
+        android:layout_width="match_parent"
+        android:layout_height="50pt"
+        android:layout_margin="5pt"/>
+
+    <TextView
+        android:id="@+id/product_name"
+        android:layout_margin="2pt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/product_price"
+        android:layout_margin="2pt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/product_quantity"
+        android:layout_margin="2pt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_width="40pt"
+        android:layout_height="0.1dp"
+        android:layout_marginTop="2pt"
+        android:layout_marginBottom="2pt"
+        android:background="@color/black"/>
+    <TextView
+        android:id="@+id/product_sum"
+        android:layout_margin="2pt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/product_note"
+        android:hint="ملاحظات"
+        android:layout_margin="2pt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</LinearLayout>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="0.1" />
+</LinearLayout>

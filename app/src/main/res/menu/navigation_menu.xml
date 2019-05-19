@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <group android:id="@+id/grp7" android:checkableBehavior="single">
-    <item android:id="@+id/Home"
-        android:title="@string/Home"
-        >
-    </item>
-  </group>
 
+  <item android:title="@string/log">
+    <menu>
+      <item android:id="@+id/login_id"
+          android:title="@string/login"
+          android:icon="@drawable/login"
+          android:iconTint="@color/colorPrimary"/>
 
+    </menu>
+  </item>
 
+  <item android:title="@string/social">
+    <menu>
+      <item android:id="@+id/facebook_id"
+          android:title="@string/facebook"
+          android:icon="@drawable/facebook"
+          android:iconTint="@color/colorPrimary"/>
+    </menu>
+  </item>
 
 </menu>

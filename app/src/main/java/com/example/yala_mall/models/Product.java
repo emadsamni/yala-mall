@@ -11,6 +11,18 @@ public class Product implements Serializable {
     private
     Integer id;
 
+    @SerializedName("product_id")
+    private
+    Integer product_id;
+
+    public Integer getProduct_id() {
+        return product_id;
+    }
+
+    public void setProduct_id(Integer product_id) {
+        this.product_id = product_id;
+    }
+
     @SerializedName("name")
     private
     String name;
@@ -48,7 +60,11 @@ public class Product implements Serializable {
     private
     List<Gallery> gallery;
 
+    @SerializedName("quantity")
     private String quantity;
+
+    @SerializedName("notes")
+    private String notes="";
 
     public Product(String name, String price) {
         this.name = name;
@@ -101,5 +117,13 @@ public class Product implements Serializable {
 
     public void setQuantity(String quantity) {
         this.quantity = quantity;
+    }
+
+    public String getNote() {
+        return notes;
+    }
+
+    public void setNote(String note) {
+        this.notes = note;
     }
 }

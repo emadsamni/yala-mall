@@ -43,6 +43,8 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
     RelativeLayout cartImage;
     Button filterButton , filterCancelButton;
     int categoryId;
+    Category category;
+    TextView pageTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,9 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         assignUIReference();
         assignAction();
         Intent intent = getIntent();
-        categoryId = intent.getExtras().getInt("category");
+        category = (Category) intent.getSerializableExtra("category");
+        categoryId = category.getId();
+        pageTitle.setText(category.getName());
         getProductsByCategory(categoryId);
     }
 
@@ -63,6 +67,7 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         filterButton =   findViewById(R.id.filter_button);
         filterCancelButton = findViewById(R.id.filter_cancel_button);
         changeCartCount();
+        pageTitle = findViewById(R.id.page_title);
     }
 
     private void assignAction(){
@@ -137,17 +142,20 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
     @Override
     public void onFilterButtonClicked(HashMap<String, Integer> spinnerMap) {
 
-        dataViewModel.getFilter(this ,spinnerMap).observe(this, new Observer<List<Product>>() {
-            @Override
-            public void onChanged(@Nullable List<Product> products) {
-                adapter = new RecyclerProductAdapter(products , ProductsActivity.this,ProductsActivity.this );
-                recyclerView.setAdapter(adapter);
-                LinearLayoutManager layoutManager =new LinearLayoutManager( ProductsActivity.this);
-                layoutManager =new GridLayoutManager(ProductsActivity.this,2);
-                recyclerView.setLayoutManager(layoutManager);
-                filterCancelButton.setVisibility(View.VISIBLE);
-            }
-        });
+        if (spinnerMap.size()!=0) {
+
+            dataViewModel.getFilter(this, spinnerMap).observe(this, new Observer<List<Product>>() {
+                @Override
+                public void onChanged(@Nullable List<Product> products) {
+                    adapter = new RecyclerProductAdapter(products, ProductsActivity.this, ProductsActivity.this);
+                    recyclerView.setAdapter(adapter);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(ProductsActivity.this);
+                    layoutManager = new GridLayoutManager(ProductsActivity.this, 2);
+                    recyclerView.setLayoutManager(layoutManager);
+                    filterCancelButton.setVisibility(View.VISIBLE);
+                }
+            });
+        }
 
     }
 }

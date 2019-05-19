@@ -9,15 +9,23 @@ import com.example.yala_mall.models.City;
 import com.example.yala_mall.models.Customer;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
+import com.example.yala_mall.models.Order;
 import com.example.yala_mall.models.PcCategory;
 import com.example.yala_mall.models.Product;
+import com.example.yala_mall.models.ProductP;
 import com.example.yala_mall.models.Size;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface ApiInterface {
@@ -31,6 +39,9 @@ public interface ApiInterface {
 
     @GET("getOffers")
     Call<ApiResponse<List<Offer>>> getOffers(@Query("key") String key);
+
+    @GET("getOfferByShop")
+    Call<ApiResponse<List<Offer>>> getOffersByShop(@Query("key") String key , @Query("shop_id") int shopId);
 
 
     @GET("getCities")
@@ -84,6 +95,12 @@ public interface ApiInterface {
 
     @GET("getFilter")
     Call<ApiResponse<List<Product>>> getFilter(@Query("key") String key , @Query("scategory_id") Integer  sCategory ,@Query("pcategory_id") Integer  pCategory ,@Query("size") Integer  size  ,@Query("mall_id") Integer  mallId  ,@Query("shop_id") Integer  Shop_id);
+
+    @Multipart
+    @POST("addOrder")
+    Call<ApiResponse<Order>> addOrder(@Query("key") String key , @Part("products[]") List<ProductP> products , @Query("token") String token,
+                                      @Query("customer_location_id") int customer_location_id , @Query("orderx_time") String order_time
+                                      , @Query("order_price") String order_price);
 }
 
 

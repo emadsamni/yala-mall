@@ -36,6 +36,7 @@ public class SearchActivity extends AppCompatActivity implements OnItemProductCl
     TextView orderCount;
     Application master;
     RelativeLayout cartImage;
+    TextView pageTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,8 @@ public class SearchActivity extends AppCompatActivity implements OnItemProductCl
         orderCount = findViewById(R.id.cart_number);
         cartImage = findViewById(R.id.linearLayout_cart);
         changeCartCount();
+        pageTitle = findViewById(R.id.page_title);
+        pageTitle.setText(name);
     }
 
     private void assignAction(){
