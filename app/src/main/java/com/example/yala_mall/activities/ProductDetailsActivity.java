@@ -3,6 +3,7 @@ package com.example.yala_mall.activities;
 import android.app.Application;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -19,8 +20,10 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.yala_mall.R;
+import com.example.yala_mall.adapters.MySliderAdapter;
 import com.example.yala_mall.fragments.MessageDialog;
 import com.example.yala_mall.models.Gallery;
+import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.viewModels.DataViewModel;
@@ -28,6 +31,8 @@ import com.example.yala_mall.viewModels.DataViewModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class ProductDetailsActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener {
     String productId;
@@ -92,7 +97,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
 
               productName.setText(products.get(0).getName());
               productDescription.setText(products.get(0).getDescription());
-              productPrice.setText(products.get(0).getPrice());
+              productPrice.setText(products.get(0).getPrice()+" ل.س");
           }
       });
     }
@@ -106,7 +111,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
 
 
         for(String name : file_maps.keySet()){
-            TextSliderView textSliderView = new TextSliderView(this);
+            MySliderAdapter textSliderView = new MySliderAdapter(this ,new Offer("", ""));
             // initialize a SliderLayout
             textSliderView
                     .image(file_maps.get(name))
@@ -171,5 +176,11 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
     private void setOnClickCartImage(View view){
         startActivity(new Intent(ProductDetailsActivity.this,CartActivity.class));
     }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
+
 
 }

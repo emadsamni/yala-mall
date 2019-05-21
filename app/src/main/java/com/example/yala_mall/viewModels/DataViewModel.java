@@ -59,10 +59,9 @@ public class DataViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Offer>> getOffers(Context context){
-        if (offers==null) {
             ProgressDialog.getInstance().show(context);
             offers = repository.getOffers(context);
-        }
+
         return offers;
     }
 
@@ -107,26 +106,26 @@ public class DataViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Mall>> getShopsByMall(Context context , int mallId ){
-        if (mall==null) {
-            ProgressDialog.getInstance().show(context);
+
+            //ProgressDialog.getInstance().show(context);
             mall = repository.getShopsByMall(context ,mallId);
-        }
+
         return mall;
     }
 
     public LiveData<List<Product>> getProductsByMall(Context context , int mallId ){
-        if (productsByMall==null) {
-            ProgressDialog.getInstance().show(context);
+
+            //ProgressDialog.getInstance().show(context);
             productsByMall = repository.getProductsByMall(context ,mallId);
-        }
+
         return productsByMall;
     }
 
     public LiveData<List<Product>> getProductsByShop(Context context , int shopId ){
-        if (productsByShop==null) {
+
             ProgressDialog.getInstance().show(context);
             productsByShop = repository.getProductsByShop(context ,shopId);
-        }
+
         return productsByShop;
     }
 

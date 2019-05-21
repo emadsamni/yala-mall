@@ -3,6 +3,7 @@ package com.example.yala_mall.activities;
 import android.app.Application;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +33,8 @@ import com.example.yala_mall.viewModels.DataViewModel;
 import java.util.HashMap;
 import java.util.List;
 
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+
 public class ProductsActivity extends AppCompatActivity implements OnItemRecyclerClicked, OnItemProductClicked, OnClickFilterButton {
 
 
@@ -41,10 +44,12 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
     TextView orderCount;
     Application master;
     RelativeLayout cartImage;
-    Button filterButton , filterCancelButton;
+    Button filterButton, filterCancelButton;
     int categoryId;
     Category category;
-    TextView pageTitle;
+    TextView pageTitle, catName;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +60,8 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         Intent intent = getIntent();
         category = (Category) intent.getSerializableExtra("category");
         categoryId = category.getId();
-        pageTitle.setText(category.getName());
+        pageTitle.setText("Yala Mall");
+        catName.setText(category.getName());
         getProductsByCategory(categoryId);
     }
 
@@ -64,13 +70,16 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         recyclerView = findViewById(R.id.product_recycler_view);
         orderCount = findViewById(R.id.cart_number);
         cartImage = findViewById(R.id.linearLayout_cart);
-        filterButton =   findViewById(R.id.filter_button);
+        filterButton = findViewById(R.id.filter_button);
         filterCancelButton = findViewById(R.id.filter_cancel_button);
         changeCartCount();
         pageTitle = findViewById(R.id.page_title);
+        catName = findViewById(R.id.cat_name);
+
+
     }
 
-    private void assignAction(){
+    private void assignAction() {
         cartImage.setOnClickListener(this::setOnClickCartImage);
         filterButton.setOnClickListener(this::onClickFilterButton);
         filterCancelButton.setOnClickListener(new View.OnClickListener() {
@@ -82,25 +91,24 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         });
     }
 
-    private void onClickFilterButton(View view){
-        FilterDialog2.getInstance(this,this ,categoryId).show();
+    private void onClickFilterButton(View view) {
+        FilterDialog2.getInstance(this, this, categoryId).show();
     }
 
 
-    private void setOnClickCartImage(View view){
-        startActivity(new Intent(ProductsActivity.this,CartActivity.class));
+    private void setOnClickCartImage(View view) {
+        startActivity(new Intent(ProductsActivity.this, CartActivity.class));
     }
 
 
-    public void getProductsByCategory(int categoryId)
-    {
-        dataViewModel.getProductListByCategory(this  ,categoryId).observe(this, new Observer<List<Product>>() {
+    public void getProductsByCategory(int categoryId) {
+        dataViewModel.getProductListByCategory(this, categoryId).observe(this, new Observer<List<Product>>() {
             @Override
             public void onChanged(@Nullable List<Product> products) {
-                adapter = new RecyclerProductAdapter(products , ProductsActivity.this,ProductsActivity.this );
+                adapter = new RecyclerProductAdapter(products, ProductsActivity.this, ProductsActivity.this);
                 recyclerView.setAdapter(adapter);
-                LinearLayoutManager layoutManager =new LinearLayoutManager( ProductsActivity.this);
-                layoutManager =new GridLayoutManager(ProductsActivity.this,2);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(ProductsActivity.this);
+                layoutManager = new GridLayoutManager(ProductsActivity.this, 2);
                 recyclerView.setLayoutManager(layoutManager);
             }
         });
@@ -124,7 +132,7 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
 
     @Override
     public void onProductClick(Product product) {
-      startActivity(new Intent(this,ProductDetailsActivity.class).putExtra("productId",String.valueOf(product.getId())).putExtra("product",product));
+        startActivity(new Intent(this, ProductDetailsActivity.class).putExtra("productId", String.valueOf(product.getId())).putExtra("product", product));
     }
 
     @Override
@@ -133,7 +141,7 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         changeCartCount();
     }
 
-    private void changeCartCount(){
+    private void changeCartCount() {
         master = (MasterClass) getApplication();
         if (!((MasterClass) master).getProductList().isEmpty())
             orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
@@ -142,7 +150,7 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
     @Override
     public void onFilterButtonClicked(HashMap<String, Integer> spinnerMap) {
 
-        if (spinnerMap.size()!=0) {
+        if (spinnerMap.size() != 0) {
 
             dataViewModel.getFilter(this, spinnerMap).observe(this, new Observer<List<Product>>() {
                 @Override
@@ -157,5 +165,9 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
             });
         }
 
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 }

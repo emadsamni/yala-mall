@@ -3,6 +3,7 @@ package com.example.yala_mall.activities;
 import android.app.Application;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,8 @@ import com.example.yala_mall.viewModels.SearchViewModel;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.List;
+
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class SearchActivity extends AppCompatActivity implements OnItemProductClicked {
     SearchViewModel searchViewModel;
@@ -98,5 +101,9 @@ public class SearchActivity extends AppCompatActivity implements OnItemProductCl
 
     private void setOnClickCartImage(View view){
         startActivity(new Intent(SearchActivity.this,CartActivity.class));
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 }

@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center">
-    <ImageView
-        android:id="@+id/shop_image"
-        android:layout_width="100pt"
-        android:layout_height="100pt"
-        android:layout_margin="5pt"/>
+    >
 
-    <TextView
+    <Button
+        android:layout_margin="5pt"
         android:id="@+id/shop_name"
-        android:layout_margin="2pt"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-
+        android:layout_height="15pt"
+        android:textColor="@color/white"
+        android:background="@drawable/shop_button_border"/>
 
 </LinearLayout>

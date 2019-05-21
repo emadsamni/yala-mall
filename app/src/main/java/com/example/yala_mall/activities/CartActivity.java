@@ -1,5 +1,6 @@
 package com.example.yala_mall.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ import com.example.yala_mall.models.Product;
 import com.example.yala_mall.utils.Constants;
 
 import java.util.ArrayList;
+
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class CartActivity extends AppCompatActivity implements OnClickElegantButton {
     RecyclerView recyclerView;
@@ -101,5 +104,10 @@ public class CartActivity extends AppCompatActivity implements OnClickElegantBut
         for (Product product : products)
             amount = amount + (Integer.parseInt(product.getPrice())*(Integer.parseInt(product.getQuantity())));
         return amount;
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 }

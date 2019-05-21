@@ -1,5 +1,6 @@
 package com.example.yala_mall.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -27,6 +28,8 @@ import com.example.yala_mall.helps.CustomerUtils;
 import com.example.yala_mall.interfaces.OnClickElegantButton;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.utils.Constants;
+
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class PaymentActivity extends AppCompatActivity  {
 
@@ -182,5 +185,10 @@ public class PaymentActivity extends AppCompatActivity  {
         return  this.customerLocationId;
     }
 
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
 
 }

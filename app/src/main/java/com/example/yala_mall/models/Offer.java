@@ -7,6 +7,16 @@ import java.util.List;
 
 public class Offer implements Serializable {
 
+    public Offer(Integer id, String image) {
+        this.id = id;
+        this.image = image;
+    }
+
+    public Offer(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
     @SerializedName("id")
     private
     Integer id;

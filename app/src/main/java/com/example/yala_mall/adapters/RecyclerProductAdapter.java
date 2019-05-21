@@ -42,6 +42,7 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
         Product current   = list.get(i);
 
         viewHolder.textView.setText(current.getName());
+        viewHolder.priceTextView.setText(current.getPrice() + " ل . س");
         Picasso.with(context).load(Constants.IMG_URL+current.getGallery().get(0).getImage()).into(viewHolder.imageView);
         viewHolder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +58,7 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        TextView textView  , priceTextView;
         ImageView imageView;
         LinearLayout layout;
 
@@ -66,6 +67,7 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
             textView = itemView.findViewById(R.id.pro_name);
             imageView = itemView.findViewById(R.id.pro_image);
             layout = itemView.findViewById(R.id.layout_id);
+            priceTextView = itemView.findViewById(R.id.price);
 
         }
 

@@ -273,7 +273,7 @@ public class DataRepository {
                     ProgressDialog.getInstance().cancel();
                     Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
                 }
-                ProgressDialog.getInstance().cancel();
+               // ProgressDialog.getInstance().cancel();
                 if (response.body().getData() != null)
                     mall.postValue(response.body().getData());
             }
@@ -362,7 +362,7 @@ public class DataRepository {
                     ProgressDialog.getInstance().cancel();
                     Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
                 }
-                ProgressDialog.getInstance().cancel();
+
                 if (response.body().getData() != null)
                     offers.postValue(response.body().getData());
             }

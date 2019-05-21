@@ -35,6 +35,7 @@
     <string name="logout">تسجيل الخروج</string>
     <string name="my_addresses">عناويني</string>
     <string name="my_orders">طلباتي</string>
+    <string name="sign_in">تسجيل الدخول</string>
 
     <string-array name="query_suggestions">
         <item>-</item>

@@ -5,19 +5,45 @@
     android:layout_height="wrap_content"
     android:id="@+id/layout_id"
     android:orientation="vertical"
+    android:padding="10pt"
     android:gravity="center">
-    <ImageView
-        android:id="@+id/pro_image"
-        android:layout_width="match_parent"
-        android:layout_height="100pt"
-        android:layout_margin="5pt"/>
 
+
+    <com.jcminarro.roundkornerlayout.RoundKornerLinearLayout
+        android:layout_width="50pt"
+        android:layout_height="50pt"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_margin="5dp"
+        android:orientation="vertical"
+        app:corner_radius="16dp"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <ImageView
+            android:id="@+id/pro_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:src="@drawable/slide1"
+
+            />
+
+
+    </com.jcminarro.roundkornerlayout.RoundKornerLinearLayout>
     <TextView
         android:id="@+id/pro_name"
-        android:layout_margin="2pt"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-
-
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="10pt"
+        android:textSize="8pt"
+        android:textColor="@color/colorPrimaryDark"/>
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:textSize="6pt"
+        android:layout_marginRight="10pt"
+        android:textColor="@color/colorPrimaryDark"/>
 </LinearLayout>
+

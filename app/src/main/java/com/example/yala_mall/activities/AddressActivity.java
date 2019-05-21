@@ -3,6 +3,7 @@ package com.example.yala_mall.activities;
 import android.app.Application;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,8 @@ import com.example.yala_mall.adapters.RecyclerShopAdapter;
 import com.example.yala_mall.models.Customer;
 import com.example.yala_mall.viewModels.DataViewModel;
 import com.example.yala_mall.viewModels.LoginViewModel;
+
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class AddressActivity extends AppCompatActivity {
 
@@ -70,5 +73,10 @@ public class AddressActivity extends AppCompatActivity {
         master = (MasterClass) getApplication();
         if (!((MasterClass) master).getProductList().isEmpty())
             orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 }

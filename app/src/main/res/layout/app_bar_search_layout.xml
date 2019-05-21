@@ -59,6 +59,7 @@
                         android:orientation="horizontal"
                         android:gravity="end">
 
+
                         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                             android:layout_width="25pt"
                             android:layout_height="match_parent"
@@ -77,13 +78,19 @@
 
                             <TextView
                                 android:id="@+id/cart_number"
-                                android:layout_width="30pt"
-                                android:layout_height="30pt"
+                                android:layout_width="7pt"
+                                android:layout_height="7pt"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignParentTop="true"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_centerInParent="true"
-                                android:padding="7dip"
-                                android:textSize="8pt"
-                                android:textColor="#AA000000" />
+                                android:layout_marginRight="4pt"
+                                android:layout_marginTop="3pt"
+                                android:background="@drawable/border_textview"
+                                android:text="0"
+                                android:textAlignment="center"
+                                android:textColor="#AA000000"
+                                android:textDirection="locale"
+                                android:textSize="10dp" />
 
                         </RelativeLayout>
 

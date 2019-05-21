@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.yala_mall.R;
@@ -45,14 +46,28 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerMallAdapte
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Mall current   = list.get(i);
         viewHolder.textView.setText(current.getName());
+        viewHolder.addressTextView.setText(current.getAddress());
         Picasso.with(context).load(Constants.IMG_URL+current.getLogo()).into(viewHolder.imageView);
 
-        viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onItemRecyclerClicked.onClickedRecyclerMallItem(current);
             }
         });
+
+        if (i %2 == 0)
+        {
+             viewHolder.linearLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+             viewHolder.coloredLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
+             viewHolder.textView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+        }
+        else
+        {
+            viewHolder.linearLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            viewHolder.coloredLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+            viewHolder.textView.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
+        }
 
     }
 
@@ -62,14 +77,20 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerMallAdapte
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        TextView textView ,  addressTextView;
         ImageView imageView;
+        LinearLayout linearLayout;
+        LinearLayout coloredLinearLayout;
 
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.mall_name);
+            addressTextView = itemView.findViewById(R.id.mall_address);
             imageView = itemView.findViewById(R.id.mall_image);
+            linearLayout = itemView.findViewById(R.id.mall_layout);
+            coloredLinearLayout = itemView.findViewById(R.id.colored_layout);
+
 
 
 

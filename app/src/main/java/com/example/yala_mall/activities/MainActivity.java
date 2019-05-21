@@ -3,6 +3,7 @@ package com.example.yala_mall.activities;
 import android.app.Application;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -12,21 +13,26 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
+import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.example.yala_mall.R;
+import com.example.yala_mall.adapters.MySliderAdapter;
 import com.example.yala_mall.adapters.RecyclerCategoryAdapter;
 import com.example.yala_mall.adapters.RecyclerMallAdapter;
 import com.example.yala_mall.fragments.MessageDialog;
@@ -50,7 +56,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, OnItemRecyclerClicked {
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+
+public class MainActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, OnItemRecyclerClicked, ViewPagerEx.OnPageChangeListener {
 
     DataViewModel dataViewModel;
     SliderLayout mDemoSlider;
@@ -68,14 +76,13 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     CustomerUtils customerUtils;
     DrawerLayout drawerLayout;
     LinearLayout homeButton;
-
+    RelativeLayout rootRelativeLayout;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         assignUIReference();
         assignAction();
         getOffers();
@@ -84,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         getMalls();
     }
 
-    private void assignUIReference(){
+    private void assignUIReference() {
         homeButton = findViewById(R.id.linearLayoutHome);
         drawerLayout = findViewById(R.id.drawer_layout);
         dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
@@ -98,13 +105,25 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         setSupportActionBar(toolbarSearch);
         linearSearch = findViewById(R.id.linear_search);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        customerUtils =CustomerUtils.getInstance(this);
+        customerUtils = CustomerUtils.getInstance(this);
+
+        rootRelativeLayout = (RelativeLayout) findViewById(R.id.root_layout);
+        final ViewTreeObserver observer = rootRelativeLayout.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                searchView.getHeight();
+                mallsRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, rootRelativeLayout.getHeight() - (searchView.getHeight() *2)- recyclerView.getHeight() ));
+
+            }
+        });
+
 
         // set counter for cart
         changeCartCount();
     }
 
-    private void assignAction(){
+    private void assignAction() {
 
         cartImage.setOnClickListener(this::setOnClickCartImage);
 
@@ -118,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                startActivity(new Intent(MainActivity.this,SearchActivity.class).putExtra("name",query));
+                startActivity(new Intent(MainActivity.this, SearchActivity.class).putExtra("name", query));
                 return true;
             }
 
@@ -142,26 +161,36 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         });
     }
 
-    private void getOffers(){
-        dataViewModel.getOffers(this).observe(this, new Observer<List<Offer>>() {
+    private void getOffers() {
+        List<Offer> offers = new ArrayList<>();
+
+        assignSlider(offers);
+       /* dataViewModel.getOffers(this).observe(this, new Observer<List<Offer>>() {
             @Override
             public void onChanged(@Nullable List<Offer> offers) {
                 if (!offers.isEmpty())
                     assignSlider(offers);
             }
-        });
+        });*/
     }
 
-    private void assignSlider(List<Offer> offers){
+    private void assignSlider(List<Offer> offers) {
         mDemoSlider = findViewById(R.id.slider_offers);
 
-        HashMap<String,String> file_maps = new HashMap<>();
+
+        HashMap<String, Integer> file_maps = new HashMap<>();
+        file_maps.put("slider1", R.drawable.slide1);
+        file_maps.put("slider2", R.drawable.slide2);
+        file_maps.put("slider3", R.drawable.slide3);
+
+
+        /*HashMap<String,String> file_maps = new HashMap<>();
          for (Offer offer : offers)
-            file_maps.put("offer"+offer.getId(), Constants.IMG_URL +offer.getImage());
+            file_maps.put("offer"+offer.getId(), Constants.IMG_URL +offer.getImage());*/
 
 
-        for(String name : file_maps.keySet()){
-            TextSliderView textSliderView = new TextSliderView(this);
+        for (String name : file_maps.keySet()) {
+            MySliderAdapter textSliderView = new MySliderAdapter(this, new Offer("", ""));
             // initialize a SliderLayout
             textSliderView
                     .image(file_maps.get(name))
@@ -171,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
             //add your extra information
             textSliderView.bundle(new Bundle());
             textSliderView.getBundle()
-                    .putString("extra",name);
+                    .putString("extra", name);
 
             mDemoSlider.addSlider(textSliderView);
         }
@@ -179,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
         mDemoSlider.setCustomAnimation(new DescriptionAnimation());
         mDemoSlider.setDuration(4000);
+        mDemoSlider.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
     }
 
     @Override
@@ -187,16 +217,16 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     }
 
     public void getCategories() {
-       dataViewModel.getCategoryList(this).observe(this, new Observer<List<Category>>() {
-           @Override
-           public void onChanged(@Nullable List<Category> categories) {
-               adapter = new RecyclerCategoryAdapter(categories ,MainActivity.this ,MainActivity.this );
-               recyclerView.setAdapter(adapter);
-               LinearLayoutManager layoutManager =new LinearLayoutManager( MainActivity.this);
-               layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-               recyclerView.setLayoutManager(layoutManager);
-           }
-       });
+        dataViewModel.getCategoryList(this).observe(this, new Observer<List<Category>>() {
+            @Override
+            public void onChanged(@Nullable List<Category> categories) {
+                adapter = new RecyclerCategoryAdapter(categories, MainActivity.this, MainActivity.this);
+                recyclerView.setAdapter(adapter);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+                layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                recyclerView.setLayoutManager(layoutManager);
+            }
+        });
     }
 
 
@@ -204,10 +234,10 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         dataViewModel.getMalls(this).observe(this, new Observer<List<Mall>>() {
             @Override
             public void onChanged(@Nullable List<Mall> malls) {
-                mallsAdapter = new RecyclerMallAdapter(malls ,MainActivity.this ,MainActivity.this);
+                mallsAdapter = new RecyclerMallAdapter(malls, MainActivity.this, MainActivity.this);
                 mallsRecyclerView.setAdapter(mallsAdapter);
-                LinearLayoutManager layoutManager =new LinearLayoutManager( MainActivity.this);
-                layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 mallsRecyclerView.setLayoutManager(layoutManager);
             }
         });
@@ -216,14 +246,14 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     @Override
     public void onClickedRecyclerItem(Category category) {
         Intent intent = new Intent(MainActivity.this, ProductsActivity.class);
-        intent.putExtra("category" ,category);
-       startActivity(intent);
+        intent.putExtra("category", category);
+        startActivity(intent);
     }
 
     @Override
     public void onClickedRecyclerMallItem(Mall current) {
         Intent intent = new Intent(MainActivity.this, MallActivity.class);
-        intent.putExtra("mall_id" ,current);
+        intent.putExtra("mall_id", current);
         startActivity(intent);
     }
 
@@ -237,11 +267,11 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
 
         if (searchView.isSearchOpen()) {
             searchView.closeSearch();
-        }else {
-          if (!((MasterClass)getApplication()).getProductList().isEmpty())
-             MessageDialog.getInstance(this,getResources().getString(R.string.exit_app)).show();
-          else
-              super.onBackPressed();
+        } else {
+            if (!((MasterClass) getApplication()).getProductList().isEmpty())
+                MessageDialog.getInstance(this, getResources().getString(R.string.exit_app)).show();
+            else
+                super.onBackPressed();
         }
     }
 
@@ -251,18 +281,17 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         changeCartCount();
     }
 
-    private void changeCartCount(){
+    private void changeCartCount() {
         master = (MasterClass) getApplication();
         if (!((MasterClass) master).getProductList().isEmpty())
             orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
     }
 
-    private void setOnClickCartImage(View view){
-        startActivity(new Intent(MainActivity.this,CartActivity.class));
+    private void setOnClickCartImage(View view) {
+        startActivity(new Intent(MainActivity.this, CartActivity.class));
     }
 
-    public  void navigation_config()
-    {
+    public void navigation_config() {
         drawerLayout = findViewById(R.id.drawer_layout);
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,12 +299,11 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
                 drawerLayout.openDrawer(Gravity.RIGHT);
             }
         });
-        OnNavigationItemSelected.getInstance(MainActivity.this,drawerLayout,navigationView);
+        OnNavigationItemSelected.getInstance(MainActivity.this, drawerLayout, navigationView);
         navigationView.getMenu().clear();
-        if (customerUtils.isFound(Constants.PREF_TOKEN)){
+        if (customerUtils.isFound(Constants.PREF_TOKEN)) {
             navigationView.inflateMenu(R.menu.user_navigation_menu);
-           }
-        else{
+        } else {
             navigationView.inflateMenu(R.menu.navigation_menu);
         }
 
@@ -284,12 +312,37 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
-            case android.R.id.home :
+        switch (id) {
+            case android.R.id.home:
                 drawerLayout.openDrawer(Gravity.START);
                 return true;
+
+            case R.id.action_custom_indicator:
+                mDemoSlider.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
+
 }

@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity"
-    android:id="@+id/drawer_layout"
-    android:background="@color/white"
-    android:layout_gravity="right">
+    android:layout_gravity="right"
+    android:background="#ececee"
+    tools:context=".activities.MainActivity">
 
 
     <RelativeLayout
-        android:id="@+id/layout_id"
+        android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:layoutDirection="rtl">
 
         <LinearLayout
@@ -22,31 +23,91 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <include layout="@layout/app_bar_layout"
-                android:id="@+id/app_bar_id" />
+            <include
+                android:id="@+id/app_bar_id"
+                layout="@layout/app_bar_layout" />
 
-            <com.daimajia.slider.library.SliderLayout
-                android:id="@+id/slider_offers"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="300dp"/>
+                android:layout_height="match_parent">
 
-            <com.daimajia.slider.library.Indicators.PagerIndicator
-                android:id="@+id/custom_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-             <android.support.v7.widget.RecyclerView
-                 android:id="@+id/recycler_view"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:background="#ececee"/>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="90pt"
+                        android:layout_marginTop="22pt"
+                        android:gravity="center">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/mall_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                        <com.daimajia.slider.library.SliderLayout
+                            android:id="@+id/slider_offers"
+                            android:layout_width="match_parent"
+                            android:layout_height="90pt" />
 
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/transparent" />
+
+                        <LinearLayout
+                            android:layout_width="20pt"
+                            android:layout_height="20pt"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="10pt"
+                            android:background="@drawable/app_icon_border"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="20pt"
+                                android:layout_height="20pt"
+                                android:src="@mipmap/app_icon" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:gravity="center">
+
+                            <com.daimajia.slider.library.Indicators.PagerIndicator
+                                android:id="@+id/custom_indicator"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:gravity="center"
+                                custom:selected_color="@color/colorPrimary"
+                                custom:selected_height="16dp"
+                                custom:selected_padding_left="3dp"
+                                custom:selected_padding_right="3dp"
+                                custom:selected_width="16dp"
+                                custom:shape="oval"
+                                custom:unselected_color="@color/white"
+                                custom:unselected_height="8dp"
+                                custom:unselected_padding_left="3dp"
+                                custom:unselected_padding_right="3dp"
+                                custom:unselected_width="8dp" />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+
+                    <android.support.v7.widget.RecyclerView
+
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#ececee" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/mall_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </ScrollView>
         </LinearLayout>
 
 
@@ -61,32 +122,35 @@
                 android:id="@+id/toolbar_search"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary" >
+                android:background="@color/colorPrimary">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="25pt"
                     android:background="@color/colorPrimary"
                     android:gravity="center"
                     android:layoutDirection="rtl">
+
                     <LinearLayout
                         android:id="@+id/linear_search"
                         android:layout_width="match_parent"
                         android:layout_height="20pt"
                         android:layout_margin="2.5pt"
-                        android:background="@drawable/search_border"
-                        >
+                        android:background="@drawable/search_border">
+
                         <ImageView
                             android:layout_width="12pt"
                             android:layout_height="12pt"
-                            android:layout_marginRight="5pt"
                             android:layout_gravity="center_vertical"
-                            android:src="@drawable/ic_search_black"/>
+                            android:layout_marginRight="5pt"
+                            android:src="@drawable/ic_search_black" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="5pt"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/searchMallsShops"/>
+                            android:layout_marginRight="5pt"
+                            android:text="@string/searchMallsShops" />
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.Toolbar>
@@ -104,11 +168,10 @@
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        app:headerLayout="@layout/layout_header_navigation"
         android:layout_gravity="right"
-        app:menu="@menu/navigation_menu"
         android:layoutDirection="rtl"
-
+        app:headerLayout="@layout/layout_header_navigation"
+        app:menu="@menu/navigation_menu"
 
 
         />
