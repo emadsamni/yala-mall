@@ -58,7 +58,7 @@ public class CartContentFragment extends Fragment implements StepperListener, On
         recyclerView.setAdapter(recyclerAdapter);
         dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
         textView = view.findViewById(R.id.sum_text);
-        textView.setText("المجموع :"+getsum());
+        textView.setText("المجموع :"+getSum());
 
     }
 
@@ -74,7 +74,7 @@ public class CartContentFragment extends Fragment implements StepperListener, On
                      ((MasterClass)getActivity().getApplication()).getProductList().get(i).getNote()));
         }
         dataViewModel.addOrder(getActivity() ,sendedList ,
-                ((PaymentActivity)getActivity()).getCustomerLocationId() ,currentTime.toString() ,getsum()+"");
+                ((PaymentActivity)getActivity()).getCustomerLocationId() ,currentTime.toString() ,getSum()+"");
 
     }
 
@@ -90,13 +90,13 @@ public class CartContentFragment extends Fragment implements StepperListener, On
 
     }
 
-    private  double getsum()
+    private  double getSum()
     {
         List<Product> temp  =((MasterClass)getActivity().getApplication()).getProductList();
         double res= 0;
         for (int i =0 ;i<temp.size() ;i++)
         {
-            res =res + (Integer.parseInt(temp.get(i).getQuantity()) * Double.parseDouble(temp.get(i).getPrice()));
+            res =res + (Double.parseDouble(temp.get(i).getPrice() )*Double.parseDouble(temp.get(i).getDiscount())*(Double.parseDouble(temp.get(i).getQuantity())));
         }
         return  res;
     }

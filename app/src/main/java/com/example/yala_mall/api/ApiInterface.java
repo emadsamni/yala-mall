@@ -43,6 +43,9 @@ public interface ApiInterface {
     @GET("getOfferByShop")
     Call<ApiResponse<List<Offer>>> getOffersByShop(@Query("key") String key , @Query("shop_id") int shopId);
 
+    @GET("getOfferByMall")
+    Call<ApiResponse<List<Mall>>> getOffersByMall(@Query("key") String key , @Query("mall_id") int mallId);
+
 
     @GET("getCities")
     Call<ApiResponse<List<City>>> getCities(@Query("key") String key);

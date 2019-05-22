@@ -75,8 +75,6 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         changeCartCount();
         pageTitle = findViewById(R.id.page_title);
         catName = findViewById(R.id.cat_name);
-
-
     }
 
     private void assignAction() {

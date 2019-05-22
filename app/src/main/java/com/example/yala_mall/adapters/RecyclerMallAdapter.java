@@ -6,9 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.yala_mall.R;
@@ -25,12 +27,14 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerMallAdapte
     private List<Mall> list;
     private Context context;
     private OnItemRecyclerClicked onItemRecyclerClicked;
+    private  RelativeLayout relativeLayout;
 
 
-    public RecyclerMallAdapter(List<Mall> list, Context context ,OnItemRecyclerClicked onItemRecyclerClicked ) {
+    public RecyclerMallAdapter(List<Mall> list, Context context , OnItemRecyclerClicked onItemRecyclerClicked  , RelativeLayout relativeLayout) {
         this.list = list;
         this.context = context;
         this.onItemRecyclerClicked = onItemRecyclerClicked;
+        this.relativeLayout = relativeLayout;
 
     }
 
@@ -68,6 +72,17 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerMallAdapte
             viewHolder.coloredLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
             viewHolder.textView.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
         }
+        final ViewTreeObserver observer = relativeLayout.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                viewHolder.coloredLinearLayout.setLayoutParams(new LinearLayout.LayoutParams(relativeLayout.getWidth()/2  ,LinearLayout.LayoutParams.MATCH_PARENT  ));
+
+
+            }
+        });
+
 
     }
 

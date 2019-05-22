@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.example.yala_mall.R;
 import com.example.yala_mall.activities.AddressActivity;
 import com.example.yala_mall.activities.MainActivity;
+import com.example.yala_mall.activities.MyOrderActivity;
 import com.example.yala_mall.activities.RegisterActivity;
 import com.example.yala_mall.helps.CustomerUtils;
 //import com.facebook.login.LoginManager;
@@ -46,6 +47,15 @@ public class OnNavigationItemSelected implements NavigationView.OnNavigationItem
                     context.startActivity(new Intent(context, RegisterActivity.class));
                 else{
                     context.startActivity(new Intent(context, RegisterActivity.class));
+                    context.finish();
+                }
+                drawerLayout.closeDrawers();
+                return true;
+            case R.id.my_orders:
+                if (context instanceof MainActivity)
+                    context.startActivity(new Intent(context, MyOrderActivity.class));
+                else{
+                    context.startActivity(new Intent(context, MyOrderActivity.class));
                     context.finish();
                 }
                 drawerLayout.closeDrawers();

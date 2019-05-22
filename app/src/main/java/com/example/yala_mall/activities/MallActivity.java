@@ -71,6 +71,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
     SliderLayout mDemoSlider;
     RelativeLayout rootRelativeLayout;
     LinearLayout filterLayout;
+    RelativeLayout slideLayout;
 
 
     @Override
@@ -82,21 +83,35 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         Intent intent = getIntent();
         mall = (Mall) intent.getSerializableExtra("mall_id");
         pageTitle.setText(mall.getName());
-        getOffers();
+        getOffers(mall.getId());
 
         // assignSlider();
 
 
     }
 
-    private void getOffers() {
+    private void getOffers(int mallId) {
 
-        dataViewModel.getOffers(this).observe(this, new Observer<List<Offer>>() {
+        dataViewModel.getOffersByMall(this ,mallId).observe(this, new Observer<Mall>() {
             @Override
-            public void onChanged(@Nullable List<Offer> offers) {
+            public void onChanged(@Nullable Mall myMall) {
+
+                List<Offer> offers = new ArrayList<>();
+                for (int i=0;i<myMall.getShop().size();i++)
+                {
+                    if ( !myMall.getShop().get(i).getOffers().isEmpty())
+                    {
+                        for (int j=0;j<myMall.getShop().get(i).getOffers().size();j++)
+                        {
+                            offers.add(myMall.getShop().get(i).getOffers().get(j));
+                        }
+                    }
+                }
                 if (!offers.isEmpty())
                     assignSlider(offers);
-                getShops(mall.getId());
+                else
+                    slideLayout.setVisibility(View.GONE);
+                   getShops(mall.getId());
 
             }
         });
@@ -112,6 +127,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         orderCount = findViewById(R.id.cart_number);
         cartImage = findViewById(R.id.linearLayout_cart);
         filterCancelButton = findViewById(R.id.filter_cancel_button);
+         slideLayout = findViewById(R.id.slide_layout);
         changeCartCount();
         pageTitle = findViewById(R.id.page_title);
         filterLayout = (LinearLayout) findViewById(R.id.filter_Layout);

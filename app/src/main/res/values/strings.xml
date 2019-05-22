@@ -36,6 +36,11 @@
     <string name="my_addresses">عناويني</string>
     <string name="my_orders">طلباتي</string>
     <string name="sign_in">تسجيل الدخول</string>
+    <string name="price">السعر</string>
+    <string name="del_cost">سعر التوصيل</string>
+    <string name="start_date">تاريخ الطلب</string>
+    <string name="end_date">تاريخ التوصيل</string>
+    <string name="status">الحالة</string>
 
     <string-array name="query_suggestions">
         <item>-</item>

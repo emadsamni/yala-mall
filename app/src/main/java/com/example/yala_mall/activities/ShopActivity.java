@@ -19,6 +19,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
@@ -60,6 +61,8 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     Shop shop;
     RelativeLayout rootRelativeLayout;
     LinearLayout filterLayout ,shopLayout;
+    RelativeLayout slideLayout;
+    ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,16 +75,18 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         shopId = shop.getId();
         pageTitle.setText(shop.getName());
         shopName.setText(shop.getName());
-        getOffers();
+        getOffers(shop.getId());
     }
 
-    private void getOffers() {
+    private void getOffers(int shopId) {
 
-        dataViewModel.getOffers(this).observe(this, new Observer<List<Offer>>() {
+        dataViewModel.getOffersByShop(this ,shopId).observe(this, new Observer<List<Offer>>() {
             @Override
             public void onChanged(@Nullable List<Offer> offers) {
                 if (!offers.isEmpty())
                     assignSlider(offers);
+                else
+                    slideLayout.setVisibility(View.GONE);
                     getProduct(shopId);
 
 
@@ -128,7 +133,9 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         filterButton =   findViewById(R.id.filter_button);
         cartImage = findViewById(R.id.linearLayout_cart);
         filterCancelButton = findViewById(R.id.filter_cancel_button);
+        slideLayout = findViewById(R.id.slide_layout);
         changeCartCount();
+        scrollView = findViewById(R.id.scrollView);
         pageTitle = findViewById(R.id.page_title);
         shopName = findViewById(R.id.shop_name);
         filterLayout = (LinearLayout) findViewById(R.id.filter_Layout);
@@ -205,6 +212,7 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
                 LinearLayoutManager layoutManager =new LinearLayoutManager( ShopActivity.this);
                 layoutManager =new GridLayoutManager(ShopActivity.this,2);
                 productsRecyclerView.setLayoutManager(layoutManager);
+                scrollView.smoothScrollTo(0,0);
             }
         });
     }

@@ -1,53 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center"
-    android:weightSum="2"
-    android:id="@+id/mall_layout"
-    android:layoutDirection="ltr"
-   >
 
-
-
-    <ImageView
-        android:layout_weight="1"
-        android:id="@+id/mall_image"
-        android:layout_width="0dp"
-        android:layout_height="80pt"
-        android:scaleType="centerCrop"
-        />
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
-        android:id="@+id/colored_layout"
-        android:orientation="vertical"
-        android:layoutDirection="rtl">
-        <TextView
-            android:id="@+id/mall_name"
-            android:layout_marginTop="7pt"
-            android:layout_marginRight="7pt"
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mall_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layoutDirection="ltr"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-           />
-        <TextView
-            android:id="@+id/mall_address"
-            android:layout_marginTop="7pt"
-            android:layout_marginRight="7pt"
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
+            android:layout_weight="1">
+            <ImageView
+                android:id="@+id/mall_image"
+                android:layout_width="match_parent"
+                android:layout_height="80pt"
+                android:scaleType="centerCrop" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/colored_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:layoutDirection="rtl"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/mall_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7pt"
+                android:layout_marginRight="7pt"
+                android:textColor="@color/white" />
+            <TextView
+                android:id="@+id/mall_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7pt"
+                android:layout_marginRight="7pt"
+                android:textColor="@color/white" />
+        </LinearLayout>
     </LinearLayout>
-
-
-
-
-
-
-</LinearLayout>

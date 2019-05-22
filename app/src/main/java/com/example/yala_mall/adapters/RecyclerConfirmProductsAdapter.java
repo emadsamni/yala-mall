@@ -45,10 +45,11 @@ public class RecyclerConfirmProductsAdapter extends RecyclerView.Adapter<Recycle
         Picasso.with(context)
                 .load(Constants.IMG_URL+product.getGallery().get(0).getImage())
                 .into(viewHolder.productImage);
-        viewHolder.priceText.setText(product.getPrice());
+        viewHolder.priceText.setText(Double.parseDouble(product.getPrice())*Double.parseDouble(product.getDiscount())+"");
         viewHolder.quantityText.setText(product.getQuantity());
         viewHolder.noteEditText.setText(product.getNote());
-        viewHolder.sumPriceText.setText(Integer.parseInt(product.getPrice())*Integer.parseInt(product.getQuantity())+"");
+
+        viewHolder.sumPriceText.setText(Double.parseDouble(product.getPrice())*Double.parseDouble(product.getQuantity())*Double.parseDouble(product.getDiscount())+"");
 
         viewHolder.noteEditText.addTextChangedListener(new TextWatcher() {
             @Override

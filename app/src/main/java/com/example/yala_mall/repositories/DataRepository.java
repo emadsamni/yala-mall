@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.yala_mall.R;
+import com.example.yala_mall.activities.MainActivity;
 import com.example.yala_mall.activities.MasterClass;
 import com.example.yala_mall.activities.PaymentActivity;
 import com.example.yala_mall.api.ApiClient;
@@ -45,6 +46,7 @@ public class DataRepository {
     private MutableLiveData<Category>  pcCategoryBySCategory;
     private MutableLiveData<List<Offer>> offers;
     private MutableLiveData<List<Offer>> offersByShop;
+    private MutableLiveData<Mall> offersByMall;
     private MutableLiveData<List<Mall>> malls;
     private MutableLiveData<List<Product>> products;
     private MutableLiveData<List<Mall>> mall;
@@ -124,6 +126,13 @@ public class DataRepository {
     }
 
 
+    public LiveData<Mall> getOffersByMall(Context context , int mall_id){
+        offersByMall = new MutableLiveData<>();
+        getOffersByMallApi(context , mall_id);
+        return offersByMall;
+    }
+
+
 
     public LiveData<List<Category>> getCategoryList(Context context){
         categoryList = new MutableLiveData<>();
@@ -152,7 +161,9 @@ public class DataRepository {
     private void getCityList(Context context) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ApiResponse<List<City>>> call = apiService.getCities(Constants.API_KEY);
-        call.enqueue(new Callback<ApiResponse<List<City>>>() {
+
+
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<City>>>(call,context,3) {
             @Override
             public void onResponse(Call<ApiResponse<List<City>>> call, Response<ApiResponse<List<City>>> response) {
                 if (!response.isSuccessful()){
@@ -166,15 +177,40 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<City>>> call, Throwable t) {
-
+                onFailure(t);
             }
         });
+    }
+
+    private void getOffersByMallApi(Context context, int mall_id) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<List<Mall>>> call = apiService.getOffersByMall(Constants.API_KEY , mall_id);
+
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Mall>>>(call,context,3) {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Mall>>> call, Response<ApiResponse<List<Mall>>> response) {
+                if (!response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                }
+                ProgressDialog.getInstance().cancel();
+                if (response.body().getData() != null)
+                    offersByMall.postValue(response.body().getData().get(0));
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Mall>>> call, Throwable t) {
+                onFailure(t);
+            }
+        });
+
     }
 
     private void getFilterList(Context context, HashMap<String, Integer> selectedMap) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ApiResponse<List<Product>>> call = apiService.getFilter(Constants.API_KEY, selectedMap.get("Cat_id") ,selectedMap.get("sub_id"),selectedMap.get("size_id"),selectedMap.get("mall_id"),selectedMap.get("shop_id"));
-        call.enqueue(new Callback<ApiResponse<List<Product>>>() {
+
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Product>>>(call,context,3) {
             @Override
             public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
                 if (!response.isSuccessful()){
@@ -188,16 +224,18 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Product>>> call, Throwable t) {
-
+                onFailure(t);
             }
         });
+
+
      }
     private void getSizeListByPCategory(Context context, int id) {
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ApiResponse<List<Size>>> call = apiService.getSizeByPCategory(Constants.API_KEY, id);
 
-        call.enqueue(new Callback<ApiResponse<List<Size>>>() {
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Size>>>(call,context,3) {
             @Override
             public void onResponse(Call<ApiResponse<List<Size>>> call, Response<ApiResponse<List<Size>>> response) {
                 if (!response.isSuccessful()){
@@ -211,39 +249,40 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Size>>> call, Throwable t) {
-
+                onFailure(t);
             }
         });
+
 
     }
     private  void  getProductsListByMall (Context context ,int  mall_id ) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ApiResponse<List<Product>>> call = apiService.getProductByMall(Constants.API_KEY, mall_id);
+         call.enqueue(new CallbackWithRetry<ApiResponse<List<Product>>>(call,context,3) {
+             @Override
+             public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
+                 if (!response.isSuccessful()){
+                     ProgressDialog.getInstance().cancel();
+                     Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                 }
+                 ProgressDialog.getInstance().cancel();
+                 if (response.body().getData() != null)
+                     productsByMall.postValue(response.body().getData());
+             }
 
-        call.enqueue(new Callback<ApiResponse<List<Product>>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
-                if (!response.isSuccessful()){
-                    ProgressDialog.getInstance().cancel();
-                    Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
-                }
-                ProgressDialog.getInstance().cancel();
-                if (response.body().getData() != null)
-                    productsByMall.postValue(response.body().getData());
-            }
+             @Override
+             public void onFailure(Call<ApiResponse<List<Product>>> call, Throwable t) {
+                 onFailure(t);
+             }
+         });
 
-            @Override
-            public void onFailure(Call<ApiResponse<List<Product>>> call, Throwable t) {
-
-            }
-        });
     }
 
     private  void  getProductsListByShop (Context context ,int  shop_id ) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ApiResponse<List<Product>>> call = apiService.getProductByShop(Constants.API_KEY, shop_id);
 
-        call.enqueue(new Callback<ApiResponse<List<Product>>>() {
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Product>>>(call,context,3) {
             @Override
             public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
                 if (!response.isSuccessful()){
@@ -257,39 +296,41 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Product>>> call, Throwable t) {
-
+                onFailure(t);
             }
         });
+
     }
     private void getShopsListByMall(Context context ,int  mall_id )
     {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ApiResponse<List<Mall>>> call = apiService.getShopByMall(Constants.API_KEY ,mall_id);
 
-        call.enqueue(new Callback<ApiResponse<List<Mall>>>() {
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Mall>>>(call,context,3) {
             @Override
             public void onResponse(Call<ApiResponse<List<Mall>>> call, Response<ApiResponse<List<Mall>>> response) {
                 if (!response.isSuccessful()){
                     ProgressDialog.getInstance().cancel();
                     Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
                 }
-               // ProgressDialog.getInstance().cancel();
+                // ProgressDialog.getInstance().cancel();
                 if (response.body().getData() != null)
                     mall.postValue(response.body().getData());
             }
 
             @Override
             public void onFailure(Call<ApiResponse<List<Mall>>> call, Throwable t) {
-
+                onFailure(t);
             }
         });
+
     }
     private  void  getProductListByCategory(Context context ,int  categoryId )
     {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ApiResponse<List<Product>>> call = apiService.getProductByCategory(Constants.API_KEY ,categoryId);
 
-        call.enqueue(new Callback<ApiResponse<List<Product>>>() {
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Product>>>(call,context,3) {
             @Override
             public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
                 if (!response.isSuccessful()){
@@ -303,15 +344,16 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Product>>> call, Throwable t) {
-
+                onFailure(t);
             }
         });
+
     }
     private void getMallsList(Context context) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ApiResponse<List<Mall>>> call = apiService.getMalls(Constants.API_KEY);
 
-        call.enqueue(new Callback<ApiResponse<List<Mall>>>() {
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Mall>>>(call,context,3) {
             @Override
             public void onResponse(Call<ApiResponse<List<Mall>>> call, Response<ApiResponse<List<Mall>>> response) {
                 if (!response.isSuccessful()){
@@ -325,9 +367,10 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Mall>>> call, Throwable t) {
-                Log.d("TSTS",t.getMessage());
+                onFailure(t);
             }
         });
+
     }
     private void getOffersByShopApi(Context context, int shopId) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
@@ -347,7 +390,7 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Offer>>> call, Throwable t) {
-                Log.d("TSTS",t.getMessage());
+                onFailure(t);
             }
         });
     }
@@ -369,7 +412,7 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Offer>>> call, Throwable t) {
-                Log.d("TSTS",t.getMessage());
+                onFailure(t);
             }
         });
     }
@@ -392,7 +435,7 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Category>>> call, Throwable t) {
-                Log.d("TSTS",t.getMessage());
+                onFailure(t);
             }
         });
     }
@@ -416,7 +459,7 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Category>>> call, Throwable t) {
-
+                onFailure(t);
             }
         });
     }
@@ -424,8 +467,7 @@ public class DataRepository {
     private void getProductDetail (Context context ,String  productId ) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ApiResponse<List<Product>>> call = apiService.getProductDetails(Constants.API_KEY, productId);
-
-        call.enqueue(new Callback<ApiResponse<List<Product>>>() {
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Product>>>(call,context,3) {
             @Override
             public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
                 if (!response.isSuccessful()){
@@ -439,9 +481,10 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<List<Product>>> call, Throwable t) {
-                Log.d("TSTS",t.getMessage());
+                onFailure(t);
             }
         });
+
     }
 
     public void addOrder(Context context , ArrayList<ProductP> products , int  customer_location_id , String  order_time , String  order_price){
@@ -464,7 +507,7 @@ public class DataRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<Order>> call, Throwable t) {
-                Toast.makeText(context, "cec", Toast.LENGTH_SHORT).show();
+                onFailure(t);
             }
         });
 

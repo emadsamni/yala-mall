@@ -27,6 +27,7 @@ public class DataViewModel extends AndroidViewModel {
     private LiveData<Category> pcCategoryBySCategory;
     private LiveData<List<Offer>> offers;
     private LiveData<List<Offer>> offersByShop;
+    private LiveData<Mall> offersByMall;
     private LiveData<List<Mall>> malls;
     private LiveData<List<Product>> products;
     private LiveData<List<Product>> productsByCategory;
@@ -71,6 +72,13 @@ public class DataViewModel extends AndroidViewModel {
             offers = repository.getOffersByShop(context , shopId);
 
         return offers;
+    }
+
+
+    public LiveData<Mall> getOffersByMall(Context context , int mall_id){
+        ProgressDialog.getInstance().show(context);
+        offersByMall = repository.getOffersByMall(context , mall_id);
+        return offersByMall;
     }
 
     public LiveData<List<Category>> getCategoryList(Context context){

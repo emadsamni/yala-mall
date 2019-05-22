@@ -44,6 +44,12 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
         viewHolder.textView.setText(current.getName());
         viewHolder.priceTextView.setText(current.getPrice() + " ل . س");
         Picasso.with(context).load(Constants.IMG_URL+current.getGallery().get(0).getImage()).into(viewHolder.imageView);
+        if ( Double.parseDouble(list.get(i).getDiscount()) != 1 )
+        {
+            viewHolder.line.setVisibility(View.VISIBLE);
+            viewHolder.priceAfterDiscount.setVisibility(View.VISIBLE);
+            viewHolder.priceAfterDiscount.setText(Double.parseDouble(list.get(i).getDiscount()) *Double.parseDouble(list.get(i).getPrice()) +"ل . س");
+        }
         viewHolder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,9 +64,11 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView  , priceTextView;
+        TextView textView  , priceTextView , priceAfterDiscount;
         ImageView imageView;
         LinearLayout layout;
+        View line;
+
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,6 +76,9 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
             imageView = itemView.findViewById(R.id.pro_image);
             layout = itemView.findViewById(R.id.layout_id);
             priceTextView = itemView.findViewById(R.id.price);
+            priceAfterDiscount = itemView.findViewById(R.id.price_after_discount);
+            line= itemView.findViewById(R.id.line);
+
 
         }
 

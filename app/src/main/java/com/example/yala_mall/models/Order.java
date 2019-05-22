@@ -24,6 +24,10 @@ public class Order implements Serializable {
     private
     String delivery_time;
 
+    @SerializedName("order_time")
+    private
+    String order_time;
+
     @SerializedName("order_status_id")
     private
     Integer order_status_id;
@@ -44,6 +48,10 @@ public class Order implements Serializable {
     @SerializedName("bills")
     private
     List<Bill> bills;
+
+    public String getOrder_time() {
+        return order_time;
+    }
 
     public Integer getId() {
         return id;

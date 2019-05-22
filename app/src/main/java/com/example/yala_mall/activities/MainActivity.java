@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         getCategories();
         navigation_config();
         getMalls();
+
     }
 
     private void assignUIReference() {
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
             public void onGlobalLayout() {
                 searchView.getHeight();
                 mallsRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, rootRelativeLayout.getHeight() - (searchView.getHeight() *2)- recyclerView.getHeight() ));
+
 
             }
         });
@@ -234,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         dataViewModel.getMalls(this).observe(this, new Observer<List<Mall>>() {
             @Override
             public void onChanged(@Nullable List<Mall> malls) {
-                mallsAdapter = new RecyclerMallAdapter(malls, MainActivity.this, MainActivity.this);
+                mallsAdapter = new RecyclerMallAdapter(malls, MainActivity.this, MainActivity.this , rootRelativeLayout);
                 mallsRecyclerView.setAdapter(mallsAdapter);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
                 layoutManager.setOrientation(LinearLayoutManager.VERTICAL);

@@ -3,6 +3,7 @@ package com.example.yala_mall.models;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Shop implements Serializable {
 
@@ -34,6 +35,15 @@ public class Shop implements Serializable {
     @SerializedName("shop_status_id")
     private
     int  shop_status_id;
+
+    @SerializedName("offers")
+    private
+    List<Offer> offers;
+
+
+    public List<Offer> getOffers() {
+        return offers;
+    }
 
     public int getId() {
         return id;

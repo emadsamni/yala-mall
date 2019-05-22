@@ -102,7 +102,7 @@ public class CartActivity extends AppCompatActivity implements OnClickElegantBut
         Double amount=0.0;
         ArrayList<Product> products= ((MasterClass)getApplication()).getProductList();
         for (Product product : products)
-            amount = amount + (Integer.parseInt(product.getPrice())*(Integer.parseInt(product.getQuantity())));
+            amount = amount + (Double.parseDouble(product.getPrice() )*Double.parseDouble(product.getDiscount())*(Double.parseDouble(product.getQuantity())));
         return amount;
     }
 
