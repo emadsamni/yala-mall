@@ -6,19 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.ProductDetailsActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryDark">
 
     <include layout="@layout/app_bar_layout"/>
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
     <LinearLayout
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="25pt"
+            android:layout_height="35pt"
             android:background="@color/colorPrimaryDark"
             android:gravity="center">
 
@@ -27,58 +30,106 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:textSize="8pt" />
+                android:textSize="12pt" />
         </LinearLayout>
         <com.daimajia.slider.library.SliderLayout
-            android:layout_margin="10pt"
+            android:layout_marginTop="25pt"
+            android:layout_marginRight="10pt"
+            android:layout_marginLeft="10pt"
+            android:layout_marginBottom="10pt"
             android:id="@+id/slider_Products"
             android:layout_width="120pt"
             android:layout_height="150pt"
             android:layout_gravity="center"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30pt"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
             android:weightSum="3">
-            <TextView
-                android:id="@+id/product_price"
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textSize="10pt"
-                android:textColor="@color/colorPrimary"
-                android:text="@string/search_hint"
-                android:textAlignment="center"
                 android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    >
+                    <TextView
+                        android:id="@+id/product_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:textSize="8pt"
+                        android:layout_marginRight="10pt"
+                        android:textColor="@color/colorPrimaryDark"/>
 
-                android:layout_margin="5pt"/>
+                    <View
+                        android:visibility="gone"
+                        android:id="@+id/line"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginTop="7pt"
+                        android:layout_marginRight="10pt"
+                        android:layout_width="30pt"
+                        android:layout_height="1dp"
+
+
+                        app:layout_constraintRight_toRightOf="parent"
+                        android:background="@color/colorPrimaryDark"/>
+                </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="8pt"
+                android:visibility="gone"
+                android:textColor="@color/colorPrimary"
+                android:textAlignment="center"
+               />
+            </LinearLayout>
 
 
 
             <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
                 android:id="@+id/quantity_button"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 app:finalNumber="5"
                 android:layout_margin="5pt"
                 app:textSize="4pt"
                 android:layout_weight="1"
                 app:initialNumber="1"/>
-
-            <Button
-                android:layout_weight="1"
-                android:id="@+id/add_cart_button"
+            <Spinner
+                android:id="@+id/size_spinner"
+                android:layout_marginRight="5pt"
+                android:layout_marginLeft="5pt"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="@drawable/button_cart_border"
-                android:text="@string/addCart"
-                android:textSize="9pt"
-                android:layout_margin="5pt"
-                android:textColor="@color/white"/>
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:background="@drawable/spinner_size_border">
+
+            </Spinner>
+
 
         </LinearLayout>
+
+
+        <Button
+
+            android:id="@+id/add_cart_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_cart_border"
+            android:text="@string/addCart"
+            android:textSize="9pt"
+            android:layout_margin="5pt"
+            android:textColor="@color/white"/>
         <LinearLayout
             android:padding="5pt"
             android:layout_marginTop="10pt"
@@ -95,6 +146,7 @@
                 android:textSize="8pt" />
         </LinearLayout>
     </LinearLayout>
+
     </ScrollView>
 
 </LinearLayout>

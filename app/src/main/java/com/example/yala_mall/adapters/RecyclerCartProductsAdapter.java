@@ -42,12 +42,18 @@ public class RecyclerCartProductsAdapter extends RecyclerView.Adapter<RecyclerCa
        Product product =list.get(i);
 
        viewHolder.productName.setText(product.getName());
-
+        if ( !product.getGallery().isEmpty())
         Picasso.with(context)
                 .load(Constants.IMG_URL+product.getGallery().get(0).getImage())
                 .into(viewHolder.productImage);
+        else
+                viewHolder.productImage.setImageResource(R.drawable.defult_image);
 
         viewHolder.numberButton.setNumber(product.getQuantity());
+        if (product.getSize().getId()!=-1)
+          viewHolder.productSize.setText(product.getSize().getName());
+        else
+            viewHolder.productSize.setVisibility(View.GONE);
 
         viewHolder.numberButton.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
             @Override
@@ -64,7 +70,7 @@ public class RecyclerCartProductsAdapter extends RecyclerView.Adapter<RecyclerCa
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;
-        TextView productName;
+        TextView productName , productSize;
         ElegantNumberButton numberButton;
 
         ViewHolder(@NonNull View itemView) {
@@ -72,6 +78,7 @@ public class RecyclerCartProductsAdapter extends RecyclerView.Adapter<RecyclerCa
            productImage = itemView.findViewById(R.id.product_image);
             productName = itemView.findViewById(R.id.product_name);
             numberButton = itemView.findViewById(R.id.quantity_button);
+            productSize = itemView.findViewById(R.id.size);
 
         }
     }

@@ -70,16 +70,16 @@ public interface ApiInterface {
     Call<ApiResponse<List<Mall>>> getMalls(@Query("key") String key);
 
     @GET("getProductByCategory")
-    Call<ApiResponse<List<Product>>> getProductByCategory(@Query("key") String key ,@Query("id") int id);
+    Call<ApiResponse<List<Product>>> getProductByCategory(@Query("key") String key ,@Query("id") int id ,@Query("last_id") int lastId);
 
     @GET("getShopByMall")
     Call<ApiResponse<List<Mall>>> getShopByMall(@Query("key") String key ,@Query("mall_id") int id);
 
     @GET("getProductByMall")
-    Call<ApiResponse<List<Product>>> getProductByMall(@Query("key") String key ,@Query("mall_id") int id);
+    Call<ApiResponse<List<Product>>> getProductByMall(@Query("key") String key ,@Query("mall_id") int id,@Query("last_id") int lastId);
 
     @GET("getProductByshop")
-    Call<ApiResponse<List<Product>>> getProductByShop(@Query("key") String key ,@Query("id") int id);
+    Call<ApiResponse<List<Product>>> getProductByShop(@Query("key") String key ,@Query("id") int id,@Query("last_id") int lastId);
 
     @GET("search")
     Call<ApiResponse<List<Product>>> search(@Query("key") String key ,@Query("name") String name);
@@ -104,6 +104,9 @@ public interface ApiInterface {
     Call<ApiResponse<Order>> addOrder(@Query("key") String key , @Part("products[]") List<ProductP> products , @Query("token") String token,
                                       @Query("customer_location_id") int customer_location_id , @Query("orderx_time") String order_time
                                       , @Query("order_price") String order_price);
+
+    @GET("getSizes")
+    Call<ApiResponse<List<Product>>> getSizes(@Query("key") String key , @Query("id") int id);
 }
 
 

@@ -6,7 +6,7 @@
     >
 
     <Button
-        android:layout_margin="5pt"
+        android:layout_margin="10pt"
         android:id="@+id/shop_name"
         android:layout_width="wrap_content"
         android:layout_height="15pt"

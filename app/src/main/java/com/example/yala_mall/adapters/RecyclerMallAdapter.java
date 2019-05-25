@@ -21,6 +21,7 @@ import com.example.yala_mall.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Random;
 
 public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerMallAdapter.ViewHolder> {
 
@@ -64,14 +65,24 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerMallAdapte
         {
              viewHolder.linearLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
              viewHolder.coloredLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
-             viewHolder.textView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+            viewHolder.line.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryTrans));
+            viewHolder.textView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
         }
         else
         {
             viewHolder.linearLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
             viewHolder.coloredLinearLayout.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+            viewHolder.line.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDarkTrans));
             viewHolder.textView.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
         }
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                100
+        );
+        Random random =  new Random();
+        int sss =random.nextInt(5)*20 +10;
+        params.setMargins(0,sss , 0, 0);
+        viewHolder.line.setLayoutParams(params);
         final ViewTreeObserver observer = relativeLayout.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -80,8 +91,10 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerMallAdapte
                 viewHolder.coloredLinearLayout.setLayoutParams(new LinearLayout.LayoutParams(relativeLayout.getWidth()/2  ,LinearLayout.LayoutParams.MATCH_PARENT  ));
 
 
+
             }
         });
+
 
 
     }
@@ -95,7 +108,7 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerMallAdapte
         TextView textView ,  addressTextView;
         ImageView imageView;
         LinearLayout linearLayout;
-        LinearLayout coloredLinearLayout;
+        LinearLayout coloredLinearLayout , line;
 
 
         ViewHolder(@NonNull View itemView) {
@@ -105,6 +118,7 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerMallAdapte
             imageView = itemView.findViewById(R.id.mall_image);
             linearLayout = itemView.findViewById(R.id.mall_layout);
             coloredLinearLayout = itemView.findViewById(R.id.colored_layout);
+            line =  itemView.findViewById(R.id.line);
 
 
 

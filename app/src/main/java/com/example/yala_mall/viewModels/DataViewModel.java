@@ -37,6 +37,7 @@ public class DataViewModel extends AndroidViewModel {
     private LiveData<List<Size>> sizes;
     private LiveData<List<Product>> productDetails;
     private LiveData<List<City>> cities;
+    private LiveData<List<Product>> sizeByProduct;
 
     public DataViewModel(@NonNull Application application) {
         super(application);
@@ -65,6 +66,14 @@ public class DataViewModel extends AndroidViewModel {
 
         return offers;
     }
+
+    public LiveData<List<Product>> getSizeByProduct(Context context , int productId){
+        ProgressDialog.getInstance().show(context);
+        sizeByProduct = repository.getSizeByProduct(context ,productId);
+
+        return sizeByProduct;
+    }
+
 
 
     public LiveData<List<Offer>> getOffersByShop(Context context , int shopId){
@@ -105,11 +114,11 @@ public class DataViewModel extends AndroidViewModel {
         return sizes;
     }
 
-    public LiveData<List<Product>> getProductListByCategory(Context context , int category ){
-        if (productsByCategory==null) {
+    public LiveData<List<Product>> getProductListByCategory(Context context , int category  ,int lastId){
+
             ProgressDialog.getInstance().show(context);
-            productsByCategory = repository.getProductsByCategory(context ,category);
-        }
+            productsByCategory = repository.getProductsByCategory(context ,category ,lastId);
+        
         return productsByCategory;
     }
 
@@ -124,15 +133,15 @@ public class DataViewModel extends AndroidViewModel {
     public LiveData<List<Product>> getProductsByMall(Context context , int mallId ){
 
             //ProgressDialog.getInstance().show(context);
-            productsByMall = repository.getProductsByMall(context ,mallId);
+            productsByMall = repository.getProductsByMall(context ,mallId ,0);
 
         return productsByMall;
     }
 
-    public LiveData<List<Product>> getProductsByShop(Context context , int shopId ){
+    public LiveData<List<Product>> getProductsByShop(Context context , int shopId , int lastId ){
 
             ProgressDialog.getInstance().show(context);
-            productsByShop = repository.getProductsByShop(context ,shopId);
+            productsByShop = repository.getProductsByShop(context ,shopId , lastId);
 
         return productsByShop;
     }

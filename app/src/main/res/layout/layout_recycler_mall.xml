@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7pt"
                 android:layout_marginRight="7pt"
+                android:textSize="8pt"
                 android:textColor="@color/white" />
             <TextView
                 android:id="@+id/mall_address"
@@ -39,5 +40,14 @@
                 android:layout_marginTop="7pt"
                 android:layout_marginRight="7pt"
                 android:textColor="@color/white" />
+
+            <LinearLayout
+                android:background="@color/colorPrimaryDark"
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal">
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>

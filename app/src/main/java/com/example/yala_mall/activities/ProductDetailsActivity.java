@@ -5,12 +5,16 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,10 +25,14 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.yala_mall.R;
 import com.example.yala_mall.adapters.MySliderAdapter;
+import com.example.yala_mall.adapters.SpinnerAdapter;
+import com.example.yala_mall.adapters.SpinnerAdapter2;
 import com.example.yala_mall.fragments.MessageDialog;
 import com.example.yala_mall.models.Gallery;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
+import com.example.yala_mall.models.ProductSize;
+import com.example.yala_mall.models.Size;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.viewModels.DataViewModel;
 
@@ -32,18 +40,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.crypto.spec.IvParameterSpec;
+
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class ProductDetailsActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener {
     String productId;
     Product product;
     DataViewModel dataViewModel;
-    TextView productName,productDescription,productPrice,orderCount;
+    TextView productName,productDescription,productPrice,orderCount  , priceAfterDiscount;
     Button addCartButton;
     SliderLayout mDemoSlider;
     ElegantNumberButton elegantNumberButton;
     Application master;
     RelativeLayout cartImage;
+    View view;
+    Typeface typeface;
+    Spinner spinner;
+    SpinnerAdapter2 spinnerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +67,12 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
         assignUIReference();
         assignAction();
         getProductDetails();
+        getSizes();
+
+        //typeface =  Typeface.createFromAsset(getAssets(),"font/app_font.ttf");
     }
+
+
 
     private void assignUIReference(){
         elegantNumberButton =  findViewById(R.id.quantity_button);
@@ -66,6 +85,11 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
         orderCount = findViewById(R.id.cart_number);
         addCartButton = findViewById(R.id.add_cart_button);
         cartImage = findViewById(R.id.linearLayout_cart);
+        priceAfterDiscount =findViewById(R.id.price);
+        view = findViewById(R.id.line);
+        spinner = findViewById(R.id.size_spinner);
+
+
         changeCartCount();
     }
 
@@ -85,6 +109,18 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
                     increaseCartCount(list);
                 }
         });
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                product.setSize(((ProductSize)spinner.getSelectedItem()).getSizes());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void getProductDetails(){
@@ -98,10 +134,35 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
               productName.setText(products.get(0).getName());
               productDescription.setText(products.get(0).getDescription());
               productPrice.setText(products.get(0).getPrice()+" ل.س");
+              if (Double.parseDouble(products.get(0).getDiscount()) != 1) {
+                  view.setVisibility(View.VISIBLE);
+                  priceAfterDiscount.setVisibility(View.VISIBLE);
+                  priceAfterDiscount.setText(Double.parseDouble(products.get(0).getDiscount())* Double.parseDouble(products.get(0).getPrice()) +" ل.س");
+              }
+
           }
       });
     }
+    private void getSizes() {
+        dataViewModel.getSizeByProduct(this ,Integer.parseInt(productId)).observe(this, new Observer<List<Product>>() {
+            @Override
+            public void onChanged(@Nullable List<Product> products) {
 
+                if (!products.get(0).getProductsize().isEmpty()) {
+                    spinnerAdapter = new SpinnerAdapter2(products.get(0).getProductsize(), ProductDetailsActivity.this);
+                    spinner.setAdapter(spinnerAdapter);
+                    product.setSize(products.get(0).getProductsize().get(0).getSizes());
+                }
+                else
+                {
+                    spinner.setVisibility(View.INVISIBLE);
+
+                    product.setSize(new Size(-1,""));
+                }
+
+            }
+        });
+    }
     private void assignSlider(List<Gallery> galleries){
         mDemoSlider = findViewById(R.id.slider_Products);
 
@@ -148,7 +209,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
         boolean check = false;  // check item if exist , we do not need to add it to list
 
         for (Product product1 :list ){
-            if (product1.getId().equals(product.getId())){
+            if (product1.getId().equals(product.getId()) && product1.getSize().getId()==  product.getSize().getId()){
                 quantity = Integer.parseInt(product1.getQuantity()) +  Integer.parseInt(elegantNumberButton.getNumber());
                 product1.setQuantity(String.valueOf(quantity));
                 list.set(index,product1);
@@ -160,7 +221,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
         if (!check){
             quantity = Integer.parseInt(elegantNumberButton.getNumber());
             product.setQuantity(String.valueOf(quantity));
-            list.add(product);
+            list.add(product.clone());
         }
         ((MasterClass) master).setProductList(list);
 

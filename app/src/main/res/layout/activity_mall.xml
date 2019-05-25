@@ -43,21 +43,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/transparent" />
+                        android:src="@drawable/transparent"
+                        android:visibility="gone"/>
 
-                    <LinearLayout
-                        android:layout_width="20pt"
-                        android:layout_height="20pt"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="10pt"
-                        android:background="@drawable/app_icon_border"
-                        android:gravity="center">
 
-                        <ImageView
-                            android:layout_width="20pt"
-                            android:layout_height="20pt"
-                            android:src="@mipmap/app_icon" />
-                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"

@@ -3,6 +3,7 @@ package com.example.yala_mall.models;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.security.PublicKey;
 import java.util.List;
 
 public class Product implements Serializable {
@@ -52,9 +53,13 @@ public class Product implements Serializable {
     private
     int shop_id;
 
-    @SerializedName("size_pcategory_id")
+    @SerializedName("productsize")
     private
-    int size_pcategory_id;
+    List<ProductSize> productsize;
+
+    public List<ProductSize> getProductsize() {
+        return productsize;
+    }
 
     @SerializedName("gallery")
     private
@@ -63,13 +68,46 @@ public class Product implements Serializable {
     @SerializedName("quantity")
     private String quantity;
 
+    @SerializedName("size")
+    private Size size;
+
+
+    public  Product clone()
+    {
+        Product temp =   new Product(this.name ,this.price);
+        temp.setQuantity(this.getQuantity());
+        temp.id = this.id;
+        temp.product_id = this.product_id;
+        temp.mall_id = this.mall_id;
+        temp.quantity = this.quantity;
+        temp.gallery = this.gallery;
+        temp.discount = this.discount;
+        temp.size = this.size;
+
+      return  temp;
+
+    }
+    public Size getSize() {
+        return size;
+    }
+
+    public void setSize(Size size) {
+        this.size = size;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
     @SerializedName("notes")
     private String notes="";
 
-    public Product(String name, String price) {
+    public Product(String name, String price ) {
         this.name = name;
         this.price = price;
     }
+
+
 
     public Integer getId() {
         return id;
@@ -103,9 +141,6 @@ public class Product implements Serializable {
         return shop_id;
     }
 
-    public int getSize_pcategory_id() {
-        return size_pcategory_id;
-    }
 
     public List<Gallery> getGallery() {
         return gallery;

@@ -2,35 +2,38 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:layoutDirection="rtl">
+    android:layoutDirection="rtl"
+    >
     <ImageView
         android:id="@+id/daimajia_slider_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <LinearLayout
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/linear_offer"
-        android:layout_width="100pt"
-        android:layout_height="50pt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
+        android:gravity="center"
         android:padding="5pt"
-        android:layout_marginTop="10pt"
-        android:background="@color/colorPrimary">
+       >
     <TextView
         android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimaryDark"
-        android:textAlignment="textStart"/>
+        android:textColor="@color/white"
+        android:textAlignment="textStart"
+        android:textSize="16pt"/>
     <TextView
         android:id="@+id/description"
         android:textColor="@color/white"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="textStart"/>
     </LinearLayout>
     <ProgressBar
         android:id="@+id/loading_bar"
+        android:visibility="gone"
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

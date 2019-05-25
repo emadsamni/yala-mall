@@ -6,6 +6,11 @@ import java.io.Serializable;
 
 public class Size implements Serializable {
 
+    public Size(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @SerializedName("id")
     private
     int id;

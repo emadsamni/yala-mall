@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
     implementation 'com.cepheuen.elegant-number-button:lib:1.0.2'
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.jcodecraeer:xrecyclerview:1.5.9'
 //    //for fonts
     implementation 'io.github.inflationx:calligraphy3:3.1.0'
     implementation 'io.github.inflationx:viewpump:1.0.0'

@@ -186,13 +186,20 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         file_maps.put("slider3", R.drawable.slide3);
 
 
+        List<Offer> offerList =new ArrayList<>();
+
+        offerList.add(new Offer("Qassion Mall",""));
+        offerList.add(new Offer("City Mall",""));
+        offerList.add(new Offer("Damaskino Mall",""));
+
         /*HashMap<String,String> file_maps = new HashMap<>();
          for (Offer offer : offers)
             file_maps.put("offer"+offer.getId(), Constants.IMG_URL +offer.getImage());*/
 
-
+          int i =0;
         for (String name : file_maps.keySet()) {
-            MySliderAdapter textSliderView = new MySliderAdapter(this, new Offer("", ""));
+
+            MySliderAdapter textSliderView = new MySliderAdapter(this, offerList.get(i));
             // initialize a SliderLayout
             textSliderView
                     .image(file_maps.get(name))
@@ -205,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
                     .putString("extra", name);
 
             mDemoSlider.addSlider(textSliderView);
+            i++;
         }
         mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Fade);
         mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);

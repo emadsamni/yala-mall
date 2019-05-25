@@ -111,7 +111,23 @@
                                 android:tint="@color/white"/>
 
                         </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:id="@+id/linearLayout_sign_up"
+                            android:paddingLeft="10dp"
 
+                            >
+                            <ImageView
+                                android:layout_gravity="center_vertical"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/yala_mall_icon2"
+                                />
+                        </LinearLayout>
                     </LinearLayout>
 
                 </LinearLayout>

@@ -42,9 +42,17 @@ public class RecyclerConfirmProductsAdapter extends RecyclerView.Adapter<Recycle
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Product product =list.get(i);
         viewHolder.productName.setText(product.getName());
+        if ( !product.getGallery().isEmpty())
         Picasso.with(context)
                 .load(Constants.IMG_URL+product.getGallery().get(0).getImage())
                 .into(viewHolder.productImage);
+        else
+            viewHolder.productImage.setImageResource(R.drawable.defult_image);
+
+        if (product.getSize().getId()!=-1)
+            viewHolder.productSize.setText(product.getSize().getName());
+        else
+            viewHolder.productSize.setVisibility(View.GONE);
         viewHolder.priceText.setText(Double.parseDouble(product.getPrice())*Double.parseDouble(product.getDiscount())+"");
         viewHolder.quantityText.setText(product.getQuantity());
         viewHolder.noteEditText.setText(product.getNote());
@@ -79,7 +87,7 @@ public class RecyclerConfirmProductsAdapter extends RecyclerView.Adapter<Recycle
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;
         TextView productName;
-        TextView quantityText;
+        TextView quantityText , productSize;;
         TextView priceText;
         TextView sumPriceText;
         EditText noteEditText;
@@ -92,6 +100,7 @@ public class RecyclerConfirmProductsAdapter extends RecyclerView.Adapter<Recycle
             priceText = itemView.findViewById(R.id.product_price);
             sumPriceText = itemView.findViewById(R.id.product_sum);
             noteEditText = itemView.findViewById(R.id.product_note);
+            productSize = itemView.findViewById(R.id.size);
 
         }
     }

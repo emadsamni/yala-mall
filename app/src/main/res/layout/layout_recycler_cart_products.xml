@@ -29,6 +29,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+        <TextView
+            android:id="@+id/size"
+            android:layout_margin="2pt"
+            android:padding="2pt"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cart_border"/>
+
     <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
         android:id="@+id/quantity_button"
         android:layout_width="50pt"

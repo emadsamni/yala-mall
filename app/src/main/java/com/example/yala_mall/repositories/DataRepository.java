@@ -55,6 +55,7 @@ public class DataRepository {
     private MutableLiveData<List<com.example.yala_mall.models.Size>> sizes;
     private MutableLiveData<List<Product>> productDetails;
     private MutableLiveData<List<City>> cities;
+    private MutableLiveData<List<Product>> sizesByProduct;
     private CustomerUtils customerUtils;
 
 
@@ -74,6 +75,13 @@ public class DataRepository {
         getFilterList(context ,selectedMap);
         return products;
     }
+    public LiveData<List<Product>> getSizeByProduct(Context context , int productId){
+        sizesByProduct = new MutableLiveData<>();
+        getSizesByProductApi(context ,productId);
+        return sizesByProduct;
+    }
+
+
 
     public LiveData<List<City>> getCities(Context context){
         cities = new MutableLiveData<>();
@@ -90,15 +98,15 @@ public class DataRepository {
     }
 
 
-    public LiveData<List<Product>> getProductsByShop(Context context ,int shop_id){
+    public LiveData<List<Product>> getProductsByShop(Context context ,int shop_id , int lastId){
         productsByShop = new MutableLiveData<>();
-        getProductsListByShop(context ,shop_id);
+        getProductsListByShop(context ,shop_id , lastId);
         return productsByShop;
     }
 
-    public LiveData<List<Product>> getProductsByMall(Context context ,int mall_id){
+    public LiveData<List<Product>> getProductsByMall(Context context ,int mall_id , int lastId){
         productsByMall = new MutableLiveData<>();
-        getProductsListByMall(context ,mall_id);
+        getProductsListByMall(context ,mall_id , lastId);
         return productsByMall;
     }
 
@@ -108,9 +116,9 @@ public class DataRepository {
         return mall;
     }
 
-    public LiveData<List<Product>> getProductsByCategory(Context context ,int categoryId){
+    public LiveData<List<Product>> getProductsByCategory(Context context ,int categoryId ,int lastId){
         products = new MutableLiveData<>();
-        getProductListByCategory(context ,categoryId);
+        getProductListByCategory(context ,categoryId ,lastId);
         return products;
     }
     public LiveData<List<Offer>> getOffers(Context context){
@@ -255,15 +263,16 @@ public class DataRepository {
 
 
     }
-    private  void  getProductsListByMall (Context context ,int  mall_id ) {
+    private  void  getProductsListByMall (Context context ,int  mall_id , int lastId ) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<ApiResponse<List<Product>>> call = apiService.getProductByMall(Constants.API_KEY, mall_id);
+        Call<ApiResponse<List<Product>>> call = apiService.getProductByMall(Constants.API_KEY, mall_id , lastId);
          call.enqueue(new CallbackWithRetry<ApiResponse<List<Product>>>(call,context,3) {
              @Override
              public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
                  if (!response.isSuccessful()){
                      ProgressDialog.getInstance().cancel();
                      Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                     return;
                  }
                  ProgressDialog.getInstance().cancel();
                  if (response.body().getData() != null)
@@ -278,9 +287,9 @@ public class DataRepository {
 
     }
 
-    private  void  getProductsListByShop (Context context ,int  shop_id ) {
+    private  void  getProductsListByShop (Context context ,int  shop_id  , int lastId ) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<ApiResponse<List<Product>>> call = apiService.getProductByShop(Constants.API_KEY, shop_id);
+        Call<ApiResponse<List<Product>>> call = apiService.getProductByShop(Constants.API_KEY, shop_id ,lastId);
 
         call.enqueue(new CallbackWithRetry<ApiResponse<List<Product>>>(call,context,3) {
             @Override
@@ -288,6 +297,7 @@ public class DataRepository {
                 if (!response.isSuccessful()){
                     ProgressDialog.getInstance().cancel();
                     Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 ProgressDialog.getInstance().cancel();
                 if (response.body().getData() != null)
@@ -325,10 +335,10 @@ public class DataRepository {
         });
 
     }
-    private  void  getProductListByCategory(Context context ,int  categoryId )
+    private  void  getProductListByCategory(Context context ,int  categoryId ,int lastId )
     {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<ApiResponse<List<Product>>> call = apiService.getProductByCategory(Constants.API_KEY ,categoryId);
+        Call<ApiResponse<List<Product>>> call = apiService.getProductByCategory(Constants.API_KEY ,categoryId ,lastId);
 
         call.enqueue(new CallbackWithRetry<ApiResponse<List<Product>>>(call,context,3) {
             @Override
@@ -336,6 +346,7 @@ public class DataRepository {
                 if (!response.isSuccessful()){
                     ProgressDialog.getInstance().cancel();
                     Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 ProgressDialog.getInstance().cancel();
                 if (response.body().getData() != null)
@@ -511,6 +522,34 @@ public class DataRepository {
             }
         });
 
+
+    }
+
+
+    private void getSizesByProductApi(Context context, int productId) {
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<List<Product>>> call=apiService.getSizes(Constants.API_KEY , productId );
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Product>>>(call,context,3) {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Product>>> call, Response<ApiResponse<List<Product>>> response) {
+                if (! response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toasty.custom(application, R.string.internet_error, null,
+                            application.getResources().getColor(R.color.colorPrimary), Constants.TOAST_TIME, false, true).show();
+                    return ;
+                }
+                ProgressDialog.getInstance().cancel();
+                if (response.body().getData() != null)
+                    sizesByProduct.postValue(response.body().getData());
+                return;
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Product>>> call, Throwable t) {
+
+            }
+        });
 
     }
 }

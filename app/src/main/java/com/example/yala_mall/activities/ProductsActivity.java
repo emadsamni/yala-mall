@@ -29,7 +29,9 @@ import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.viewModels.DataViewModel;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,7 +41,8 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
 
 
     DataViewModel dataViewModel;
-    RecyclerView recyclerView;
+    XRecyclerView recyclerView;
+    List<Product> productList;
     RecyclerProductAdapter adapter;
     TextView orderCount;
     Application master;
@@ -48,6 +51,7 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
     int categoryId;
     Category category;
     TextView pageTitle, catName;
+    int productsCycle;
 
 
 
@@ -75,6 +79,13 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         changeCartCount();
         pageTitle = findViewById(R.id.page_title);
         catName = findViewById(R.id.cat_name);
+        productList = new ArrayList<>();
+        adapter = new RecyclerProductAdapter(productList, ProductsActivity.this, ProductsActivity.this);
+        recyclerView.setAdapter(adapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(ProductsActivity.this);
+        layoutManager = new GridLayoutManager(ProductsActivity.this, 2);
+        recyclerView.setLayoutManager(layoutManager);
+        productsCycle =0;
     }
 
     private void assignAction() {
@@ -85,6 +96,18 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
             public void onClick(View v) {
                 getProductsByCategory(categoryId);
                 filterCancelButton.setVisibility(View.GONE);
+            }
+        });
+        recyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
+            @Override
+            public void onRefresh() {
+               productList =new ArrayList<>();
+               getProductsByCategory(categoryId);
+            }
+
+            @Override
+            public void onLoadMore() {
+                getProductsByCategory(categoryId);
             }
         });
     }
@@ -100,16 +123,33 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
 
 
     public void getProductsByCategory(int categoryId) {
-        dataViewModel.getProductListByCategory(this, categoryId).observe(this, new Observer<List<Product>>() {
-            @Override
-            public void onChanged(@Nullable List<Product> products) {
-                adapter = new RecyclerProductAdapter(products, ProductsActivity.this, ProductsActivity.this);
-                recyclerView.setAdapter(adapter);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(ProductsActivity.this);
-                layoutManager = new GridLayoutManager(ProductsActivity.this, 2);
-                recyclerView.setLayoutManager(layoutManager);
-            }
-        });
+        if (productList.isEmpty()) {
+            dataViewModel.getProductListByCategory(this, categoryId, 0).observe(this, new Observer<List<Product>>() {
+                @Override
+                public void onChanged(@Nullable List<Product> products) {
+                    productList =products;
+                    adapter = new RecyclerProductAdapter(productList, ProductsActivity.this, ProductsActivity.this);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.refreshComplete();
+                }
+            });
+        }
+        else
+        {
+            productsCycle = productsCycle+10;
+            dataViewModel.getProductListByCategory(this, categoryId, productsCycle).observe(this, new Observer<List<Product>>() {
+
+                @Override
+                public void onChanged(@Nullable List<Product> products) {
+                    if (!products.isEmpty()) {
+                        productList.addAll(products);
+                        recyclerView.notifyItemInserted(productList,productList.size()-1);
+
+                    }
+                    recyclerView.loadMoreComplete();
+                }
+            });
+        }
 
     }
 

@@ -204,7 +204,7 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     }
 
     private void getProduct(int shopId) {
-        dataViewModel.getProductsByShop(this ,shopId).observe(this, new Observer<List<Product>>() {
+        dataViewModel.getProductsByShop(this ,shopId ,0).observe(this, new Observer<List<Product>>() {
             @Override
             public void onChanged(@Nullable List<Product> products) {
                 productsAdapter = new RecyclerProductAdapter(products ,ShopActivity.this,ShopActivity.this );

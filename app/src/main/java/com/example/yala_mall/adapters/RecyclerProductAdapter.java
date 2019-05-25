@@ -43,7 +43,9 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
 
         viewHolder.textView.setText(current.getName());
         viewHolder.priceTextView.setText(current.getPrice() + " ل . س");
+        if ( !current.getGallery().isEmpty())
         Picasso.with(context).load(Constants.IMG_URL+current.getGallery().get(0).getImage()).into(viewHolder.imageView);
+        else  viewHolder.imageView.setImageResource(R.drawable.defult_image);
         if ( Double.parseDouble(list.get(i).getDiscount()) != 1 )
         {
             viewHolder.line.setVisibility(View.VISIBLE);
