@@ -197,6 +197,10 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         master = (MasterClass) getApplication();
         if (!((MasterClass) master).getProductList().isEmpty())
             orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+        else
+        {
+            orderCount.setText("0");
+        }
     }
 
     @Override

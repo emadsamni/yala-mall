@@ -40,6 +40,12 @@ public class Shop implements Serializable {
     private
     List<Offer> offers;
 
+    @SerializedName("shop_status")
+    private
+    ShopStatus shop_status;
+
+
+
 
     public List<Offer> getOffers() {
         return offers;
@@ -71,5 +77,9 @@ public class Shop implements Serializable {
 
     public String getLogo() {
         return logo;
+    }
+
+    public ShopStatus getShop_status() {
+        return shop_status;
     }
 }

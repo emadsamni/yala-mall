@@ -54,7 +54,7 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     RecyclerProductAdapter productsAdapter;
     MaterialSearchView searchView;
     LinearLayout searchLayout;
-    TextView orderCount;
+    TextView orderCount , shopStatus;
     Application master;
     RelativeLayout cartImage;
     Button filterButton, filterCancelButton;
@@ -81,6 +81,11 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         shopId = shop.getId();
         pageTitle.setText(shop.getName());
         shopName.setText(shop.getName());
+        shopStatus.setText(shop.getShop_status().getName());
+        if (shop.getShop_status_id() == 2)
+        {
+            shopStatus.setTextColor(getResources().getColor(R.color.green));
+        }
         getOffers(shop.getId());
     }
 
@@ -136,6 +141,7 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         searchView = findViewById(R.id.search_view);
         searchLayout = findViewById(R.id.linearLayout_search);
         orderCount = findViewById(R.id.cart_number);
+        shopStatus = findViewById(R.id.status);
         filterButton =   findViewById(R.id.filter_button);
         cartImage = findViewById(R.id.linearLayout_cart);
         filterCancelButton = findViewById(R.id.filter_cancel_button);
@@ -303,6 +309,10 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         master = (MasterClass) getApplication();
         if (!((MasterClass) master).getProductList().isEmpty())
             orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+        else
+        {
+            orderCount.setText("0");
+        }
     }
 
     private void setOnClickCartImage(View view){

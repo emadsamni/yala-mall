@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
             mDemoSlider.addSlider(textSliderView);
             i++;
         }
-        mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Fade);
+        mDemoSlider.setPresetTransformer(SliderLayout.Transformer.FlipHorizontal);
         mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
         mDemoSlider.setCustomAnimation(new DescriptionAnimation());
         mDemoSlider.setDuration(4000);
@@ -297,6 +297,10 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         master = (MasterClass) getApplication();
         if (!((MasterClass) master).getProductList().isEmpty())
             orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+        else
+        {
+            orderCount.setText("0");
+        }
     }
 
     private void setOnClickCartImage(View view) {

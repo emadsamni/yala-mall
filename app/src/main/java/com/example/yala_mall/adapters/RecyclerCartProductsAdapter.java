@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.example.yala_mall.R;
@@ -61,6 +62,13 @@ public class RecyclerCartProductsAdapter extends RecyclerView.Adapter<RecyclerCa
              listener.clickElegantButton(product,viewHolder.numberButton.getNumber());
             }
         });
+
+        viewHolder.removeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.remove(i);
+            }
+        });
     }
 
     @Override
@@ -69,7 +77,7 @@ public class RecyclerCartProductsAdapter extends RecyclerView.Adapter<RecyclerCa
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView productImage;
+        ImageView productImage , removeImage;
         TextView productName , productSize;
         ElegantNumberButton numberButton;
 
@@ -79,6 +87,7 @@ public class RecyclerCartProductsAdapter extends RecyclerView.Adapter<RecyclerCa
             productName = itemView.findViewById(R.id.product_name);
             numberButton = itemView.findViewById(R.id.quantity_button);
             productSize = itemView.findViewById(R.id.size);
+            removeImage = itemView.findViewById(R.id.remove);
 
         }
     }

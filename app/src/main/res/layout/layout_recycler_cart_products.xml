@@ -15,13 +15,24 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center">
+   <RelativeLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/product_image"
-        android:layout_width="match_parent"
-        android:layout_height="100pt"
-        android:layout_margin="5pt"
-        />
+       <ImageView
+           android:id="@+id/product_image"
+           android:layout_width="match_parent"
+           android:layout_height="100pt"
+           android:layout_margin="5pt"
+           />
+       <ImageView
+           android:layout_width="30dp"
+           android:layout_height="30dp"
+           android:id="@+id/remove"
+           android:src="@drawable/remove"
+           android:layout_alignParentRight="true"/>
+   </RelativeLayout>
+
 
     <TextView
         android:id="@+id/product_name"

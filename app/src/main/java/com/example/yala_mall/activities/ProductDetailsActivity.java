@@ -233,6 +233,10 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
         master = (MasterClass) getApplication();
         if (!((MasterClass) master).getProductList().isEmpty())
             orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+        else
+        {
+            orderCount.setText("0");
+        }
     }
     private void setOnClickCartImage(View view){
         startActivity(new Intent(ProductDetailsActivity.this,CartActivity.class));

@@ -19,6 +19,7 @@ import com.example.yala_mall.models.Product;
 import com.example.yala_mall.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
@@ -94,6 +95,17 @@ public class CartActivity extends AppCompatActivity implements OnClickElegantBut
 
         totalPrice.setText("المجموع : "+String.valueOf(getSum()));
 
+    }
+
+    @Override
+    public void remove(int i) {
+        ArrayList<Product> list =((MasterClass)getApplication()).getProductList();
+        list.remove(i);
+        ((MasterClass)getApplication()).setProductList(list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerAdapter = new RecyclerCartProductsAdapter(((MasterClass)getApplication()).getProductList(),this,this);
+        recyclerView.setAdapter(recyclerAdapter);
+        totalPrice.setText("المجموع : "+String.valueOf(getSum()));
     }
 
 

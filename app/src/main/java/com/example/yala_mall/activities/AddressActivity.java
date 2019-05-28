@@ -70,9 +70,14 @@ public class AddressActivity extends AppCompatActivity {
     }
 
     private void changeCartCount(){
+        orderCount = findViewById(R.id.cart_number);
         master = (MasterClass) getApplication();
         if (!((MasterClass) master).getProductList().isEmpty())
             orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+        else
+        {
+            orderCount.setText("0");
+        }
     }
 
     @Override

@@ -97,6 +97,10 @@ public class SearchActivity extends AppCompatActivity implements OnItemProductCl
         master = (MasterClass) getApplication();
         if (!((MasterClass) master).getProductList().isEmpty())
             orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+        else
+        {
+            orderCount.setText("0");
+        }
     }
 
     private void setOnClickCartImage(View view){

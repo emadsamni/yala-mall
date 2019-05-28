@@ -370,6 +370,10 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         master = (MasterClass) getApplication();
         if (!((MasterClass) master).getProductList().isEmpty())
             orderCount.setText(String.valueOf(((MasterClass) master).getProductList().size()));
+        else
+        {
+            orderCount.setText("0");
+        }
     }
 
     private void setOnClickCartImage(View view) {
