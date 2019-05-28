@@ -165,6 +165,7 @@ public class LoginRepository {
                 if (!response.isSuccessful()){
                     ProgressDialog.getInstance().cancel();
                     Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 ProgressDialog.getInstance().cancel();
                 if (response.body().getData() != null)

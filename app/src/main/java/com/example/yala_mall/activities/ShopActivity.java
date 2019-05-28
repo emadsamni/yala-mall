@@ -37,8 +37,10 @@ import com.example.yala_mall.models.Product;
 import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.viewModels.DataViewModel;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,7 +49,8 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 public class ShopActivity extends AppCompatActivity implements OnItemProductClicked, OnClickFilterButton, BaseSliderView.OnSliderClickListener {
 
     DataViewModel dataViewModel;
-    RecyclerView productsRecyclerView;
+    List<Product> productList;
+    XRecyclerView productsRecyclerView;
     RecyclerProductAdapter productsAdapter;
     MaterialSearchView searchView;
     LinearLayout searchLayout;
@@ -63,6 +66,9 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     LinearLayout filterLayout ,shopLayout;
     RelativeLayout slideLayout;
     ScrollView scrollView;
+    int productsCycle;
+    boolean filter_status =false;
+    HashMap<String, Integer> gSpinnerMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,10 +157,39 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
             }
         });
 
+        productList = new ArrayList<>();
+        productsAdapter = new RecyclerProductAdapter(productList, ShopActivity.this, ShopActivity.this);
+        productsRecyclerView.setAdapter(productsAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(ShopActivity.this);
+        layoutManager = new GridLayoutManager(ShopActivity.this, 2);
+        productsRecyclerView.setLayoutManager(layoutManager);
+        productsCycle =0;
+
 
     }
 
     private void assignAction() {
+
+
+        productsRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
+            @Override
+            public void onRefresh() {
+                productsCycle =0;
+                productList =new ArrayList<>();
+                if (filter_status )
+                  getProductByFilter();
+                    else
+                getProduct(shop.getId());
+            }
+
+            @Override
+            public void onLoadMore() {
+                if (filter_status )
+                    getProductByFilter();
+                else
+                    getProduct(shop.getId());
+            }
+        });
         cartImage.setOnClickListener(this::setOnClickCartImage);
 
         searchLayout.setOnClickListener(new View.OnClickListener() {
@@ -193,6 +228,8 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         filterCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                filter_status= false;
+                productsCycle=0;
                 getProduct(shopId);
                 filterCancelButton.setVisibility(View.GONE);
             }
@@ -204,17 +241,32 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     }
 
     private void getProduct(int shopId) {
-        dataViewModel.getProductsByShop(this ,shopId ,0).observe(this, new Observer<List<Product>>() {
-            @Override
-            public void onChanged(@Nullable List<Product> products) {
-                productsAdapter = new RecyclerProductAdapter(products ,ShopActivity.this,ShopActivity.this );
-                productsRecyclerView.setAdapter(productsAdapter);
-                LinearLayoutManager layoutManager =new LinearLayoutManager( ShopActivity.this);
-                layoutManager =new GridLayoutManager(ShopActivity.this,2);
-                productsRecyclerView.setLayoutManager(layoutManager);
-                scrollView.smoothScrollTo(0,0);
-            }
-        });
+        if (productList.isEmpty()) {
+            dataViewModel.getProductsByShop(this, shopId, 0).observe(this, new Observer<List<Product>>() {
+                @Override
+                public void onChanged(@Nullable List<Product> products) {
+                    productList= products;
+                    productsAdapter = new RecyclerProductAdapter(products, ShopActivity.this, ShopActivity.this);
+                    productsRecyclerView.setAdapter(productsAdapter);
+                    productsRecyclerView.refreshComplete();
+
+                }
+            });
+        }
+        else {
+            productsCycle = productsCycle+10;
+            dataViewModel.getProductsByShop(this, shopId, productsCycle).observe(this, new Observer<List<Product>>() {
+                @Override
+                public void onChanged(@Nullable List<Product> products) {
+                    if (!products.isEmpty()) {
+                        productList.addAll(products);
+                        productsRecyclerView.notifyItemInserted(productList,productList.size()-1);
+                    }
+                    productsRecyclerView.loadMoreComplete();
+                }
+            });
+
+        }
     }
 
     @Override
@@ -260,22 +312,45 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     @Override
     public void onFilterButtonClicked(HashMap<String, Integer> spinnerMap) {
         if (spinnerMap.size()!=0) {
-            spinnerMap.put("shop_id", shopId);
-            dataViewModel.getFilter(this, spinnerMap).observe(this, new Observer<List<Product>>() {
-                @Override
-                public void onChanged(@Nullable List<Product> products) {
-                    productsAdapter = new RecyclerProductAdapter(products, ShopActivity.this, ShopActivity.this);
-                    productsRecyclerView.setAdapter(productsAdapter);
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(ShopActivity.this);
-                    layoutManager = new GridLayoutManager(ShopActivity.this, 2);
-                    productsRecyclerView.setLayoutManager(layoutManager);
-                    filterCancelButton.setVisibility(View.VISIBLE);
-                }
-            });
+            gSpinnerMap = spinnerMap;
+            gSpinnerMap.put("shop_id", shopId);
+            productList.clear();
+            productsCycle = 0;
+            filter_status = true;
+            getProductByFilter();
         }
 
     }
+    public  void  getProductByFilter()
+    {
+            if (productList.isEmpty()) {
+                dataViewModel.getFilter(this, gSpinnerMap, 0).observe(this, new Observer<List<Product>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Product> products) {
+                        productsAdapter = new RecyclerProductAdapter(products, ShopActivity.this, ShopActivity.this);
+                        productsRecyclerView.setAdapter(productsAdapter);
+                        productsRecyclerView.refreshComplete();
+                        filterCancelButton.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+            else
+            {
+                productsCycle = productsCycle+10;
+                dataViewModel.getFilter(this, gSpinnerMap, productsCycle).observe(this, new Observer<List<Product>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Product> products) {
+                        if (!products.isEmpty()) {
+                            productList.addAll(products);
+                            productsRecyclerView.notifyItemInserted(productList,productList.size()-1);
+                        }
+                        productsRecyclerView.loadMoreComplete();
+                    }
+                });
+            }
 
+
+    }
     @Override
     public void onSliderClick(BaseSliderView slider) {
 

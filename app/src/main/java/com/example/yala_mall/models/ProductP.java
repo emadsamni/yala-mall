@@ -14,7 +14,10 @@ public class ProductP implements Serializable {
            this.notes = notes;
         else
             this.notes ="";
-        this.size_id =size_id;
+        if (size_id == -1)
+            this.size_id ="";
+        else
+           this.size_id =size_id+"";
     }
 
     @SerializedName("product_id")
@@ -23,7 +26,7 @@ public class ProductP implements Serializable {
 
     @SerializedName("size_id")
     private
-    int size_id;
+    String size_id;
 
 
     @SerializedName("quantity")
@@ -34,7 +37,7 @@ public class ProductP implements Serializable {
     private
     String notes;
 
-    public int getSize_id() {
+    public String getSize_id() {
         return size_id;
     }
 

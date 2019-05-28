@@ -14,6 +14,7 @@ import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.models.ProductP;
 import com.example.yala_mall.models.Size;
+import com.example.yala_mall.models.Slide;
 import com.example.yala_mall.repositories.DataRepository;
 import com.example.yala_mall.utils.ProgressDialog;
 
@@ -26,6 +27,7 @@ public class DataViewModel extends AndroidViewModel {
     private LiveData<List<Category>> categoryList;
     private LiveData<Category> pcCategoryBySCategory;
     private LiveData<List<Offer>> offers;
+    private LiveData<List<Offer>> sliders;
     private LiveData<List<Offer>> offersByShop;
     private LiveData<Mall> offersByMall;
     private LiveData<List<Mall>> malls;
@@ -58,6 +60,14 @@ public class DataViewModel extends AndroidViewModel {
             malls = repository.getMalls(context);
         }
         return malls;
+    }
+
+    public LiveData<List<Offer>> getSliders(Context context){
+        if (sliders==null) {
+            ProgressDialog.getInstance().show(context);
+            sliders = repository.getSliders(context);
+        }
+        return sliders;
     }
 
     public LiveData<List<Offer>> getOffers(Context context){
@@ -130,10 +140,10 @@ public class DataViewModel extends AndroidViewModel {
         return mall;
     }
 
-    public LiveData<List<Product>> getProductsByMall(Context context , int mallId ){
+    public LiveData<List<Product>> getProductsByMall(Context context , int mallId ,int lastId ){
 
             //ProgressDialog.getInstance().show(context);
-            productsByMall = repository.getProductsByMall(context ,mallId ,0);
+            productsByMall = repository.getProductsByMall(context ,mallId ,lastId);
 
         return productsByMall;
     }
@@ -146,10 +156,10 @@ public class DataViewModel extends AndroidViewModel {
         return productsByShop;
     }
 
-    public LiveData<List<Product>> getFilter(Context context , HashMap<String, Integer> selectedMap){
+    public LiveData<List<Product>> getFilter(Context context , HashMap<String, Integer> selectedMap ,int lastId){
 
             ProgressDialog.getInstance().show(context);
-            products = repository.getFilter(context ,selectedMap);
+            products = repository.getFilter(context ,selectedMap , lastId);
 
         return products;
     }

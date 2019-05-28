@@ -23,7 +23,7 @@ public class MasterClass extends Application {
         ViewPump.init(ViewPump.builder()
                 .addInterceptor(new CalligraphyInterceptor(
                         new CalligraphyConfig.Builder()
-                                .setDefaultFontPath("fonts/Cairo-SemiBold.ttf")
+                                .setDefaultFontPath("fonts/Cairo-Regular.ttf")
                                 .setFontAttrId(R.attr.fontPath)
                                 .build()))
                 .build());

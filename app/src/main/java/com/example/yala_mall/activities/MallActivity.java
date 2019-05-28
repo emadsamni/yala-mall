@@ -45,6 +45,7 @@ import com.example.yala_mall.models.Product;
 import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.viewModels.DataViewModel;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
@@ -58,7 +59,8 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
     DataViewModel dataViewModel;
     RecyclerView recyclerView;
     RecyclerShopAdapter adapter;
-    RecyclerView productsRecyclerView;
+    List<Product> productList;
+    XRecyclerView productsRecyclerView;
     RecyclerProductAdapter productsAdapter;
     LinearLayout searchLayout;
     MaterialSearchView searchView;
@@ -72,6 +74,9 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
     RelativeLayout rootRelativeLayout;
     LinearLayout filterLayout;
     RelativeLayout slideLayout;
+    boolean filter_status =false;
+    HashMap<String, Integer> gSpinnerMap;
+    int productsCycle;
 
 
     @Override
@@ -131,7 +136,14 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         changeCartCount();
         pageTitle = findViewById(R.id.page_title);
         filterLayout = (LinearLayout) findViewById(R.id.filter_Layout);
-
+        productList = new ArrayList<>();
+        productsAdapter = new RecyclerProductAdapter(productList, MallActivity.this, MallActivity.this);
+        productsRecyclerView.setAdapter(productsAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(MallActivity.this);
+        layoutManager = new GridLayoutManager(MallActivity.this, 2);
+        layoutManager.setItemPrefetchEnabled(false);
+        productsRecyclerView.setLayoutManager(layoutManager);
+        productsCycle =0;
         rootRelativeLayout = (RelativeLayout) findViewById(R.id.root_layout);
         final ViewTreeObserver observer = rootRelativeLayout.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -143,9 +155,31 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
             }
         });
 
+
+
     }
 
     private void assignAction() {
+
+        productsRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
+            @Override
+            public void onRefresh() {
+                productsCycle =0;
+                productList =new ArrayList<>();
+                if (filter_status )
+                    getProductByFilter(true);
+                else
+                    getProduct(mall.getId() ,true);
+            }
+
+            @Override
+            public void onLoadMore() {
+                if (filter_status )
+                    getProductByFilter(false);
+                else
+                    getProduct(mall.getId() ,false);
+            }
+        });
         cartImage.setOnClickListener(this::setOnClickCartImage);
 
         searchLayout.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +218,9 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         filterCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getProduct(mall.getId());
+                filter_status= false;
+                productsCycle=0;
+                getProduct(mall.getId(),true);
                 filterCancelButton.setVisibility(View.GONE);
             }
         });
@@ -206,22 +242,38 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
                 LinearLayoutManager layoutManager = new LinearLayoutManager(MallActivity.this);
                 layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
                 recyclerView.setLayoutManager(layoutManager);
-                getProduct(mall.getId());
+                getProduct(mall.getId() ,true);
             }
         });
     }
 
-    private void getProduct(int mallId) {
-        dataViewModel.getProductsByMall(this, mallId).observe(this, new Observer<List<Product>>() {
-            @Override
-            public void onChanged(@Nullable List<Product> products) {
-                productsAdapter = new RecyclerProductAdapter(products, MallActivity.this, MallActivity.this);
-                productsRecyclerView.setAdapter(productsAdapter);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(MallActivity.this);
-                layoutManager = new GridLayoutManager(MallActivity.this, 2);
-                productsRecyclerView.setLayoutManager(layoutManager);
-            }
-        });
+    private void getProduct(int mallId , boolean state) {
+        if (state) {
+            dataViewModel.getProductsByMall(this, mallId ,0).observe(this, new Observer<List<Product>>() {
+                @Override
+                public void onChanged(@Nullable List<Product> products) {
+                    productList= products;
+                    productsAdapter = new RecyclerProductAdapter(products, MallActivity.this, MallActivity.this);
+                    productsRecyclerView.setAdapter(productsAdapter);
+                    productsRecyclerView.refreshComplete();
+
+                }
+            });
+        }
+        else
+        {
+            productsCycle = productsCycle+10;
+            dataViewModel.getProductsByMall(this, mallId ,productsCycle).observe(this, new Observer<List<Product>>() {
+                @Override
+                public void onChanged(@Nullable List<Product> products) {
+                    if (!products.isEmpty()) {
+                        productList.addAll(products);
+                        productsRecyclerView.notifyItemInserted(productList,productList.size()-1);
+                    }
+                    productsRecyclerView.loadMoreComplete();
+                }
+            });
+        }
     }
 
     @Override
@@ -262,23 +314,47 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
 
     @Override
     public void onFilterButtonClicked(HashMap<String, Integer> spinnerMap) {
-        if (spinnerMap.size() != 0) {
 
-            spinnerMap.put("mall_id", mall.getId());
-            dataViewModel.getFilter(this, spinnerMap).observe(this, new Observer<List<Product>>() {
+        if (spinnerMap.size()!=0) {
+            gSpinnerMap = spinnerMap;
+            gSpinnerMap.put("mall_id", mall.getId());
+            //productList.clear();
+            productsCycle = 0;
+            filter_status = true;
+            getProductByFilter(true);
+        }
+    }
+    public  void  getProductByFilter(boolean stat)
+    {
+        if (stat) {
+            dataViewModel.getFilter(this, gSpinnerMap, 0).observe(this, new Observer<List<Product>>() {
                 @Override
                 public void onChanged(@Nullable List<Product> products) {
+                    productList= products;
                     productsAdapter = new RecyclerProductAdapter(products, MallActivity.this, MallActivity.this);
                     productsRecyclerView.setAdapter(productsAdapter);
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(MallActivity.this);
-                    layoutManager = new GridLayoutManager(MallActivity.this, 2);
-                    productsRecyclerView.setLayoutManager(layoutManager);
+                    productsRecyclerView.refreshComplete();
                     filterCancelButton.setVisibility(View.VISIBLE);
                 }
             });
         }
-    }
+        else
+        {
+            productsCycle = productsCycle+10;
+            dataViewModel.getFilter(this, gSpinnerMap, productsCycle).observe(this, new Observer<List<Product>>() {
+                @Override
+                public void onChanged(@Nullable List<Product> products) {
+                    if (!products.isEmpty()) {
+                        productList.addAll(products);
+                        productsRecyclerView.notifyItemInserted(productList,productList.size()-1);
+                    }
+                    productsRecyclerView.loadMoreComplete();
+                }
+            });
+        }
 
+
+    }
     @Override
     public void onProductClick(Product product) {
         startActivity(new Intent(this, ProductDetailsActivity.class).putExtra("productId", String.valueOf(product.getId())).putExtra("product", product));

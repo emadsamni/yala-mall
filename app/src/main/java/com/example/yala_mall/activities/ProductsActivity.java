@@ -52,6 +52,8 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
     Category category;
     TextView pageTitle, catName;
     int productsCycle;
+    boolean filter_status =false;
+    HashMap<String, Integer> gSpinnerMap;
 
 
 
@@ -66,7 +68,7 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         categoryId = category.getId();
         pageTitle.setText("Yala Mall");
         catName.setText(category.getName());
-        getProductsByCategory(categoryId);
+        getProductsByCategory(categoryId ,true);
     }
 
     private void assignUIReference() {
@@ -94,20 +96,32 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
         filterCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getProductsByCategory(categoryId);
+                filter_status= false;
+                productsCycle=0;
+                getProductsByCategory(categoryId ,true);
                 filterCancelButton.setVisibility(View.GONE);
             }
         });
         recyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-               productList =new ArrayList<>();
-               getProductsByCategory(categoryId);
+                productsCycle =0;
+                productList =new ArrayList<>();
+               if (filter_status)
+                   getProductByFilter(true);
+               else
+                 getProductsByCategory(categoryId ,true);
+
+
             }
 
             @Override
             public void onLoadMore() {
-                getProductsByCategory(categoryId);
+                if (filter_status)
+                    getProductByFilter(true);
+                else
+
+                  getProductsByCategory(categoryId ,false);
             }
         });
     }
@@ -122,8 +136,8 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
     }
 
 
-    public void getProductsByCategory(int categoryId) {
-        if (productList.isEmpty()) {
+    public void getProductsByCategory(int categoryId , Boolean state) {
+        if (state) {
             dataViewModel.getProductListByCategory(this, categoryId, 0).observe(this, new Observer<List<Product>>() {
                 @Override
                 public void onChanged(@Nullable List<Product> products) {
@@ -189,19 +203,46 @@ public class ProductsActivity extends AppCompatActivity implements OnItemRecycle
     public void onFilterButtonClicked(HashMap<String, Integer> spinnerMap) {
 
         if (spinnerMap.size() != 0) {
+            gSpinnerMap = spinnerMap;
+           // gSpinnerMap.put("mall_id", mall.getId());
+            //productList.clear();
+            productsCycle = 0;
+            filter_status = true;
+            filter_status = true;
+            getProductByFilter(true);
 
-            dataViewModel.getFilter(this, spinnerMap).observe(this, new Observer<List<Product>>() {
+        }
+
+    }
+
+
+    public  void  getProductByFilter(boolean stat)
+    {
+        if (stat) {
+            dataViewModel.getFilter(this, gSpinnerMap ,0).observe(this, new Observer<List<Product>>() {
                 @Override
                 public void onChanged(@Nullable List<Product> products) {
                     adapter = new RecyclerProductAdapter(products, ProductsActivity.this, ProductsActivity.this);
                     recyclerView.setAdapter(adapter);
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(ProductsActivity.this);
-                    layoutManager = new GridLayoutManager(ProductsActivity.this, 2);
-                    recyclerView.setLayoutManager(layoutManager);
+                    recyclerView.refreshComplete();
                     filterCancelButton.setVisibility(View.VISIBLE);
                 }
             });
         }
+        else
+        {
+            dataViewModel.getFilter(this, gSpinnerMap ,0).observe(this, new Observer<List<Product>>() {
+                @Override
+                public void onChanged(@Nullable List<Product> products) {
+                    if (!products.isEmpty()) {
+                        productList.addAll(products);
+                        recyclerView.notifyItemInserted(productList,productList.size()-1);
+                    }
+                    filterCancelButton.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+
 
     }
     @Override

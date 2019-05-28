@@ -66,12 +66,16 @@ public class CartContentFragment extends Fragment implements StepperListener, On
     public void onNextClicked() {
         Date currentTime = Calendar.getInstance().getTime();
         ArrayList<ProductP> sendedList= new ArrayList<>();
+
+
         for (int i =0 ;i<((MasterClass)getActivity().getApplication()).getProductList().size() ;i++)
         {
+
             ((MasterClass)getActivity().getApplication()).getProductList().get(i).setProduct_id(((MasterClass)getActivity().getApplication()).getProductList().get(i).getId());
              sendedList.add(new ProductP(((MasterClass)getActivity().getApplication()).getProductList().get(i).getId()
                 , ((MasterClass)getActivity().getApplication()).getProductList().get(i).getQuantity() ,
-                     ((MasterClass)getActivity().getApplication()).getProductList().get(i).getNote() ,((MasterClass)getActivity().getApplication()).getProductList().get(i).getSize().getId() ));
+                     ((MasterClass)getActivity().getApplication()).getProductList().get(i).getNote() ,
+                     ((MasterClass)getActivity().getApplication()).getProductList().get(i).getSize().getId() ));
         }
         dataViewModel.addOrder(getActivity() ,sendedList ,
                 ((PaymentActivity)getActivity()).getCustomerLocationId() ,currentTime.toString() ,getSum()+"");

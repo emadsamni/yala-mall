@@ -25,6 +25,7 @@ import com.example.yala_mall.models.Order;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.models.ProductP;
 import com.example.yala_mall.models.Size;
+import com.example.yala_mall.models.Slide;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.utils.ProgressDialog;
 import com.google.android.gms.common.api.Api;
@@ -45,6 +46,7 @@ public class DataRepository {
     private MutableLiveData<List<Category>>  categoryList;
     private MutableLiveData<Category>  pcCategoryBySCategory;
     private MutableLiveData<List<Offer>> offers;
+    private MutableLiveData<List<Offer>> sliders;
     private MutableLiveData<List<Offer>> offersByShop;
     private MutableLiveData<Mall> offersByMall;
     private MutableLiveData<List<Mall>> malls;
@@ -70,9 +72,9 @@ public class DataRepository {
         return new DataRepository(application);
     }
 
-    public LiveData<List<Product>> getFilter(Context context , HashMap<String,Integer> selectedMap){
+    public LiveData<List<Product>> getFilter(Context context , HashMap<String,Integer> selectedMap , int lastId){
         products = new MutableLiveData<>();
-        getFilterList(context ,selectedMap);
+        getFilterList(context ,selectedMap , lastId);
         return products;
     }
     public LiveData<List<Product>> getSizeByProduct(Context context , int productId){
@@ -87,6 +89,13 @@ public class DataRepository {
         cities = new MutableLiveData<>();
         getCityList(context);
         return cities;
+    }
+
+
+    public LiveData<List<Offer>> getSliders(Context context){
+        sliders = new MutableLiveData<>();
+        getSlidersList(context);
+        return sliders;
     }
 
 
@@ -214,9 +223,9 @@ public class DataRepository {
 
     }
 
-    private void getFilterList(Context context, HashMap<String, Integer> selectedMap) {
+    private void getFilterList(Context context, HashMap<String, Integer> selectedMap , int lastId) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<ApiResponse<List<Product>>> call = apiService.getFilter(Constants.API_KEY, selectedMap.get("Cat_id") ,selectedMap.get("sub_id"),selectedMap.get("size_id"),selectedMap.get("mall_id"),selectedMap.get("shop_id"));
+        Call<ApiResponse<List<Product>>> call = apiService.getFilter(Constants.API_KEY, selectedMap.get("Cat_id") ,selectedMap.get("sub_id"),selectedMap.get("size_id"),selectedMap.get("mall_id"),selectedMap.get("shop_id") , lastId);
 
         call.enqueue(new CallbackWithRetry<ApiResponse<List<Product>>>(call,context,3) {
             @Override
@@ -224,6 +233,7 @@ public class DataRepository {
                 if (!response.isSuccessful()){
                     ProgressDialog.getInstance().cancel();
                     Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 ProgressDialog.getInstance().cancel();
                 if (response.body().getData() != null)
@@ -311,6 +321,30 @@ public class DataRepository {
         });
 
     }
+
+    private void getSlidersList(Context context) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<List<Offer>>> call = apiService.getSliders(Constants.API_KEY);
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Offer>>>(call,context,3) {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Offer>>> call, Response<ApiResponse<List<Offer>>> response) {
+                if (!response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                ProgressDialog.getInstance().cancel();
+                if (response.body().getData() != null)
+                    sliders.postValue(response.body().getData());
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Offer>>> call, Throwable t) {
+                onFailure(t);
+            }
+        });
+    }
+
     private void getShopsListByMall(Context context ,int  mall_id )
     {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);

@@ -24,7 +24,9 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
     private Context context;
     private OnItemProductClicked listener;
 
-    public RecyclerProductAdapter(List<Product> list, Context context ,OnItemProductClicked listener) {
+
+
+    public RecyclerProductAdapter(List<Product> list, Context context , OnItemProductClicked listener) {
         this.list = list;
         this.context = context;
         this.listener=listener;
@@ -35,6 +37,11 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_recycler_pro,null,false);
         return new ViewHolder(view);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override

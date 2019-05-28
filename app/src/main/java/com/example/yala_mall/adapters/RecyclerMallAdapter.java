@@ -1,6 +1,7 @@
 package com.example.yala_mall.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -50,9 +51,14 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerMallAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Mall current   = list.get(i);
+        Typeface font = Typeface.createFromAsset(context.getAssets(),"fonts/Cairo-Bold.ttf");
         viewHolder.textView.setText(current.getName());
+        viewHolder.textView.setTypeface(font);
         viewHolder.addressTextView.setText(current.getAddress());
-        Picasso.with(context).load(Constants.IMG_URL+current.getLogo()).into(viewHolder.imageView);
+        if ( !current.getLogo().equals(""))
+            Picasso.with(context).load(Constants.IMG_URL+current.getLogo()).into(viewHolder.imageView);
+        else  viewHolder.imageView.setImageResource(R.drawable.defult_image);
+       // Picasso.with(context).load(Constants.IMG_URL+current.getLogo()).into(viewHolder.imageView);
 
         viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

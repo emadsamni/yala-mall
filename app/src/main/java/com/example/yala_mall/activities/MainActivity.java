@@ -43,6 +43,7 @@ import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.models.Shop;
+import com.example.yala_mall.models.Slide;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.utils.OnNavigationItemSelected;
 import com.example.yala_mall.viewModels.DataViewModel;
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         setContentView(R.layout.activity_main);
         assignUIReference();
         assignAction();
-        getOffers();
+        getSliders();
         getCategories();
         navigation_config();
         getMalls();
@@ -163,24 +164,24 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         });
     }
 
-    private void getOffers() {
-        List<Offer> offers = new ArrayList<>();
+    private void getSliders() {
 
-        assignSlider(offers);
-       /* dataViewModel.getOffers(this).observe(this, new Observer<List<Offer>>() {
+
+        dataViewModel.getSliders(this).observe(this, new Observer<List<Offer>>() {
             @Override
-            public void onChanged(@Nullable List<Offer> offers) {
-                if (!offers.isEmpty())
-                    assignSlider(offers);
+            public void onChanged(@Nullable List<Offer> slides) {
+                if (!slides.isEmpty())
+                    assignSlider(slides);
             }
-        });*/
+        });
+
     }
 
     private void assignSlider(List<Offer> offers) {
         mDemoSlider = findViewById(R.id.slider_offers);
 
 
-        HashMap<String, Integer> file_maps = new HashMap<>();
+       /* HashMap<String, Integer> file_maps = new HashMap<>();
         file_maps.put("slider1", R.drawable.slide1);
         file_maps.put("slider2", R.drawable.slide2);
         file_maps.put("slider3", R.drawable.slide3);
@@ -190,16 +191,17 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
 
         offerList.add(new Offer("Qassion Mall",""));
         offerList.add(new Offer("City Mall",""));
-        offerList.add(new Offer("Damaskino Mall",""));
+        offerList.add(new Offer("Damaskino Mall",""));*/
 
-        /*HashMap<String,String> file_maps = new HashMap<>();
-         for (Offer offer : offers)
-            file_maps.put("offer"+offer.getId(), Constants.IMG_URL +offer.getImage());*/
 
-          int i =0;
+
+        HashMap<String, String> file_maps = new HashMap<>();
+        for (Offer offer : offers)
+            file_maps.put("offer" + offer.getId(), Constants.IMG_URL + offer.getImage());
+
+        int i = 0;
         for (String name : file_maps.keySet()) {
-
-            MySliderAdapter textSliderView = new MySliderAdapter(this, offerList.get(i));
+            MySliderAdapter textSliderView = new MySliderAdapter(this, offers.get(i));
             // initialize a SliderLayout
             textSliderView
                     .image(file_maps.get(name))

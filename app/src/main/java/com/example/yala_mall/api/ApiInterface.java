@@ -14,6 +14,7 @@ import com.example.yala_mall.models.PcCategory;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.models.ProductP;
 import com.example.yala_mall.models.Size;
+import com.example.yala_mall.models.Slide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,9 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface ApiInterface {
+
+    @GET("getSliders")
+    Call<ApiResponse<List<Offer>>> getSliders(@Query("key") String key);
 
 
     @POST("register")
@@ -97,7 +101,7 @@ public interface ApiInterface {
     Call<ApiResponse<List<Product>>> getProductDetails(@Query("key") String key , @Query("id") String id);
 
     @GET("getFilter")
-    Call<ApiResponse<List<Product>>> getFilter(@Query("key") String key , @Query("scategory_id") Integer  sCategory ,@Query("pcategory_id") Integer  pCategory ,@Query("size") Integer  size  ,@Query("mall_id") Integer  mallId  ,@Query("shop_id") Integer  Shop_id);
+    Call<ApiResponse<List<Product>>> getFilter(@Query("key") String key , @Query("scategory_id") Integer  sCategory ,@Query("pcategory_id") Integer  pCategory ,@Query("size") Integer  size  ,@Query("mall_id") Integer  mallId  ,@Query("shop_id") Integer  Shop_id , @Query("last_id") int lastId );
 
     @Multipart
     @POST("addOrder")
