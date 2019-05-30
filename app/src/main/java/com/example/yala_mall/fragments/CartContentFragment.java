@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.yala_mall.R;
+import com.example.yala_mall.activities.CartActivity;
 import com.example.yala_mall.activities.MasterClass;
 import com.example.yala_mall.activities.PaymentActivity;
 import com.example.yala_mall.activities.StepperListener;
@@ -53,9 +55,12 @@ public class CartContentFragment extends Fragment implements StepperListener, On
 
     private void assignUIReference(View view) {
         recyclerView = view.findViewById(R.id.product_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerAdapter = new RecyclerConfirmProductsAdapter(((MasterClass)getActivity().getApplication()).getProductList(),getActivity(), CartContentFragment.this);
         recyclerView.setAdapter(recyclerAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager = new GridLayoutManager(getActivity(), 1);
+        layoutManager.setItemPrefetchEnabled(false);
+        recyclerView.setLayoutManager(layoutManager);
         dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
         textView = view.findViewById(R.id.sum_text);
         textView.setText("المجموع :"+getSum());

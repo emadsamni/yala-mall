@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -41,16 +42,17 @@ public class CartActivity extends AppCompatActivity implements OnClickElegantBut
 
     private void assignUIReference(){
         recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerAdapter = new RecyclerCartProductsAdapter(((MasterClass)getApplication()).getProductList(),this,this);
+        List<Product> productList = ((MasterClass)getApplication()).getProductList();
+        recyclerAdapter = new RecyclerCartProductsAdapter(productList,this,this);
         recyclerView.setAdapter(recyclerAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(CartActivity.this);
+        layoutManager = new GridLayoutManager(CartActivity.this, 1);
+        layoutManager.setItemPrefetchEnabled(false);
+        recyclerView.setLayoutManager(layoutManager);
         checkoutButton = findViewById(R.id.checkout_btn);
         totalPrice = findViewById(R.id.total_price);
-        customerUtils = CustomerUtils.getInstance(this);
-
-
-
-        totalPrice.setText("المجموع : "+String.valueOf(getSum()));
+       customerUtils = CustomerUtils.getInstance(this);
+       totalPrice.setText("المجموع : "+String.valueOf(getSum()));
     }
 
     private void assignAction(){
@@ -87,6 +89,7 @@ public class CartActivity extends AppCompatActivity implements OnClickElegantBut
             if (product1.getId().equals(product.getId())){
                 product1.setQuantity(quantity);
                 ((MasterClass)getApplication()).getProductList().set(index,product1);
+
             }
             index++;
         }
@@ -102,9 +105,12 @@ public class CartActivity extends AppCompatActivity implements OnClickElegantBut
         ArrayList<Product> list =((MasterClass)getApplication()).getProductList();
         list.remove(i);
         ((MasterClass)getApplication()).setProductList(list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerAdapter = new RecyclerCartProductsAdapter(((MasterClass)getApplication()).getProductList(),this,this);
         recyclerView.setAdapter(recyclerAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(CartActivity.this);
+        layoutManager = new GridLayoutManager(CartActivity.this, 1);
+        layoutManager.setItemPrefetchEnabled(false);
+        recyclerView.setLayoutManager(layoutManager);
         totalPrice.setText("المجموع : "+String.valueOf(getSum()));
     }
 
