@@ -144,7 +144,9 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         LinearLayoutManager layoutManager = new LinearLayoutManager(MallActivity.this);
         layoutManager = new GridLayoutManager(MallActivity.this, 2);
         layoutManager.setItemPrefetchEnabled(false);
+
         productsRecyclerView.setLayoutManager(layoutManager);
+        productsRecyclerView.setPullRefreshEnabled(false);
         productsCycle =0;
         rootRelativeLayout = (RelativeLayout) findViewById(R.id.root_layout);
         final ViewTreeObserver observer = rootRelativeLayout.getViewTreeObserver();

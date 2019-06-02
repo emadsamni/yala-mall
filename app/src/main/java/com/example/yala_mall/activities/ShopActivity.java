@@ -138,6 +138,7 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     private void assignUIReference() {
         dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
         productsRecyclerView= findViewById(R.id.product_recycler_view);
+        productsRecyclerView.setPullRefreshEnabled(false);
         searchView = findViewById(R.id.search_view);
         searchLayout = findViewById(R.id.linearLayout_search);
         orderCount = findViewById(R.id.cart_number);
