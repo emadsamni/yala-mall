@@ -20,6 +20,15 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:textSize="8pt"
+                    android:id="@+id/timer"
+                    android:text="fcjhdf"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="Enter your phone to complete your sign-in"
                     android:textColor="@color/black"
                     android:layout_marginTop="10dp"
@@ -30,7 +39,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginTop="20dp">
+                        android:layout_marginTop="5dp">
                         <EditText
 
                             android:id="@+id/phone"

@@ -24,6 +24,7 @@ import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.utils.ProgressDialog;
 import com.example.yala_mall.utils.Utils;
 
+import java.util.Date;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
@@ -62,6 +63,8 @@ public class LoginRepository {
                 ProgressDialog.getInstance().cancel();
                 ((RegisterActivity) context).setPhone(phone);
                 ((RegisterActivity) context).next();
+                Date date = new Date(System.currentTimeMillis());
+                CustomerUtils.getInstance(context).addLong(Constants.PREF_TIM,date.getTime());
             }
 
             @Override
@@ -97,6 +100,7 @@ public class LoginRepository {
                 customerUtils.addString(Constants.PREF_TOKEN, token);
                 Intent toMain = new Intent(context, MainActivity.class);
                 ((RegisterActivity) context).next();
+
                 //toMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 //context.startActivity(toMain);
                // ((Activity)context).finish();

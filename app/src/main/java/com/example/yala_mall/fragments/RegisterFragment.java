@@ -2,23 +2,28 @@ package com.example.yala_mall.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.yala_mall.R;
 import com.example.yala_mall.activities.StepperListener;
 import com.example.yala_mall.helps.CustomerUtils;
+import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.utils.Utils;
 import com.example.yala_mall.viewModels.LoginViewModel;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +34,8 @@ public class RegisterFragment extends Fragment implements StepperListener {
     TextView phoneTextError ;
     CustomerUtils customerUtils;
     Utils utils;
+    Boolean checkTimer = false;
+    TextView timerView;
 
     public RegisterFragment() {
     }
@@ -41,6 +48,7 @@ public class RegisterFragment extends Fragment implements StepperListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_register, container,false);
          assignUIReference(view);
+         setTimer();
         return  view;
 
     }
@@ -48,6 +56,7 @@ public class RegisterFragment extends Fragment implements StepperListener {
     public void assignUIReference(View view)
     {
         loginViewModel = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
+        timerView =view.findViewById(R.id.timer);
         phoneText =view.findViewById(R.id.phone);
         phoneTextError =view.findViewById(R.id.phone_error);
         customerUtils = CustomerUtils.getInstance(getActivity());
@@ -75,10 +84,14 @@ public class RegisterFragment extends Fragment implements StepperListener {
 
     @Override
     public void onNextClicked() {
-       if (isInputValidation())
-       {
-           register(phoneText.getText().toString());
-       }
+        if( !checkTimer) {
+            if (isInputValidation()) {
+                register(phoneText.getText().toString());
+            }
+        }
+        else {
+            Toast.makeText(getActivity(), "Wating timer", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -116,6 +129,37 @@ public class RegisterFragment extends Fragment implements StepperListener {
         }
         else{
             return false;
+        }
+    }
+
+    private void setTimer(){
+
+        if (CustomerUtils.getInstance(getActivity()).getLong(Constants.PREF_TIM) != null) {
+            long dd = CustomerUtils.getInstance(getActivity()).getLong(Constants.PREF_TIM);
+            long timer = new Date(System.currentTimeMillis()).getTime() - CustomerUtils.getInstance(getActivity()).getLong(Constants.PREF_TIM);
+            Log.d("TSTS",""+ String.valueOf(timer));
+            if (timer < 300000) {
+                checkTimer = true;
+                timerView.setVisibility(View.VISIBLE);
+                new CountDownTimer(300000-timer, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        int seconds = (int) (millisUntilFinished / 1000) % 60 ;
+                        int minutes = (int) ((millisUntilFinished / (1000*60)) % 60);
+                        timerView.setText(String.format("%d:%d",minutes,seconds));
+                    }
+
+                    public void onFinish() {
+                        timerView.setVisibility(View.GONE);
+                        checkTimer = false;
+                    }
+
+                }.start();
+            } else{
+                checkTimer = false;
+                timerView.setVisibility(View.GONE);
+            }
+
         }
     }
 }
