@@ -95,8 +95,10 @@ public class DeliveryInfoFragment extends Fragment implements StepperListener {
                 adb.setPositiveButton("تعيين", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                       addressText.setText(myCustomer.getAddresses().get(temp).getAddress());
-                       customer_location_id =myCustomer.getAddresses().get(temp).getId();
+
+                            addressText.setText(myCustomer.getAddresses().get(temp).getAddress());
+                            customer_location_id = myCustomer.getAddresses().get(temp).getId();
+
 
                     }});
                 adb.setTitle("أختر أحد العناوين التالية");

@@ -50,7 +50,9 @@
     <string name="refresh_done"> </string>
     <string name="loading_done"> </string>
     <string name="listview_header_last_time">آخر تحديث：</string>
-
+    <string name="banner_ad_unit_id">ca-app-pub-9346728385477859/4574617487</string>
+    <string name="facebook_app_id">331864947725775</string>
+    <string name="fb_login_protocol_scheme">fb2199453887038296</string>
     <string-array name="query_suggestions">
         <item>-</item>
     </string-array>

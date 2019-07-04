@@ -36,12 +36,7 @@
                         android:background="?android:attr/selectableItemBackground"
                         android:id="@+id/linearLayoutHome"
                         android:padding="10dp">
-                        <ImageView
-                            android:layout_gravity="center_vertical"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/nav"
-                            android:tint="@color/white"/>
+
                         <TextView
                             android:layout_gravity="center_vertical"
                             android:layout_width="wrap_content"

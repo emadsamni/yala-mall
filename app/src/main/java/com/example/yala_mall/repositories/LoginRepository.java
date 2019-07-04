@@ -69,7 +69,7 @@ public class LoginRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<Customer>> call, Throwable t) {
-
+                Toast.makeText(context,  R.string.internet_error, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -178,7 +178,7 @@ public class LoginRepository {
 
             @Override
             public void onFailure(Call<ApiResponse<Customer>> call, Throwable t) {
-                Toast.makeText(context, "cdc", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,  R.string.internet_error, Toast.LENGTH_SHORT).show();
 
 
             }

@@ -48,12 +48,21 @@ import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.utils.OnNavigationItemSelected;
 import com.example.yala_mall.viewModels.DataViewModel;
 import com.example.yala_mall.viewModels.SearchViewModel;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -78,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     DrawerLayout drawerLayout;
     LinearLayout homeButton;
     RelativeLayout rootRelativeLayout;
+    List<Offer> offerList;
 
 
     @Override
@@ -89,7 +99,9 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         getSliders();
         getCategories();
         navigation_config();
-        getMalls();
+        initFacebookLogin();
+
+
 
     }
 
@@ -115,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
             @Override
             public void onGlobalLayout() {
                 searchView.getHeight();
-                mallsRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, rootRelativeLayout.getHeight() - (searchView.getHeight() *2)- recyclerView.getHeight() ));
+                mallsRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT ));
 
 
             }
@@ -171,7 +183,9 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
             @Override
             public void onChanged(@Nullable List<Offer> slides) {
                 if (!slides.isEmpty())
-                    assignSlider(slides);
+                   // assignSlider(slides);
+                offerList =slides;
+                getMalls();
             }
         });
 
@@ -246,7 +260,8 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         dataViewModel.getMalls(this).observe(this, new Observer<List<Mall>>() {
             @Override
             public void onChanged(@Nullable List<Mall> malls) {
-                mallsAdapter = new RecyclerMallAdapter(malls, MainActivity.this, MainActivity.this , rootRelativeLayout);
+                malls.addAll(malls);
+                mallsAdapter = new RecyclerMallAdapter(malls,offerList, MainActivity.this, MainActivity.this , rootRelativeLayout);
                 mallsRecyclerView.setAdapter(mallsAdapter);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
                 layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -359,6 +374,42 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
+
+    private LoginButton loginButton;
+    private CallbackManager callbackManager;
+    private void initFacebookLogin() {
+        loginButton =findViewById(R.id.login_button);
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
+        //loginButton.setFragment(this);
+
+        callbackManager = CallbackManager.Factory.create();
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+            }
+            @Override
+            public void onCancel() {
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+
+
+        });
+    }
+
+
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 }

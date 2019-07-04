@@ -62,9 +62,10 @@ dependencies {
     implementation 'io.github.inflationx:calligraphy3:3.1.0'
     implementation 'io.github.inflationx:viewpump:1.0.0'
 
-
+    implementation 'com.google.android.gms:play-services-ads:15.0.1'
     implementation "com.android.support:support-v4:+"
     implementation 'com.squareup.picasso:picasso:2.3.2'
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
+    implementation 'com.facebook.android:facebook-login:[4,5)'
 }
