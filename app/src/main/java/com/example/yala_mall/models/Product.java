@@ -71,6 +71,15 @@ public class Product implements Serializable {
     @SerializedName("size")
     private Size size;
 
+    public String getRate() {
+        return rate;
+    }
+
+    @SerializedName("rate")
+    private String rate;
+
+
+
 
     public  Product clone()
     {

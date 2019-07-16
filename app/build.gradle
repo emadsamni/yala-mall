@@ -68,4 +68,6 @@ dependencies {
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
     implementation 'com.facebook.android:facebook-login:[4,5)'
+
+    implementation 'com.github.varunest:sparkbutton:1.0.6'
 }

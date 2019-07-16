@@ -40,7 +40,8 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private Context context;
     private OnItemRecyclerClicked onItemRecyclerClicked;
     private  RelativeLayout relativeLayout;
-    int type;
+    private static int type = 0;
+    private static final int TYPE_MALL = 0, TYPE_SLIDER = 1;
 
 
 
@@ -50,30 +51,30 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.onItemRecyclerClicked = onItemRecyclerClicked;
         this.relativeLayout = relativeLayout;
         this.offers =offers;
-        type =0;
 
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0)
+            return TYPE_SLIDER;
+        else
+            return TYPE_MALL;
+    }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view;
-        if (type ==0 )
+        if ( i  ==TYPE_SLIDER)
         {
-            type++;
              view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_slider_item,null,false);
             return new ViewHolderSlider(view);
-
-
         }
         else
         {
-
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_recycler_mall,null,false);
                 return new ViewHolder(view);
-
-
         }
 
 
@@ -81,7 +82,8 @@ public class RecyclerMallAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        if (i != 0 && viewHolder instanceof ViewHolder ) {
+
+        if (i != 0 ) {
             ViewHolder vv = (ViewHolder) viewHolder;
             Mall current = list.get(i-1);
             Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Cairo-Bold.ttf");

@@ -19,11 +19,15 @@ import com.example.yala_mall.helps.CustomerUtils;
 import com.example.yala_mall.models.Address;
 import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.City;
+import com.example.yala_mall.models.Customer;
+import com.example.yala_mall.models.Favorite;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Order;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.models.ProductP;
+import com.example.yala_mall.models.Service;
+import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.models.Size;
 import com.example.yala_mall.models.Slide;
 import com.example.yala_mall.utils.Constants;
@@ -58,7 +62,11 @@ public class DataRepository {
     private MutableLiveData<List<Product>> productDetails;
     private MutableLiveData<List<City>> cities;
     private MutableLiveData<List<Product>> sizesByProduct;
+    private MutableLiveData<List<Service>> services;
     private CustomerUtils customerUtils;
+    private MutableLiveData<Shop> ratedShop;
+    private MutableLiveData<Favorite> favorite;
+
 
 
     private Application application;
@@ -77,10 +85,35 @@ public class DataRepository {
         getFilterList(context ,selectedMap , lastId);
         return products;
     }
+    public LiveData<Shop> rateShop(Context context , Shop  shop , int  rate , String  notes ){
+        ratedShop = new MutableLiveData<>();
+        rateShopFun(context ,shop,rate,notes);
+        return ratedShop;
+    }
+
+    public LiveData<Favorite> addFavoirte(Context context , Product  product  ){
+        favorite = new MutableLiveData<>();
+        addFavoriteFun(context ,product);
+        return favorite;
+    }
+
+    public LiveData<Favorite> deleteFavoirte(Context context , Product  product  ){
+        favorite = new MutableLiveData<>();
+        deleteFavoriteFun(context ,product);
+        return favorite;
+    }
+
+
     public LiveData<List<Product>> getSizeByProduct(Context context , int productId){
         sizesByProduct = new MutableLiveData<>();
         getSizesByProductApi(context ,productId);
         return sizesByProduct;
+    }
+
+    public LiveData<List<Service>> getServices(Context context ){
+        services = new MutableLiveData<>();
+        getServicesApi(context);
+        return services;
     }
 
 
@@ -211,7 +244,7 @@ public class DataRepository {
                     Toast.makeText(application, R.string.unexpected_api_error,Toast.LENGTH_SHORT).show();
                 }
                 ProgressDialog.getInstance().cancel();
-                if (response.body().getData() != null)
+                if (response.body().getData() != null  && response.body().getData().size()!= 0)
                     offersByMall.postValue(response.body().getData().get(0));
             }
 
@@ -559,7 +592,120 @@ public class DataRepository {
 
     }
 
+    public void rateShopFun(Context context , Shop  shop , int  rate , String  notes ){
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<Shop>> call=apiService.rateShop(Constants.API_KEY ,customerUtils.getString(Constants.PREF_TOKEN),shop.getId(),rate , notes);
+        call.enqueue(new CallbackWithRetry<ApiResponse<Shop>>(call,context,3) {
+            @Override
+            public void onResponse(Call<ApiResponse<Shop>> call, Response<ApiResponse<Shop>> response) {
+                if (! response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toasty.custom(application, R.string.rate_caneled, null,
+                            application.getResources().getColor(R.color.colorPrimary), Constants.TOAST_TIME, false, true).show();
+                    shop.setRate_status(0);
+                    ratedShop.postValue(shop);
+                    return;
+                }
+                ProgressDialog.getInstance().cancel();
+                Toast.makeText(context, context.getResources().getString(R.string.rate_completed), Toast.LENGTH_SHORT).show();
+                if (response.body().getData() != null) {
+                    response.body().getData().setRate_status(1);
+                    ratedShop.postValue(response.body().getData());
+                }
+            }
 
+            @Override
+            public void onFailure(Call<ApiResponse<Shop>> call, Throwable t) {
+                ProgressDialog.getInstance().cancel();
+                shop.setRate_status(0);
+                ratedShop.postValue(shop);
+                Toasty.custom(application, R.string.rate_caneled, null,
+                        application.getResources().getColor(R.color.colorPrimary), Constants.TOAST_TIME, false, true).show();
+            }
+        });
+
+
+
+    }
+
+    public void addFavoriteFun(Context context ,Product product ){
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<Favorite>> call=apiService.addFavorite(Constants.API_KEY ,customerUtils.getString(Constants.PREF_TOKEN), product.getId());
+        call.enqueue(new CallbackWithRetry<ApiResponse<Favorite>>(call,context,3) {
+            @Override
+            public void onResponse(Call<ApiResponse<Favorite>> call, Response<ApiResponse<Favorite>> response) {
+                if (! response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toasty.custom(application, R.string.favorite_caneled, null,
+                            application.getResources().getColor(R.color.colorPrimary), Constants.TOAST_TIME, false, true).show();
+                    Favorite newFavorite = new Favorite();
+                    newFavorite.setFavoriteStatus(0);
+                    favorite.postValue(newFavorite);
+                    return;
+                }
+                ProgressDialog.getInstance().cancel();
+                Toast.makeText(context, context.getResources().getString(R.string.favorite_completed), Toast.LENGTH_SHORT).show();
+                if (response.body().getData() != null) {
+                    response.body().getData().setFavoriteStatus(1);
+                    response.body().getData().setMyStatus(true);
+                    favorite.postValue(response.body().getData());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Favorite>> call, Throwable t) {
+                ProgressDialog.getInstance().cancel();
+                Favorite newFavorite = new Favorite();
+                newFavorite.setFavoriteStatus(0);
+                favorite.postValue(newFavorite);
+                Toasty.custom(application, R.string.favorite_caneled, null,
+                        application.getResources().getColor(R.color.colorPrimary), Constants.TOAST_TIME, false, true).show();
+            }
+        });
+
+
+
+    }
+
+    public void deleteFavoriteFun(Context context ,Product product ){
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<Customer>> call=apiService.deleteFavorite(Constants.API_KEY ,customerUtils.getString(Constants.PREF_TOKEN), product.getId());
+
+        call.enqueue(new CallbackWithRetry<ApiResponse<Customer>>(call,context,3) {
+            @Override
+            public void onResponse(Call<ApiResponse<Customer>> call, Response<ApiResponse<Customer>> response) {
+                if (! response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toasty.custom(application, R.string.de_favorite_caneled, null,
+                            application.getResources().getColor(R.color.colorPrimary), Constants.TOAST_TIME, false, true).show();
+                    Favorite newFavorite = new Favorite();
+                    newFavorite.setFavoriteStatus(0);
+                    favorite.postValue(newFavorite);
+                    return;
+                }
+                ProgressDialog.getInstance().cancel();
+                Toast.makeText(context, context.getResources().getString(R.string.re_favorite_completed), Toast.LENGTH_SHORT).show();
+                    Favorite newFavorite = new Favorite();
+                    newFavorite.setFavoriteStatus(1);
+                    newFavorite.setMyStatus(false);
+                    favorite.postValue(newFavorite);
+
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Customer>> call, Throwable t) {
+                ProgressDialog.getInstance().cancel();
+                Favorite newFavorite = new Favorite();
+                newFavorite.setFavoriteStatus(0);
+                favorite.postValue(newFavorite);
+                Toasty.custom(application, R.string.de_favorite_caneled, null,
+                        application.getResources().getColor(R.color.colorPrimary), Constants.TOAST_TIME, false, true).show();
+            }
+        });
+
+
+
+    }
     private void getSizesByProductApi(Context context, int productId) {
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
@@ -584,6 +730,33 @@ public class DataRepository {
 
             }
         });
+
+    }
+    private void getServicesApi(Context context) {
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ApiResponse<List<Service>>> call=apiService.getServices(Constants.API_KEY );
+        call.enqueue(new CallbackWithRetry<ApiResponse<List<Service>>>(call,context,3) {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Service>>> call, Response<ApiResponse<List<Service>>> response) {
+                if (! response.isSuccessful()){
+                    ProgressDialog.getInstance().cancel();
+                    Toasty.custom(application, R.string.internet_error, null,
+                            application.getResources().getColor(R.color.colorPrimary), Constants.TOAST_TIME, false, true).show();
+                    return ;
+                }
+                ProgressDialog.getInstance().cancel();
+                if (response.body().getData() != null)
+                    services.postValue(response.body().getData());
+                return;
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Service>>> call, Throwable t) {
+
+            }
+        });
+
 
     }
 }

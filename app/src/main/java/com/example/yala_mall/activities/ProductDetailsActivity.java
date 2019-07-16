@@ -7,16 +7,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
@@ -28,6 +32,7 @@ import com.example.yala_mall.adapters.MySliderAdapter;
 import com.example.yala_mall.adapters.SpinnerAdapter;
 import com.example.yala_mall.adapters.SpinnerAdapter2;
 import com.example.yala_mall.fragments.MessageDialog;
+import com.example.yala_mall.models.Favorite;
 import com.example.yala_mall.models.Gallery;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
@@ -35,6 +40,8 @@ import com.example.yala_mall.models.ProductSize;
 import com.example.yala_mall.models.Size;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.viewModels.DataViewModel;
+import com.varunest.sparkbutton.SparkButton;
+import com.varunest.sparkbutton.SparkEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +65,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
     Typeface typeface;
     Spinner spinner;
     SpinnerAdapter2 spinnerAdapter;
+    SparkButton sparkButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +77,51 @@ public class ProductDetailsActivity extends AppCompatActivity implements BaseSli
         assignAction();
         getProductDetails();
         getSizes();
+        setFavoriteButton();
+
+
+
 
         //typeface =  Typeface.createFromAsset(getAssets(),"font/app_font.ttf");
     }
 
+    private  void setFavoriteButton()
+    {
+        sparkButton =findViewById(R.id.spark_button);
+        sparkButton.setEventListener(new SparkEventListener(){
+            @Override
+            public void onEvent(ImageView button, boolean buttonState) {
+                if (buttonState) {
+                    // Button is active
+                     dataViewModel.addFavorite(ProductDetailsActivity.this ,product).observe(ProductDetailsActivity.this, new Observer<Favorite>() {
+                         @Override
+                         public void onChanged(@Nullable Favorite favorite) {
+                             if (favorite.getFavoriteStatus()==0)
+                                 sparkButton.setChecked(false);
+                         }
+                     });
+                } else {
+                    dataViewModel.deleteFavorite(ProductDetailsActivity.this ,product).observe(ProductDetailsActivity.this, new Observer<Favorite>() {
+                        @Override
+                        public void onChanged(@Nullable Favorite favorite) {
+                            if (favorite.getFavoriteStatus()==0)
+                                sparkButton.setChecked(true);
+                        }
+                    });
+                }
+            }
 
+            @Override
+            public void onEventAnimationEnd(ImageView button, boolean buttonState) {
+
+            }
+
+            @Override
+            public void onEventAnimationStart(ImageView button, boolean buttonState) {
+
+            }
+        });
+    }
 
     private void assignUIReference(){
         elegantNumberButton =  findViewById(R.id.quantity_button);

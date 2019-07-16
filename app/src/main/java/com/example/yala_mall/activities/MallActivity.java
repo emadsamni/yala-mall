@@ -124,6 +124,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         });
     }
 
+
     private void assignUIReference() {
         dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
         recyclerView = findViewById(R.id.mall_recycler_view);
@@ -134,7 +135,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
         orderCount = findViewById(R.id.cart_number);
         cartImage = findViewById(R.id.linearLayout_cart);
         filterCancelButton = findViewById(R.id.filter_cancel_button);
-         slideLayout = findViewById(R.id.slide_layout);
+        slideLayout = findViewById(R.id.slide_layout);
         changeCartCount();
         pageTitle = findViewById(R.id.page_title);
         filterLayout = (LinearLayout) findViewById(R.id.filter_Layout);
@@ -228,6 +229,8 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
                 productsCycle=0;
                 getProduct(mall.getId(),true);
                 filterCancelButton.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                productsRecyclerView.setVisibility(View.GONE);
             }
         });
     }
@@ -246,7 +249,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
                 adapter = new RecyclerShopAdapter(malls.get(0).getShop(), MallActivity.this, MallActivity.this);
                 recyclerView.setAdapter(adapter);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(MallActivity.this);
-                layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                layoutManager = new GridLayoutManager(MallActivity.this, 2);
                 recyclerView.setLayoutManager(layoutManager);
                 getProduct(mall.getId() ,true);
             }
@@ -322,6 +325,8 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
     public void onFilterButtonClicked(HashMap<String, Integer> spinnerMap) {
 
         if (spinnerMap.size()!=0) {
+            productsRecyclerView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
             gSpinnerMap = spinnerMap;
             gSpinnerMap.put("mall_id", mall.getId());
             //productList.clear();
@@ -329,6 +334,7 @@ public class MallActivity extends AppCompatActivity implements OnItemRecyclerCli
             filter_status = true;
             getProductByFilter(true);
         }
+
     }
     public  void  getProductByFilter(boolean stat)
     {

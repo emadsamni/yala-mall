@@ -63,7 +63,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="25pt"
+                    android:layout_height="wrap_content"
                     android:id="@+id/shop_layout"
                     android:orientation="vertical"
                     android:background="@color/colorPrimaryDark"
@@ -81,6 +81,17 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_red"
                         android:textSize="6pt" />
+
+                    <RatingBar
+                        android:id="@+id/ratingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:stepSize="1.0"
+                        android:visibility="gone"
+                        android:theme="@style/RatingBar"
+                        style="?android:attr/ratingBarStyle"
+                        />
                 </LinearLayout>
 
                 <com.jcodecraeer.xrecyclerview.XRecyclerView

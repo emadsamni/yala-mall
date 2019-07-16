@@ -53,6 +53,15 @@
     <string name="banner_ad_unit_id">ca-app-pub-9346728385477859/4574617487</string>
     <string name="facebook_app_id">331864947725775</string>
     <string name="fb_login_protocol_scheme">fb2199453887038296</string>
+    <string name="rating">التقييم</string>
+    <string name="write_note">اكتب ملاحظاتك</string>
+    <string name="rate_completed">تمت عملية التقييم</string>
+    <string name="zero_rate">لا يمكن التقييم بتقييم صفري</string>
+    <string name="rate_caneled">لم تتم عملية التقييم , تأكد من الانترنت و حاول مجددأ</string>
+    <string name="favorite_caneled">لم تتم الاضافة للمفضلة</string>
+    <string name="favorite_completed">تمت الاضافة للمفضلة</string>
+    <string name="de_favorite_caneled">لم تتم الازالة من المفضلة</string>
+    <string name="re_favorite_completed">تمت الازالة من المفضلة بنجاح</string>
     <string-array name="query_suggestions">
         <item>-</item>
     </string-array>

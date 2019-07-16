@@ -5,7 +5,9 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -30,10 +33,13 @@ import com.example.yala_mall.adapters.MySliderAdapter;
 import com.example.yala_mall.adapters.RecyclerProductAdapter;
 import com.example.yala_mall.adapters.RecyclerShopAdapter;
 import com.example.yala_mall.fragments.FilterDialog;
+import com.example.yala_mall.fragments.RatingDialog;
 import com.example.yala_mall.interfaces.OnClickFilterButton;
+import com.example.yala_mall.interfaces.OnClickRatingButton;
 import com.example.yala_mall.interfaces.OnItemProductClicked;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
+import com.example.yala_mall.models.Service;
 import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.viewModels.DataViewModel;
@@ -46,7 +52,7 @@ import java.util.List;
 
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
-public class ShopActivity extends AppCompatActivity implements OnItemProductClicked, OnClickFilterButton, BaseSliderView.OnSliderClickListener {
+public class ShopActivity extends AppCompatActivity implements OnItemProductClicked, OnClickFilterButton, BaseSliderView.OnSliderClickListener, OnClickRatingButton {
 
     DataViewModel dataViewModel;
     List<Product> productList;
@@ -65,10 +71,11 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
     RelativeLayout rootRelativeLayout;
     LinearLayout filterLayout ,shopLayout;
     RelativeLayout slideLayout;
-    ScrollView scrollView;
+
     int productsCycle;
     boolean filter_status =false;
     HashMap<String, Integer> gSpinnerMap;
+    RatingBar ratingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +93,21 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         {
             shopStatus.setTextColor(getResources().getColor(R.color.green));
         }
-        getOffers(shop.getId());
+        dataViewModel.getServices(this).observe(this, new Observer<List<Service>>() {
+            @Override
+            public void onChanged(@Nullable List<Service> services) {
+                 if (services.get(0).getActive()== 1)
+                 {
+                     ratingBar.setVisibility(View.VISIBLE);
+
+                 }
+                getOffers(shop.getId());
+            }
+        });
+
+        shop.setMyRate(0);
+        setRatingBar();
+
     }
 
     private void getOffers(int shopId) {
@@ -98,12 +119,13 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
                     assignSlider(offers);
                 else
                     slideLayout.setVisibility(View.GONE);
-                    getProduct(shopId);
+                    getProduct(shopId ,true);
 
 
             }
         });
     }
+
 
     private void assignSlider(List<Offer> offers ){
         mDemoSlider = findViewById(R.id.slider_offers);
@@ -135,10 +157,12 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         mDemoSlider.setDuration(4000);
         //mDemoSlider.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
     }
+
+
     private void assignUIReference() {
         dataViewModel = ViewModelProviders.of(this).get(DataViewModel.class);
         productsRecyclerView= findViewById(R.id.product_recycler_view);
-        productsRecyclerView.setPullRefreshEnabled(false);
+        ratingBar= findViewById(R.id.ratingBar);
         searchView = findViewById(R.id.search_view);
         searchLayout = findViewById(R.id.linearLayout_search);
         orderCount = findViewById(R.id.cart_number);
@@ -148,11 +172,20 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         filterCancelButton = findViewById(R.id.filter_cancel_button);
         slideLayout = findViewById(R.id.slide_layout);
         changeCartCount();
-        scrollView = findViewById(R.id.scrollView);
         pageTitle = findViewById(R.id.page_title);
         shopName = findViewById(R.id.shop_name);
         filterLayout = (LinearLayout) findViewById(R.id.filter_Layout);
         shopLayout = (LinearLayout) findViewById(R.id.shop_layout);
+        productList = new ArrayList<>();
+        productsAdapter = new RecyclerProductAdapter(productList, ShopActivity.this, ShopActivity.this);
+        productsRecyclerView.setAdapter(productsAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(ShopActivity.this);
+        layoutManager = new GridLayoutManager(ShopActivity.this, 2);
+        layoutManager.setItemPrefetchEnabled(false);
+
+        productsRecyclerView.setLayoutManager(layoutManager);
+        productsRecyclerView.setPullRefreshEnabled(false);
+        productsCycle =0;
         rootRelativeLayout = (RelativeLayout) findViewById(R.id.root_layout);
         final ViewTreeObserver observer = rootRelativeLayout.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -164,17 +197,24 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
             }
         });
 
-        productList = new ArrayList<>();
-        productsAdapter = new RecyclerProductAdapter(productList, ShopActivity.this, ShopActivity.this);
-        productsRecyclerView.setAdapter(productsAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(ShopActivity.this);
-        layoutManager = new GridLayoutManager(ShopActivity.this, 2);
-        productsRecyclerView.setLayoutManager(layoutManager);
-        productsCycle =0;
+
 
 
     }
 
+
+    private void setRatingBar()
+    {
+
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                RatingDialog.getInstance(ShopActivity.this,ShopActivity.this,ratingBar.getRating() ,shop).show();
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void assignAction() {
 
 
@@ -184,17 +224,17 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
                 productsCycle =0;
                 productList =new ArrayList<>();
                 if (filter_status )
-                  getProductByFilter();
+                  getProductByFilter(true);
                     else
-                getProduct(shop.getId());
+                getProduct(shop.getId(),true);
             }
 
             @Override
             public void onLoadMore() {
                 if (filter_status )
-                    getProductByFilter();
+                    getProductByFilter(false);
                 else
-                    getProduct(shop.getId());
+                    getProduct(shop.getId() ,false);
             }
         });
         cartImage.setOnClickListener(this::setOnClickCartImage);
@@ -237,7 +277,7 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
             public void onClick(View v) {
                 filter_status= false;
                 productsCycle=0;
-                getProduct(shopId);
+                getProduct(shopId,true);
                 filterCancelButton.setVisibility(View.GONE);
             }
         });
@@ -247,8 +287,8 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         FilterDialog.getInstance(this,this).show();
     }
 
-    private void getProduct(int shopId) {
-        if (productList.isEmpty()) {
+    private void getProduct(int shopId , boolean state) {
+        if (state) {
             dataViewModel.getProductsByShop(this, shopId, 0).observe(this, new Observer<List<Product>>() {
                 @Override
                 public void onChanged(@Nullable List<Product> products) {
@@ -325,19 +365,20 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         if (spinnerMap.size()!=0) {
             gSpinnerMap = spinnerMap;
             gSpinnerMap.put("shop_id", shopId);
-            productList.clear();
+            //productList.clear();
             productsCycle = 0;
             filter_status = true;
-            getProductByFilter();
+            getProductByFilter(true);
         }
 
     }
-    public  void  getProductByFilter()
+    public  void  getProductByFilter(boolean stat)
     {
-            if (productList.isEmpty()) {
+            if (stat) {
                 dataViewModel.getFilter(this, gSpinnerMap, 0).observe(this, new Observer<List<Product>>() {
                     @Override
                     public void onChanged(@Nullable List<Product> products) {
+                        productList= products;
                         productsAdapter = new RecyclerProductAdapter(products, ShopActivity.this, ShopActivity.this);
                         productsRecyclerView.setAdapter(productsAdapter);
                         productsRecyclerView.refreshComplete();
@@ -372,4 +413,45 @@ public class ShopActivity extends AppCompatActivity implements OnItemProductClic
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 
+    @Override
+    public void onRatingButtonClicked(String notes, int rate , int oldRate) {
+        if (rate == -1)
+        {
+            ratingBar.setOnRatingBarChangeListener(null);
+            ratingBar.setRating(oldRate);
+            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                @Override
+                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                    RatingDialog.getInstance(ShopActivity.this,ShopActivity.this ,ratingBar.getRating() ,shop).show();
+                }
+            });
+            return;
+
+        }
+        else
+        {
+            ratingBar.setOnRatingBarChangeListener(null);
+            dataViewModel.rateShop(this ,shop,rate ,notes).observe(this, new Observer<Shop>() {
+                @Override
+                public void onChanged(@Nullable Shop shop1) {
+                    if (shop1.getRate_status()==1) {
+                        shop.setMyRate(rate);
+                        ratingBar.setRating(rate);
+                    }
+                   else
+                       ratingBar.setRating(oldRate);
+                    ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                        @Override
+                        public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                            RatingDialog.getInstance(ShopActivity.this,ShopActivity.this ,ratingBar.getRating() ,shop).show();
+
+                        }
+                    });
+                 ;
+                }
+            });
+        }
+
+
+    }
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.yala_mall.R;
@@ -49,6 +50,7 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
         Product current   = list.get(i);
 
         viewHolder.textView.setText(current.getName());
+        viewHolder.ratingBar.setRating(Integer.parseInt(current.getRate()));
         viewHolder.priceTextView.setText(current.getPrice() + " ل . س");
         if ( !current.getGallery().isEmpty())
         Picasso.with(context).load(Constants.IMG_URL+current.getGallery().get(0).getImage()).into(viewHolder.imageView);
@@ -77,6 +79,7 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
         ImageView imageView;
         LinearLayout layout;
         View line;
+        RatingBar ratingBar;
 
 
         ViewHolder(@NonNull View itemView) {
@@ -87,6 +90,7 @@ public class RecyclerProductAdapter  extends RecyclerView.Adapter<RecyclerProduc
             priceTextView = itemView.findViewById(R.id.price);
             priceAfterDiscount = itemView.findViewById(R.id.price_after_discount);
             line= itemView.findViewById(R.id.line);
+            ratingBar =  itemView.findViewById(R.id.ratingBar);
 
 
         }

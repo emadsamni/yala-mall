@@ -9,10 +9,13 @@ import android.util.Log;
 
 import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.City;
+import com.example.yala_mall.models.Favorite;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.models.ProductP;
+import com.example.yala_mall.models.Service;
+import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.models.Size;
 import com.example.yala_mall.models.Slide;
 import com.example.yala_mall.repositories.DataRepository;
@@ -40,6 +43,11 @@ public class DataViewModel extends AndroidViewModel {
     private LiveData<List<Product>> productDetails;
     private LiveData<List<City>> cities;
     private LiveData<List<Product>> sizeByProduct;
+    private LiveData<List<Service>> services ;
+    private LiveData<Shop> ratedShop;
+    private LiveData<Favorite> favorite;
+
+
 
     public DataViewModel(@NonNull Application application) {
         super(application);
@@ -52,6 +60,31 @@ public class DataViewModel extends AndroidViewModel {
             cities = repository.getCities(context);
         }
         return cities;
+    }
+
+    public LiveData<Shop> rateShop(Context context , Shop  shop , int  rate , String  notes){
+
+            ProgressDialog.getInstance().show(context);
+            ratedShop = repository.rateShop(context ,shop, rate ,notes);
+
+        return ratedShop;
+    }
+
+
+    public LiveData<Favorite> addFavorite(Context context , Product product){
+
+        ProgressDialog.getInstance().show(context);
+        favorite = repository.addFavoirte(context ,product);
+
+        return favorite;
+    }
+
+    public LiveData<Favorite> deleteFavorite(Context context , Product product){
+
+        ProgressDialog.getInstance().show(context);
+        favorite = repository.deleteFavoirte(context ,product);
+
+        return favorite;
     }
 
     public LiveData<List<Mall>> getMalls(Context context){
@@ -75,6 +108,13 @@ public class DataViewModel extends AndroidViewModel {
             offers = repository.getOffers(context);
 
         return offers;
+    }
+
+
+    public LiveData<List<Service>> getServices(Context context ){
+        ProgressDialog.getInstance().show(context);
+        services = repository.getServices(context );
+        return services;
     }
 
     public LiveData<List<Product>> getSizeByProduct(Context context , int productId){
@@ -150,7 +190,7 @@ public class DataViewModel extends AndroidViewModel {
 
     public LiveData<List<Product>> getProductsByShop(Context context , int shopId , int lastId ){
 
-            ProgressDialog.getInstance().show(context);
+          //  ProgressDialog.getInstance().show(context);
             productsByShop = repository.getProductsByShop(context ,shopId , lastId);
 
         return productsByShop;

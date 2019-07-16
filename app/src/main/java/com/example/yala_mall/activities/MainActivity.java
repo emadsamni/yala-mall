@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.Indicators.PagerIndicator;
@@ -48,9 +49,13 @@ import com.example.yala_mall.utils.Constants;
 import com.example.yala_mall.utils.OnNavigationItemSelected;
 import com.example.yala_mall.viewModels.DataViewModel;
 import com.example.yala_mall.viewModels.SearchViewModel;
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -59,6 +64,10 @@ import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -100,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         getCategories();
         navigation_config();
         initFacebookLogin();
+      //  getFriendsList();
 
 
 
@@ -136,6 +146,9 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
 
         // set counter for cart
         changeCartCount();
+
+
+
     }
 
     private void assignAction() {
@@ -381,13 +394,14 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
     private void initFacebookLogin() {
         loginButton =findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
-        //loginButton.setFragment(this);
+       // loginButton.setFragment(MainActivity.this);
 
         callbackManager = CallbackManager.Factory.create();
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+
             }
             @Override
             public void onCancel() {
@@ -411,5 +425,7 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
 
 }

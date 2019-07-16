@@ -7,12 +7,15 @@ import com.example.yala_mall.models.Address;
 import com.example.yala_mall.models.Category;
 import com.example.yala_mall.models.City;
 import com.example.yala_mall.models.Customer;
+import com.example.yala_mall.models.Favorite;
 import com.example.yala_mall.models.Mall;
 import com.example.yala_mall.models.Offer;
 import com.example.yala_mall.models.Order;
 import com.example.yala_mall.models.PcCategory;
 import com.example.yala_mall.models.Product;
 import com.example.yala_mall.models.ProductP;
+import com.example.yala_mall.models.Service;
+import com.example.yala_mall.models.Shop;
 import com.example.yala_mall.models.Size;
 import com.example.yala_mall.models.Slide;
 
@@ -111,6 +114,19 @@ public interface ApiInterface {
 
     @GET("getSizes")
     Call<ApiResponse<List<Product>>> getSizes(@Query("key") String key , @Query("id") int id);
+
+    @GET("getServices")
+    Call<ApiResponse<List<Service>>> getServices(@Query("key") String key );
+
+
+    @POST("rateShop")
+    Call<ApiResponse<Shop>> rateShop(@Query("key") String key , @Query("token") String token ,@Query("id") int id ,@Query("rate") int rate ,@Query("notes") String notes);
+
+    @POST("addFavorite")
+    Call<ApiResponse<Favorite>> addFavorite(@Query("key") String key , @Query("token") String token , @Query("product_id") int id );
+
+    @POST("deleteFavorite")
+    Call<ApiResponse<Customer>> deleteFavorite(@Query("key") String key , @Query("token") String token , @Query("id") int id );
 }
 
 
